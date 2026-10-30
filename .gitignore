@@ -1,19 +1,58 @@
-*.iml
-.gradle
-.kotlin
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
+# ─── Python ───────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+venv/
+env/
+.venv/
+pip-wheel-metadata/
+
+# PyInstaller
+*.spec
+*.manifest
+
+# ─── JavaScript / Node ────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# ─── Base de datos local ──────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+
+# ─── Variables de entorno ─────────────────────────────────
 .env
-debug.keystore
+.env.local
+.env.*.local
+
+# ─── Sistema operativo ────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Editores ─────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ─── Logs ─────────────────────────────────────────────────
+*.log
 *-debug.log
+
+# ─── Compilados / distribución ────────────────────────────
+dist/
+*.exe

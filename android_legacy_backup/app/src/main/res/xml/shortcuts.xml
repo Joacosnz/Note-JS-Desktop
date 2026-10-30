@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <shortcut
+        android:shortcutId="quick_note"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:shortcutShortLabel="@string/shortcut_new_note_short"
+        android:shortcutLongLabel="@string/shortcut_new_note_long">
+        <intent
+            android:action="com.example.ACTION_QUICK_NOTE"
+            android:targetPackage="com.aistudio.notasjs.vqrmpx"
+            android:targetClass="com.example.MainActivity" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="quick_voice"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_btn_speak_now"
+        android:shortcutShortLabel="@string/shortcut_voice_note_short"
+        android:shortcutLongLabel="@string/shortcut_voice_note_long">
+        <intent
+            android:action="com.example.ACTION_QUICK_VOICE"
+            android:targetPackage="com.aistudio.notasjs.vqrmpx"
+            android:targetClass="com.example.MainActivity" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="quick_scan"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_menu_camera"
+        android:shortcutShortLabel="@string/shortcut_scan_document_short"
+        android:shortcutLongLabel="@string/shortcut_scan_document_long">
+        <intent
+            android:action="com.example.ACTION_QUICK_SCAN"
+            android:targetPackage="com.aistudio.notasjs.vqrmpx"
+            android:targetClass="com.example.MainActivity" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="create_reminder"
+        android:enabled="true"
+        android:icon="@drawable/ic_reminder"
+        android:shortcutShortLabel="@string/shortcut_create_reminder_short"
+        android:shortcutLongLabel="@string/shortcut_create_reminder_long">
+        <intent
+            android:action="com.example.notejs.CREATE_REMINDER"
+            android:targetPackage="com.aistudio.notasjs.vqrmpx"
+            android:targetClass="com.example.MainActivity" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+</shortcuts>

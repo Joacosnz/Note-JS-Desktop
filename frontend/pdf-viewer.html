@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PDF · Note JS</title>
+  <link rel="stylesheet" href="/pdf-viewer.css">
+</head>
+<body>
+  <header>
+    <strong id="title">Documento PDF</strong>
+    <button id="previous" title="Página anterior" aria-label="Página anterior">‹</button>
+    <label><input id="page" type="number" min="1" value="1" aria-label="Página"> / <span id="pages">—</span></label>
+    <button id="next" title="Página siguiente" aria-label="Página siguiente">›</button>
+    <button id="zoom-out" aria-label="Reducir zoom">−</button>
+    <select id="zoom" aria-label="Zoom"><option value="fit">Ajustar ancho</option><option value="0.75">75%</option><option value="1">100%</option><option value="1.5">150%</option><option value="2">200%</option></select>
+    <button id="zoom-in" aria-label="Aumentar zoom">+</button>
+    <button id="rotate" title="Rotar esta página">Rotar</button>
+    <button id="draw" aria-pressed="false">Dibujar</button>
+    <input id="color" type="color" value="#e44949" aria-label="Color del trazo">
+    <button id="undo" title="Deshacer último trazo">Deshacer</button>
+    <button id="text-toggle" aria-pressed="false">Texto</button>
+    <button id="save" disabled>Guardar copia</button>
+  </header>
+  <form id="search"><input id="query" type="search" placeholder="Buscar en el PDF" aria-label="Buscar en el PDF"><button>Buscar</button><select id="results" aria-label="Resultados de búsqueda" hidden></select></form>
+  <p id="status" role="status" aria-live="polite">Cargando PDF…</p>
+  <main id="viewport"><div id="sheet"><canvas id="page-canvas"></canvas><canvas id="ink" aria-label="Lienzo de anotaciones"></canvas></div><pre id="text" hidden></pre></main>
+  <script src="/vendor/pdf-lib.min.js"></script>
+  <script type="module" src="/pdf-viewer.mjs"></script>
+</body>
+</html>

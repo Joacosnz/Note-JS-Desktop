@@ -11,7 +11,12 @@ import sys
 import time
 import socket
 import threading
+import base64
+import webbrowser
+from urllib.parse import urlencode
 import webview
+from pdf_documents import MAX_PDF_BYTES, store_pdf
+from onboarding import initialize_first_run
 
 # Redirigir stdout y stderr en modo ejecutable (--noconsole) para evitar bloqueos en Windows
 if sys.stdout is None:
@@ -26,6 +31,7 @@ if sys.stderr is None:
         pass
 
 from models import (
+    DATA_DIR,
     init_db,
     get_bootstrap_data,
     save_single_note,
@@ -54,8 +60,21 @@ from models import (
     fetch_weblink_metadata_orm,
     save_signature_orm,
     get_signatures_orm,
+    apply_transaction,
 )
-from backend import ThreadingHTTPServer, NoteJSRequestHandler
+from backend import (
+    ThreadingHTTPServer,
+    NoteJSRequestHandler,
+    create_block_api,
+    get_block_api,
+    get_record_map_api,
+    update_block_api,
+    reorder_block_children_api,
+    soft_delete_block_api,
+    restore_block_api,
+    convert_rich_text_api,
+    apply_transactions_api,
+)
 
 
 class PyWebViewBridge:
@@ -63,6 +82,120 @@ class PyWebViewBridge:
     API nativa de Python expuesta directamente a JavaScript como `window.pywebview.api`.
     Permite que el frontend interactúe con SQLite + Peewee ORM sin latencia de red.
     """
+
+    def open_microsoft_signin(self):
+        from urllib.parse import urlsplit
+        if not webview.windows:
+            return {'ok': False, 'error': 'No hay una ventana activa.'}
+        current = urlsplit(webview.windows[0].get_current_url())
+        if current.scheme != 'http' or current.hostname not in ('127.0.0.1', 'localhost'):
+            return {'ok': False, 'error': 'Origen de la aplicación inválido.'}
+        existing = getattr(self, '_microsoft_window', None)
+        if existing is not None and existing in webview.windows:
+            existing.show()
+            return {'ok': True}
+        # No js_api: provider/federated pages cannot call local note/file APIs.
+        # All windows use the shared storage_path configured by webview.start.
+        self._microsoft_window = webview.create_window(
+            title='Conectar con Microsoft · Note JS',
+            url=f'{current.scheme}://{current.netloc}/microsoft-signin.html',
+            width=580, height=760, min_size=(420, 560), frameless=False
+        )
+        return {'ok': True}
+
+    def open_firebase_signin(self, state):
+        from urllib.parse import urlsplit
+        from firebase_connection import SIGN_IN_HANDOFF
+        if not isinstance(state, str) or state not in SIGN_IN_HANDOFF.sessions or not webview.windows:
+            return {'ok': False, 'error': 'Sesión inválida.'}
+        current = urlsplit(webview.windows[0].get_current_url())
+        url = f'{current.scheme}://{current.netloc}/firebase-signin.html?' + urlencode({'state': state})
+        return {'ok': bool(webbrowser.open(url))}
+
+    def save_pdf_copy(self, data_url, name='Documento.pdf'):
+        """Save an explicit copy through the native dialog, never overwrite the source silently."""
+        try:
+            prefix = 'data:application/pdf;base64,'
+            if not isinstance(data_url, str) or not data_url.startswith(prefix):
+                raise ValueError('Datos PDF inválidos.')
+            if len(data_url) > (MAX_PDF_BYTES * 4 // 3) + 100:
+                raise ValueError('El límite por PDF es de 50 MB.')
+            data = base64.b64decode(data_url[len(prefix):], validate=True)
+            if not data.startswith(b'%PDF-'):
+                raise ValueError('Datos PDF inválidos.')
+            filename = os.path.basename(str(name).replace('\\', '/'))
+            selected = webview.windows[0].create_file_dialog(
+                webview.SAVE_DIALOG, save_filename=filename,
+                file_types=('Documentos PDF (*.pdf)',))
+            if not selected:
+                return {'ok': False, 'cancelled': True}
+            destination = selected[0] if isinstance(selected, (tuple, list)) else str(selected)
+            if not destination.lower().endswith('.pdf'):
+                destination += '.pdf'
+            with open(destination, 'wb') as stream:
+                stream.write(data)
+            return {'ok': True}
+        except Exception as exc:
+            return {'ok': False, 'error': str(exc)}
+
+    # -------------------------------------------------------------------------
+    # Métodos de Bloques Estilo Notion (Milestone 2)
+    # -------------------------------------------------------------------------
+
+    def apply_transaction(self, operations):
+        """
+        Ejecuta atómicamente un lote de operaciones Notion (op.set, op.listAfter)
+        con rollback completo ante fallos.
+        """
+        if isinstance(operations, dict) and 'operations' in operations:
+            payload = operations
+        elif isinstance(operations, list):
+            payload = {'operations': operations}
+        else:
+            payload = operations
+        res, _ = apply_transactions_api(payload)
+        return res
+
+    def create_block(self, block_dict, target_index=None, after_id=None, before_id=None):
+        res, _ = create_block_api(block_dict, target_index=target_index, after_id=after_id, before_id=before_id)
+        return res
+
+    def get_block(self, block_id, resolve_tree=False):
+        res, _ = get_block_api(block_id, resolve_tree=resolve_tree)
+        return res
+
+    def get_record_map(self, root_id):
+        res, _ = get_record_map_api(root_id)
+        return res
+
+    def get_block_record_map(self, root_id, include_trashed=False):
+        res, _ = get_record_map_api(root_id, include_trashed=include_trashed)
+        return res
+
+    def update_block(self, block_id, updates, expected_version=None):
+        res, _ = update_block_api(block_id, updates, expected_version=expected_version)
+        return res
+
+    def reorder_block_children(self, parent_id, content_array):
+        res, _ = reorder_block_children_api(parent_id, content_array)
+        return res
+
+    def soft_delete_block(self, block_id):
+        res, _ = soft_delete_block_api(block_id, permanent=False)
+        return res
+
+    def delete_block(self, block_id, permanent=False):
+        res, _ = soft_delete_block_api(block_id, permanent=permanent)
+        return res
+
+    def restore_block(self, block_id):
+        res, _ = restore_block_api(block_id)
+        return res
+
+    def convert_rich_text(self, payload):
+        res, _ = convert_rich_text_api(payload)
+        return res
+
 
     def bootstrap(self):
         return get_bootstrap_data()
@@ -167,6 +300,40 @@ class PyWebViewBridge:
     def get_signatures(self, note_id=None):
         return get_signatures_orm(note_id=note_id)
 
+    def minimize_window(self):
+        try:
+            if webview.windows:
+                webview.windows[0].minimize()
+                return {'ok': True, 'action': 'minimize'}
+            return {'ok': False, 'error': 'No active window'}
+        except Exception as e:
+            return {'ok': False, 'error': str(e)}
+
+    def toggle_maximize_window(self):
+        try:
+            if webview.windows:
+                win = webview.windows[0]
+                if getattr(win, '_is_maximized', False):
+                    win.restore()
+                    win._is_maximized = False
+                    return {'ok': True, 'action': 'restore', 'is_maximized': False}
+                else:
+                    win.maximize()
+                    win._is_maximized = True
+                    return {'ok': True, 'action': 'maximize', 'is_maximized': True}
+            return {'ok': False, 'error': 'No active window'}
+        except Exception as e:
+            return {'ok': False, 'error': str(e)}
+
+    def close_window(self):
+        try:
+            if webview.windows:
+                webview.windows[0].destroy()
+                return {'ok': True, 'action': 'close'}
+            return {'ok': False, 'error': 'No active window'}
+        except Exception as e:
+            return {'ok': False, 'error': str(e)}
+
 
 def find_available_port(preferred=3000):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -184,9 +351,30 @@ def start_backend_thread(port):
 
 
 def launch_pywebview_app():
+    # Configurar AppUserModelID para icono en barra de tareas de Windows 11
+    if sys.platform == 'win32':
+        try:
+            import ctypes
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('NoteJS.Desktop.App.v2')
+        except Exception:
+            pass
+
     init_db()
+    initialize_first_run()
     port = find_available_port(3000)
     url = f"http://127.0.0.1:{port}"
+
+    # Explorer / Open With passes the selected PDF as a command-line argument.
+    pdf_argument = next((arg for arg in sys.argv[1:] if arg.lower().endswith('.pdf') and os.path.isfile(arg)), None)
+    if pdf_argument:
+        try:
+            if os.path.getsize(pdf_argument) > MAX_PDF_BYTES:
+                raise ValueError('El límite por PDF es de 50 MB.')
+            with open(pdf_argument, 'rb') as stream:
+                result = store_pdf(stream.read(MAX_PDF_BYTES + 1), os.path.join(DATA_DIR, 'attachments', 'pdfs'), os.path.basename(pdf_argument))
+            url += '/?' + urlencode({'pdf': result['url'], 'pdfName': result['name']})
+        except (OSError, ValueError) as exc:
+            url += '/?' + urlencode({'pdfError': str(exc)})
 
     # Iniciar servidor local de recursos y API en segundo plano
     t = threading.Thread(target=start_backend_thread, args=(port,), daemon=True)
@@ -195,7 +383,13 @@ def launch_pywebview_app():
 
     bridge = PyWebViewBridge()
 
-    # Crear ventana nativa con PyWebView (sin Electron)
+    # Detectar icono de aplicación
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    icon_file = os.path.join(base_dir, 'public', 'icon.ico')
+    if not os.path.exists(icon_file):
+        icon_file = os.path.join(base_dir, 'icon.ico')
+
+    # Crear ventana nativa con PyWebView (sin Electron, frameless para barra integrada única)
     window = webview.create_window(
         title='Note JS — PC Desktop (PyWebView + SQLite & Peewee ORM)',
         url=url,
@@ -206,9 +400,26 @@ def launch_pywebview_app():
         background_color='#0f1115',
         text_select=True,
         confirm_close=False,
+        frameless=True,
+        easy_drag=False,
     )
 
-    webview.start(debug=False)
+    if sys.platform == 'win32':
+        def on_window_shown():
+            try:
+                import ctypes
+                hwnd = window.native.Handle.ToInt32() if hasattr(window, 'native') and window.native else None
+                if hwnd:
+                    GWL_STYLE = -16
+                    WS_THICKFRAME = 0x00040000
+                    style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_STYLE)
+                    ctypes.windll.user32.SetWindowLongW(hwnd, GWL_STYLE, style | WS_THICKFRAME)
+            except Exception:
+                pass
+        window.events.shown += on_window_shown
+
+    webview.start(debug=False, icon=icon_file if os.path.exists(icon_file) else None,
+                  private_mode=False, storage_path=os.path.join(DATA_DIR, 'webview'))
 
 
 if __name__ == '__main__':

@@ -1,5 +1,11 @@
 rules_version = '2';
 
+// Notes remain private under users/{uid}/notes/{remoteUuid}.
+// Optional presentation fields shared by Android and desktop:
+// hasCover: bool; coverPresetId: one of the five built-in IDs;
+// coverPositionY: int 0..100; icon: string up to 32 characters.
+// These fields never change ownership or grant access to another user's notes.
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -10,10 +16,6 @@ service cloud.firestore {
 
     function isSignedIn() {
       return request.auth != null;
-    }
-
-    match /notes/{noteId} {
-      allow read, write: if true;
     }
 
     function incoming() {
@@ -28,9 +30,17 @@ service cloud.firestore {
       return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
 
+    function isValidPresentation(data) {
+      return (!('hasCover' in data) || data.hasCover is bool) &&
+             (!('coverPresetId' in data) || (data.coverPresetId is string && data.coverPresetId in ['midnight', 'slate', 'forest', 'violet', 'rose'])) &&
+             (!('coverPositionY' in data) || (data.coverPositionY is int && data.coverPositionY >= 0 && data.coverPositionY <= 100)) &&
+             (!('icon' in data) || (data.icon is string && data.icon.size() <= 32));
+    }
+
     function isValidNote(data, userId, noteId) {
       return data.remoteUuid is string &&
              data.remoteUuid == noteId &&
+             isValidPresentation(data) &&
              data.remoteUuid.size() >= 1 &&
              data.remoteUuid.size() <= 128 &&
              data.userId is string &&
@@ -164,6 +174,7 @@ service cloud.firestore {
                        ]) &&
                        incoming().keys().hasOnly([
                          'remoteUuid', 'userId', 'title', 'content', 'noteType',
+                         'hasCover', 'coverPresetId', 'coverPositionY', 'icon',
                          'colorIndex', 'paperStyle', 'isPinned', 'isArchived',
                          'isTrashed', 'isLocked', 'lockPin', 'tags', 'folder',
                          'checklistData', 'drawingData', 'mathEvaluations',
@@ -183,6 +194,7 @@ service cloud.firestore {
                        (incoming().createdAt == existing().createdAt || (incoming().createdAt is timestamp && incoming().createdAt <= request.time)) &&
                        incoming().diff(existing()).affectedKeys().hasOnly([
                          'title', 'content', 'noteType', 'colorIndex', 'paperStyle',
+                         'hasCover', 'coverPresetId', 'coverPositionY', 'icon',
                          'isPinned', 'isArchived', 'isTrashed', 'isLocked', 'lockPin',
                          'tags', 'folder', 'checklistData', 'drawingData',
                          'mathEvaluations', 'pdfPath', 'pdfAnnotationData',

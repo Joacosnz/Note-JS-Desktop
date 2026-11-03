@@ -1,0 +1,15 @@
+{
+  "configured": true,
+  "firebase": {
+    "projectId": "isentropic-tape-465216-c1",
+    "appId": "1:318447528237:web:994717fb513630c45e8ba4",
+    "apiKey": "AIzaSyCO1M5OUj2uCV7qXzW8Dmi21xwMC4cEEtc",
+    "authDomain": "isentropic-tape-465216-c1.firebaseapp.com",
+    "storageBucket": "isentropic-tape-465216-c1.firebasestorage.app",
+    "messagingSenderId": "318447528237"
+  },
+  "databaseId": "ai-studio-android-notas-e533a5f4-cda6-4bde-b5d4-c0acf42009aa",
+  "databaseEdition": "ENTERPRISE",
+  "storageAvailable": false,
+  "realtimeUpdates": true
+}

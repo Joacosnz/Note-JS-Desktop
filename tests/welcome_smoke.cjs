@@ -1,0 +1,42 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+const {spawn}=require('node:child_process');
+const {openBrowser,until}=require('./browser_helpers.cjs');
+const root=path.resolve(__dirname,'..');
+const directory=fs.mkdtempSync(path.join(os.tmpdir(),'notejs-welcome-'));
+const python=process.env.NOTEJS_TEST_PYTHON || path.join(process.env.LOCALAPPDATA,'Python/pythoncore-3.15-64/python.exe');
+let server,browser;
+async function start(){
+  server=spawn(python,['-u',path.join(__dirname,'cover_photo_test_server.py'),directory,'--welcome'],{cwd:root,windowsHide:true});
+  server.stderr.on('data',d=>process.stderr.write(d));
+  const port=await new Promise((resolve,reject)=>{server.stdout.once('data',d=>resolve(Number(d.toString().trim())));server.once('error',reject)});
+  return 'http://127.0.0.1:'+port;
+}
+(async()=>{
+  let origin=await start();
+  browser=await openBrowser(directory);
+  const evaluate=browser.evaluate;
+  await browser.navigate(origin);
+  await until(()=>evaluate('!!window.NoteJSLocal'),'Welcome UI did not start');
+  await evaluate('NoteJSLocal.ready');
+  assert.deepEqual(await evaluate('state.notes.map(n=>n.title).sort()'),['Bienvenido a Note JS','Organizá tu espacio','Tu primera nota']);
+  assert.equal(await evaluate('state.reminders.length'),0);
+  assert.equal(await evaluate('state.selectedCalendarDate===getTodayDateString()'),true);
+  assert.equal(await evaluate("document.querySelectorAll('.home-grid-card-cover').length"),0);
+  assert.equal(await evaluate("document.querySelectorAll('.home-grid-card-content-preview').length"),3);
+  const shot=await browser.call('Page.captureScreenshot',{format:'png'},browser.sessionId);
+  fs.writeFileSync(path.join(root,'.test-artifacts/welcome-desktop.png'),Buffer.from(shot.data,'base64'));
+  const data=await fetch(origin+'/api/bootstrap').then(r=>r.json());
+  for(const n of data.notes) assert.ok((await fetch(origin+'/api/notes/'+n.id,{method:'DELETE'})).ok);
+  await browser.navigate(origin+'/?reload=1');
+  await until(()=>evaluate('!!window.NoteJSLocal'),'Reload did not initialize');
+  await evaluate('NoteJSLocal.ready');
+  assert.equal(await evaluate('state.notes.length'),0,'Cached guides reappeared after deletion');
+  server.kill();
+  origin=await start();
+  await browser.navigate(origin);
+  await until(()=>evaluate('!!window.NoteJSLocal'),'Restart did not initialize');
+  await evaluate('NoteJSLocal.ready');
+  assert.equal(await evaluate('state.notes.length'),0,'Guides reappeared after restarting');
+  console.log('PASS: fresh installation has three guides, zero fake reminders, today’s calendar, content previews; deleted guides stay deleted after reload and restart.');
+})().catch(e=>{console.error(e);process.exitCode=1}).finally(async()=>{if(browser)await browser.close();if(server)server.kill()});

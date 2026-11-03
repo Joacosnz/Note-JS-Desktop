@@ -30,6 +30,18 @@ yarn-error.log*
 *.db
 *.sqlite
 *.sqlite3
+attachments/pdfs/
+attachments/covers/
+.test-artifacts/
+.android-cover-work/
+.android-photo-work/
+.android-preview-work/
+.android-welcome-work/
+.android-language-work/
+webview/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
 
 # ─── Variables de entorno ─────────────────────────────────
 .env

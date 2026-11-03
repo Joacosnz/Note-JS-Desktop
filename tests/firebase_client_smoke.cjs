@@ -1,0 +1,122 @@
+const fs=require('node:fs'),path=require('node:path'),os=require('node:os');
+const assert=require('node:assert/strict');
+const {spawn}=require('node:child_process');
+const {openBrowser,until,delay}=require('./browser_helpers.cjs');
+const root=path.resolve(__dirname,'..'),temporary=fs.mkdtempSync(path.join(os.tmpdir(),'notejs-firebase-smoke-'));
+let server,browser;
+const firestore='http://127.0.0.1:18085/v1/projects/demo-notejs-desktop/databases/desktop-test/documents';
+function fields(data){return Object.fromEntries(Object.entries(data).map(([key,value])=>[key,typeof value==='string'?{stringValue:value}:typeof value==='boolean'?{booleanValue:value}:Number.isInteger(value)?{integerValue:String(value)}:{nullValue:null}]));}
+async function putRemote(uid,id,data){
+  const {updatedAt,...rest}=data;
+  const response=await fetch(`${firestore}:commit`,{method:'POST',headers:{Authorization:'Bearer owner','Content-Type':'application/json'},body:JSON.stringify({writes:[{update:{name:`projects/demo-notejs-desktop/databases/desktop-test/documents/users/${uid}/notes/${id}`,fields:fields(rest)},updateTransforms:[{fieldPath:'updatedAt',setToServerValue:'REQUEST_TIME'}]}]})});
+  assert.ok(response.ok,await response.text());
+}
+const payload=(uid,id,title)=>({remoteUuid:id,userId:uid,title,content:JSON.stringify([{id:'mobile-text',type:'text',content:'Texto del móvil',style:'BODY'},{id:'drawing-1',type:'drawing',filePath:'private-drawing',pathData:'original'}]),noteType:'TEXT',colorIndex:0,paperStyle:'BLANK',isPinned:false,isArchived:false,isTrashed:false,isLocked:false,lockPin:'',tags:'prueba',folder:'Móvil',checklistData:'',drawingData:'',mathEvaluations:'',pdfPath:'',pdfAnnotationData:'',isReminderDone:false,lastModifiedLocal:1000,remoteUrl:'',remoteImageUrl:'',attachmentsJson:'[]',createdAt:1000,updatedAt:1000});
+(async()=>{
+  const signup=await fetch('http://127.0.0.1:19099/identitytoolkit.googleapis.com/v1/accounts:signUp?key=demo-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'desktop@example.test',password:'test-password-123',returnSecureToken:true})}).then(r=>r.json());
+  assert.ok(signup.localId,JSON.stringify(signup));const uid=signup.localId;
+  await putRemote(uid,'mobile-note',payload(uid,'mobile-note','Nota móvil'));
+  const tableBlock={id:'gym-table',type:'table',rows:7,cols:2,hasHeaderRow:true,hasZebraStripes:true,matrix:Array.from({length:7},(_,r)=>[{text:r?'Fila '+r:'Ejercicio',bg:r===3?'#80FF0000':null},{text:r?'3 × 12':'Series',bg:null}])};
+  const tableNote=payload(uid,'table-note','Tabla de entrenamiento');tableNote.content=JSON.stringify([tableBlock]);
+  Object.assign(tableNote,{hasCover:true,coverPresetId:'forest',coverPositionY:63,icon:'🏋️'});
+  await putRemote(uid,'table-note',tableNote);
+  const python=process.env.NOTEJS_TEST_PYTHON || path.join(process.env.LOCALAPPDATA,'Python/pythoncore-3.15-64/python.exe');
+  server=spawn(python,['-u',path.join(__dirname,'firebase_test_server.py'),temporary],{cwd:root,windowsHide:true});
+  server.stderr.on('data',data=>process.stderr.write(data));
+  const port=await new Promise((resolve,reject)=>{server.stdout.once('data',data=>resolve(Number(data.toString().trim())));server.once('error',reject);});
+  browser=await openBrowser(temporary);const evaluate=browser.evaluate;
+  await browser.navigate(`http://127.0.0.1:${port}`);
+  await until(()=>evaluate("document.getElementById('firebase-status')?.textContent.includes('Conecta tu cuenta')"),'Firebase UI did not initialize');
+  await evaluate("(async()=>{const sdk=await import('/vendor/firebase-sdk.mjs'); await sdk.signInWithEmailAndPassword(sdk.getAuth(),'desktop@example.test','test-password-123')})()");
+  await until(()=>evaluate("window.NoteJSLocal?.getNotes().some(note=>note.cloud?.remoteId==='mobile-note')"),'Mobile note did not arrive');
+  assert.match(await evaluate("window.NoteJSLocal.getNotes().find(note=>note.cloud?.remoteId==='mobile-note').content"),/Texto del móvil/);
+  const codec=await evaluate("(async()=>{const codec=await import('/firebase-mobile-codec.mjs'); const html=codec.mobileToHtml(JSON.stringify([{type:'text',id:'x',content:'<b onclick=alert(1)>Hola</b><script>alert(1)</script>'},{type:'drawing',id:'d',pathData:'preserve-me'}]));return {html,blocks:codec.htmlToMobile(html)}})()");
+  assert.ok(!codec.blocks[0].content.includes('onclick=')&&!codec.blocks[0].content.includes('<script>'));
+  assert.equal(codec.blocks[1].pathData,'preserve-me');
+  await until(()=>evaluate("window.NoteJSLocal.getNotes().some(n=>n.cloud?.remoteId==='table-note')"),'Table note did not arrive');
+  await evaluate("loadNote(window.NoteJSLocal.getNotes().find(n=>n.cloud?.remoteId==='table-note').id)");
+  await until(()=>evaluate("document.querySelector('#rich-editor-canvas .cloud-table-block table')?.rows.length===7"),'Mobile table is not a real table');
+  assert.equal(await evaluate("getActiveNote().hasCover && getActiveNote().coverPresetId==='forest' && getActiveNote().coverPositionY===63 && getActiveNote().emoji==='🏋️'"),true);
+  assert.equal(await evaluate("document.getElementById('notion-cover').classList.contains('has-cover')"),true);
+  await evaluate('getActiveNote().coverStyle=COVER_PRESETS[3];save();loadActiveNote()');
+  await until(async()=>{const data=await fetch(`${firestore}/users/${uid}/notes/table-note`,{headers:{Authorization:'Bearer owner'}}).then(r=>r.json());return data.fields?.coverPresetId?.stringValue==='violet';},'Desktop cover change did not sync');
+  const invalidCovers=await evaluate("(async()=>{const sdk=await import('/vendor/firebase-sdk.mjs');const db=sdk.getFirestore(undefined,'desktop-test');const uid=sdk.getAuth().currentUser.uid;const reference=sdk.doc(db,'users',uid,'notes','table-note');const results=[];for(const invalid of [{coverPresetId:'url(untrusted)'},{hasCover:'yes'},{coverPositionY:101},{coverPositionY:1.5},{icon:'x'.repeat(33)}]){try{await sdk.runTransaction(db,async tx=>{await tx.get(reference);tx.update(reference,invalid)});results.push('allowed')}catch(error){results.push(error.code)}}return results})()");
+  assert.deepEqual(invalidCovers,Array(5).fill('permission-denied'));
+  const tableVisual=await evaluate("(()=>{const b=document.querySelector('#rich-editor-canvas .cloud-table-block');return {headers:b.querySelectorAll('th').length,cells:b.querySelectorAll('td,th').length,border:getComputedStyle(b.querySelector('td')).borderRightWidth,zebra:b.dataset.zebra,color:b.querySelectorAll('tr')[3].cells[0].getAttribute('data-mobile-bg')}})()");
+  assert.deepEqual(tableVisual,{headers:2,cells:14,border:'1px',zebra:'true',color:'#80FF0000'});
+  await evaluate("(()=>{const cell=document.querySelector('#rich-editor-canvas tbody tr td');cell.focus();const range=document.createRange();range.selectNodeContents(cell);getSelection().removeAllRanges();getSelection().addRange(range)})()");
+  await browser.call('Input.insertText',{text:'Editada desde escritorio'},browser.sessionId);
+  await until(async()=>{const data=await fetch(`${firestore}/users/${uid}/notes/table-note`,{headers:{Authorization:'Bearer owner'}}).then(r=>r.json());return JSON.parse(data.fields?.content?.stringValue || '[]')[0]?.matrix?.[1]?.[0]?.text==='Editada desde escritorio';},'Edited table cell did not sync');
+  await evaluate("document.querySelector('#rich-editor-canvas [data-table-action=row]').click();document.querySelector('#rich-editor-canvas [data-table-action=column]').click()");
+  await until(async()=>{const data=await fetch(`${firestore}/users/${uid}/notes/table-note`,{headers:{Authorization:'Bearer owner'}}).then(r=>r.json());const table=JSON.parse(data.fields?.content?.stringValue || '[]')[0];return table?.rows===8&&table?.cols===3;},'Added row/column did not sync');
+  const roundtrip=await fetch(`${firestore}/users/${uid}/notes/table-note`,{headers:{Authorization:'Bearer owner'}}).then(r=>r.json());
+  const remoteTable=JSON.parse(roundtrip.fields.content.stringValue)[0];
+  assert.equal(remoteTable.type,'table');assert.equal(remoteTable.hasHeaderRow,true);assert.equal(remoteTable.hasZebraStripes,true);assert.equal(remoteTable.matrix[3][0].bg,'#80FF0000');
+  await until(()=>evaluate("import('/firebase-sync-core.mjs').then(core=>!core.hasLocalChanges(window.NoteJSLocal.getNotes().find(n=>n.cloud?.remoteId==='table-note')))"),'Table acknowledgement did not persist');
+  // Simulate a table downloaded by the older app, with an unsent local cell edit.
+  await evaluate("(async()=>{const n=window.NoteJSLocal.getNotes().find(n=>n.cloud?.remoteId==='table-note');const b=JSON.parse(n.cloud.remote.content)[0];const wrapper=document.createElement('div');wrapper.setAttribute('data-mobile-block',JSON.stringify(b));const table=document.createElement('table');for(const row of b.matrix){const tr=table.insertRow();for(const data of row){tr.insertCell().innerHTML=data.text}}table.rows[1].cells[0].textContent='Cambio local anterior';wrapper.appendChild(table);n.content=wrapper.outerHTML;n.cloud.codecVersion=1;await window.NoteJSLocal.persist(n,false)})()");
+  const legacyNavigation=await evaluate('performance.timeOrigin');
+  await browser.call('Page.reload',{},browser.sessionId);
+  await until(()=>evaluate(`performance.timeOrigin !== ${legacyNavigation} && window.NoteJSLocal?.getNotes().find(n=>n.cloud?.remoteId==='table-note')?.cloud.codecVersion===2`),'Older table was not upgraded');
+  await until(async()=>{const data=await fetch(`${firestore}/users/${uid}/notes/table-note`,{headers:{Authorization:'Bearer owner'}}).then(r=>r.json());const table=JSON.parse(data.fields?.content?.stringValue || '[]')[0];return table?.matrix?.[1]?.[0]?.text==='Cambio local anterior'&&table?.hasHeaderRow&&table?.matrix[3][0].bg==='#80FF0000';},'Table upgrade lost the pending local edit or formatting');
+  assert.equal(await evaluate("window.NoteJSLocal.getNotes().filter(n=>n.title.includes('copia en conflicto')).length"),0);
+  await evaluate("loadNote(window.NoteJSLocal.getNotes().find(n=>n.cloud?.remoteId==='table-note').id)");
+  await evaluate("(()=>{const cell=document.querySelector('#rich-editor-canvas tbody tr td');const clipboard=new DataTransfer();clipboard.setData('text/plain','A\\tB\\nC\\tD');cell.dispatchEvent(new ClipboardEvent('paste',{bubbles:true,cancelable:true,clipboardData:clipboard}))})()");
+  assert.equal(await evaluate("document.querySelector('#rich-editor-canvas table').rows[2].cells[1].textContent"),'D');
+  const htmlTable=await evaluate("(async()=>{const codec=await import('/firebase-mobile-codec.mjs');const html=codec.safeHtml('<table><tr><th onclick=alert(1)>A</th><th>B</th></tr><tr><td colspan=2>Dato<script>alert(1)</script></td></tr></table>');return {html,blocks:codec.htmlToMobile(html)}})()");
+  assert.equal(htmlTable.blocks[0].type,'table');assert.ok(htmlTable.html.includes('<table>'));assert.ok(!htmlTable.html.includes('onclick=')&&!htmlTable.html.includes('<script>'));
+  await evaluate("(()=>{const n=window.NoteJSLocal.getNotes().find(n=>n.cloud?.remoteId==='table-note');loadNote(n.id);document.getElementById('desktop-menu-trigger').click()})()");
+  assert.equal(await evaluate("document.getElementById('desktop-app-menu').hidden"),false);
+  await browser.call('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27},browser.sessionId);
+  assert.equal(await evaluate("document.getElementById('desktop-app-menu').hidden"),true);
+  await evaluate("document.querySelector('.page-tools summary').click()");
+  assert.equal(await evaluate("document.querySelector('.page-tools').open"),true);
+  await browser.call('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27},browser.sessionId);
+  assert.equal(await evaluate("document.querySelector('.page-tools').open"),false);
+  const tableScreenshot=await browser.call('Page.captureScreenshot',{format:'png'},browser.sessionId);
+  fs.mkdirSync(path.join(root,'.test-artifacts'),{recursive:true});fs.writeFileSync(path.join(root,'.test-artifacts/table-desktop.png'),Buffer.from(tableScreenshot.data,'base64'));
+  await evaluate("document.body.classList.add('light-mode');document.getElementById('desktop-menu-trigger').click()");
+  await delay(180);
+  const menuScreenshot=await browser.call('Page.captureScreenshot',{format:'png'},browser.sessionId);
+  fs.writeFileSync(path.join(root,'.test-artifacts/menu-light.png'),Buffer.from(menuScreenshot.data,'base64'));
+  await evaluate("document.getElementById('desktop-menu-trigger').click();document.body.classList.remove('light-mode')");
+  await evaluate("(()=>{const n=window.NoteJSLocal.getNotes().find(n=>n.cloud?.remoteId==='mobile-note');n.title='Editada en PC';n.updatedAt=Date.now();save(false,n);})()");
+  await until(async()=>{const response=await fetch(`${firestore}/users/${uid}/notes/mobile-note`,{headers:{Authorization:'Bearer owner'}}).then(r=>r.json());return response.fields?.title?.stringValue==='Editada en PC';},'Desktop edit did not reach Firestore');
+  const synced=await fetch(`${firestore}/users/${uid}/notes/mobile-note`,{headers:{Authorization:'Bearer owner'}}).then(r=>r.json());
+  assert.equal(JSON.parse(synced.fields.content.stringValue)[1].pathData,'original');
+  // Let the acknowledged timestamp persist before simulating offline edits.
+  await until(()=>evaluate("window.NoteJSLocal.getNotes().find(n=>n.cloud?.remoteId==='mobile-note')?.cloud?.baseRevision.includes(':')"),'Write acknowledgement was not persisted');
+  await evaluate("window.pendingLocal=window.NoteJSLocal.getNotes().find(n=>n.cloud?.remoteId==='mobile-note');window.pendingLocal.title='Local sin subir';window.pendingLocal.updatedAt=Date.now()");
+  const changed=payload(uid,'mobile-note','Cambiada en móvil');changed.lastModifiedLocal=9000;changed.updatedAt=9000;
+  await putRemote(uid,'mobile-note',changed);
+  await until(()=>evaluate("window.NoteJSLocal.getNotes().some(n=>n.title==='Local sin subir (copia en conflicto)') && window.NoteJSLocal.getNotes().some(n=>n.title==='Cambiada en móvil')"),'Concurrent edit did not preserve both versions');
+  await evaluate("(async()=>{const sdk=await import('/vendor/firebase-sdk.mjs');await sdk.disableNetwork(sdk.getFirestore(undefined,'desktop-test'));const n=window.NoteJSLocal.getNotes().find(n=>n.cloud?.remoteId==='mobile-note');n.title='Pendiente sin conexión';n.updatedAt=Date.now();save(false,n)})()");
+  await until(()=>evaluate("fetch('/api/bootstrap').then(r=>r.json()).then(data=>data.notes.some(n=>n.title==='Pendiente sin conexión'))"),'Offline change was not saved in SQLite');
+  const oldNavigation=await evaluate('performance.timeOrigin');
+  await browser.call('Page.reload',{},browser.sessionId);
+  await until(()=>evaluate(`performance.timeOrigin !== ${oldNavigation} && document.getElementById('firebase-account')?.textContent.includes('desktop@example.test')`),'Firebase account did not restore after reload');
+  await until(async()=>{const response=await fetch(`${firestore}/users/${uid}/notes/mobile-note`,{headers:{Authorization:'Bearer owner'}}).then(r=>r.json());return response.fields?.title?.stringValue==='Pendiente sin conexión';},'Pending edit was not recovered after reload');
+  await evaluate("(async()=>{const sdk=await import('/vendor/firebase-sdk.mjs');await sdk.signOut(sdk.getAuth())})()");
+  await until(()=>evaluate("document.getElementById('firebase-account').textContent==='Sin cuenta conectada'"),'Sign out failed');
+  assert.ok(await evaluate("window.NoteJSLocal.getNotes().some(n=>n.cloud?.remoteId==='mobile-note')"));
+  const bob=await fetch('http://127.0.0.1:19099/identitytoolkit.googleapis.com/v1/accounts:signUp?key=demo-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'second@example.test',password:'test-password-123',returnSecureToken:true})}).then(r=>r.json());
+  await evaluate("(async()=>{const sdk=await import('/vendor/firebase-sdk.mjs');await sdk.signInWithEmailAndPassword(sdk.getAuth(),'second@example.test','test-password-123')})()");
+  await until(()=>evaluate("document.getElementById('firebase-status').textContent.startsWith('Conectado.')"),'Second account did not initialize');
+  const bobNotes=await fetch(`${firestore}/users/${bob.localId}/notes`,{headers:{Authorization:'Bearer owner'}}).then(r=>r.json());
+  assert.equal((bobNotes.documents || []).length,0,'Another account must not receive the previous library');
+  await evaluate("openSettingsModal();switchSettingsSection('account')");
+  await delay(250);
+  const image=await browser.call('Page.captureScreenshot',{format:'png'},browser.sessionId);
+  fs.mkdirSync(path.join(root,'.test-artifacts'),{recursive:true});
+  fs.writeFileSync(path.join(root,'.test-artifacts/firebase-account.png'),Buffer.from(image.data,'base64'));
+  console.log('PASS: mobile tables render/edit/sync with colors and headers; menu keyboard controls; mobile import; safe HTML; preserved blocks; conflicts; offline restart; account isolation.');
+})().catch(async error=>{
+  console.error(error);
+  if(browser) {
+    try { console.error(await browser.evaluate("(async()=>{const core=await import('/firebase-sync-core.mjs');return {status:document.getElementById('firebase-status')?.textContent,account:document.getElementById('firebase-account')?.textContent,editor:document.getElementById('rich-editor-canvas')?.innerHTML.slice(0,1000),notes:window.NoteJSLocal?.getNotes().filter(n=>n.cloud).map(n=>({title:n.title,id:n.id,remoteId:n.cloud.remoteId,base:n.cloud.baseRevision,dirty:core.hasLocalChanges(n),tableRows:(()=>{const d=document.createElement('div');d.innerHTML=n.content;return d.querySelector('table')?.rows.length})()}))}})()")); } catch(diagnostic) {console.error(diagnostic.message);}
+  }
+  process.exitCode=1;
+}).finally(async()=>{
+  if(browser)await browser.close();server?.kill();await delay(500);
+  if(path.dirname(temporary)===os.tmpdir()&&path.basename(temporary).startsWith('notejs-firebase-smoke-'))fs.rmSync(temporary,{recursive:true,force:true,maxRetries:10,retryDelay:200});
+});

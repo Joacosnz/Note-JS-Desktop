@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Conectar con Microsoft · Note JS</title>
+<style>body{font:16px system-ui;background:#15171b;color:#eee;display:grid;min-height:95vh;place-items:center;margin:0}main{max-width:420px;padding:32px}button{font:inherit;background:#e4ad52;border:0;border-radius:8px;padding:12px 20px;cursor:pointer}button:disabled{opacity:.5}p{line-height:1.6;color:#bbc2ce}</style></head>
+<body><main><h1>Conectar con Microsoft</h1><p>Usá la misma cuenta Microsoft que en tu móvil. Al terminar, podés cerrar esta ventana y volver a tus notas.</p><button id="signin" disabled>Continuar con Microsoft</button><p id="status" role="status">Preparando conexión…</p></main>
+<script type="module">
+import * as sdk from '/vendor/firebase-sdk.mjs';
+import {signInMicrosoft,microsoftAuthMessage} from '/microsoft-auth.mjs';
+const button=document.getElementById('signin'), status=document.getElementById('status');
+try {
+  const config=await fetch('/api/firebase/config').then(r=>r.json());
+  const auth=sdk.getAuth(sdk.initializeApp(config.firebase));
+  if(config.emulators) sdk.connectAuthEmulator(auth,config.emulators.auth,{disableWarnings:true});
+  await sdk.setPersistence(auth,sdk.browserLocalPersistence);
+  let error=null;
+  let announced=false;
+  try { await sdk.getRedirectResult(auth); } catch(e) { error=e; }
+  sdk.onAuthStateChanged(auth,user=>{
+    const connected=user?.providerData.some(p=>p.providerId==='microsoft.com');
+    button.hidden=!!connected;
+    button.disabled=false;
+    status.textContent=connected
+      ? 'Conexión completada. Podés cerrar esta ventana y volver a Note JS.'
+      : error ? (microsoftAuthMessage(error) || 'No se pudo conectar: '+error.message) : '';
+    if(connected && !announced) {
+      announced=true;
+      // Notification only: Firebase owns the shared session; no tokens in messages.
+      if('BroadcastChannel' in window) {
+        const channel=new BroadcastChannel('notejs-microsoft-auth');
+        channel.postMessage({type:'completed'});
+        channel.close();
+      }
+      localStorage.setItem('notejs-microsoft-auth-completed',String(Date.now()));
+    }
+  });
+  button.onclick=async()=>{
+    button.disabled=true;
+    status.textContent='Conectando con Microsoft…';
+    try { await signInMicrosoft(sdk,auth,true); }
+    catch(e) { status.textContent=microsoftAuthMessage(e) || 'No se pudo conectar: '+e.message;button.disabled=false; }
+  };
+} catch(error) { status.textContent='No se pudo preparar el acceso: '+error.message; }
+</script></body></html>

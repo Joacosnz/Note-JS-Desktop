@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "folder": "Primeros pasos",
+  "notes": [
+    {
+      "key": "welcome",
+      "title": "Bienvenido a Note JS",
+      "icon": "👋",
+      "sections": [
+        {"heading": "Un lugar para tus ideas", "body": "Anotá lo que no querés olvidar: una idea, un apunte, una tarea o algo que estés aprendiendo. Podés empezar con una sola frase."},
+        {"heading": "A tu ritmo", "body": "Tus notas se guardan en este dispositivo. Podés escribir y consultar lo que ya guardaste aunque no tengas conexión."},
+        {"heading": "Este espacio es tuyo", "body": "Estas tres guías son notas normales. Podés editarlas, archivarlas o eliminarlas cuando ya no las necesites."}
+      ]
+    },
+    {
+      "key": "first-note",
+      "title": "Tu primera nota",
+      "icon": "📝",
+      "sections": [
+        {"heading": "Empezá a escribir", "desktopBody": "Creá una nota con Nueva nota o Ctrl + N. Poné un título y empezá a escribir en el editor.", "androidBody": "Tocá el botón + para crear una nota. Poné un título y empezá a escribir en el editor."},
+        {"heading": "Dale forma", "desktopBody": "Escribí / para abrir el menú de bloques. Podés añadir títulos, listas, tareas, tablas e imágenes. No hace falta usar todo: elegí lo que te sirva.", "androidBody": "Usá las opciones del editor para añadir títulos, listas, tareas, tablas e imágenes. No hace falta usar todo: elegí lo que te sirva."},
+        {"heading": "Probá con algo pequeño", "tasks": ["Escribí una idea propia.", "Agregá una tarea a tu nota.", "Cambiá el título para encontrarla fácilmente."]},
+        {"heading": "Una foto, si querés", "body": "Elegí una foto de portada desde la nota. En la cuadrícula verás la portada y el título; sin portada, aparecerá una vista previa del contenido."}
+      ]
+    },
+    {
+      "key": "organize",
+      "title": "Organizá tu espacio",
+      "icon": "🗂️",
+      "sections": [
+        {"heading": "Encontrá lo importante", "body": "Creá carpetas para separar tus temas y usá la búsqueda para encontrar una nota. Fijá las que consultes seguido para tenerlas a mano."},
+        {"heading": "Guardá lo que quieras conservar", "body": "Archivá una nota cuando ya no la uses a diario. Si la enviás a la papelera, podés restaurarla desde allí antes de eliminarla definitivamente."},
+        {"heading": "Tus notas en dos dispositivos", "desktopBody": "Iniciá sesión con la misma cuenta en PC y móvil. Desde los ajustes de sincronización podés vincular las notas locales que quieras llevar a tu cuenta.", "androidBody": "Iniciá sesión con la misma cuenta en móvil y PC. Revisá la opción de sincronización de cada nota para decidir cuáles querés llevar a tu cuenta."},
+        {"heading": "Fotos y copias de seguridad", "body": "Las fotos de portada se guardan en el dispositivo donde las elegís; todavía no se transfieren entre móvil y PC. Usá las opciones de copia de seguridad para conservar tus datos."}
+      ]
+    }
+  ]
+}

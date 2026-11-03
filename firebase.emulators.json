@@ -1,0 +1,13 @@
+{
+  "firestore": [{
+    "database": "desktop-test",
+    "edition": "enterprise",
+    "rules": "firestore.rules"
+  }],
+  "emulators": {
+    "firestore": {"host":"127.0.0.1", "port":18085, "edition":"enterprise"},
+    "auth": {"host":"127.0.0.1", "port":19099},
+    "ui": {"enabled":false},
+    "singleProjectMode": true
+  }
+}

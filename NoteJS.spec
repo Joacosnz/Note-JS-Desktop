@@ -5,7 +5,7 @@ a = Analysis(
     ['desktop_app.py'],
     pathex=[],
     binaries=[],
-    datas=[('frontend', 'frontend')],
+    datas=[('frontend', 'frontend'), ('public', 'public'), ('welcome_notes.json', '.')],
     hiddenimports=['peewee', 'models', 'backend', 'webview.platforms.winforms', 'webview.platforms.edgechromium'],
     hookspath=[],
     hooksconfig={},
@@ -35,4 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon=['public/icon.ico'],
 )

@@ -9,14 +9,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/mhchem.min.js"></script>
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/vendor/katex/katex.min.css" onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css';">
+  <script defer src="/vendor/katex/katex.min.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js';"></script>
+  <script defer src="/vendor/katex/contrib/mhchem.min.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/mhchem.min.js';"></script>
+  <link rel="icon" type="image/png" href="/icon.png" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/styles.css?v=2.2" />
+  <link rel="stylesheet" href="/desktop-polish.css?v=3" />
 </head>
 <body>
-  <!-- Top Bar con Sistema de Pestañas Múltiples Estilo Google Chrome -->
-  <header class="top-bar chrome-tabs-bar">
+  <!-- Top Bar con Sistema de Pestañas Múltiples Estilo Google Chrome / Firefox -->
+  <header class="top-bar chrome-tabs-bar pywebview-drag-region">
     <!-- Icono de casita estilo Google Chrome en el extremo izquierdo arriba del todo -->
     <button id="btn-top-home" class="chrome-home-btn" onclick="navigateToHome()" data-shortcut-tooltip="navigate_home" title="Página de inicio (Alt+H o clic)" aria-label="Página de inicio">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -24,6 +27,7 @@
       </svg>
     </button>
 
+    <button id="desktop-menu-trigger" class="desktop-menu-trigger" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="desktop-app-menu" onclick="toggleDesktopMenu()">Note JS <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>
     <div class="note-tabs-bar-wrapper" id="note-tabs-bar-wrapper" title="Arrastra una nota aquí para abrirla en una nueva pestaña">
       <div id="note-tabs-list" class="note-tabs-list" role="tablist" aria-label="Pestañas de notas abiertas"></div>
       <div class="note-tabs-controls">
@@ -45,24 +49,46 @@
     </div>
 
     <div class="top-actions">
-      <span id="focus-mode-indicator" style="display:none; color:var(--accent-amber); font-size:12px; font-weight:700; white-space:nowrap;">
-        ⚡ Modo Concentración Activo (Presiona ☰ o Ctrl+\ para salir)
-      </span>
       <button id="btn-open-shortcuts" class="top-shortcuts-btn" onclick="openShortcutsModal()" data-shortcut-tooltip="open_shortcuts" title="Abrir Gestor de Atajos de Teclado (Ctrl+/)">
         <span>Atajos</span>
+      </button>
+    </div>
+
+    <!-- Controles de ventana nativa de escritorio (R1 - Alineados a la derecha) -->
+    <div class="window-controls-bar" id="window-controls-bar" role="toolbar" aria-label="Controles de ventana">
+      <button id="btn-win-menu" class="win-control-btn" onclick="toggleWinMenu(event)" title="Menú de ventana (Atajos y opciones)" aria-label="Menú">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      <button id="btn-win-minimize" class="win-control-btn" onclick="minimizeWindow()" title="Minimizar" aria-label="Minimizar">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </button>
+      <button id="btn-win-maximize" class="win-control-btn" onclick="toggleMaximizeWindow()" title="Maximizar o restaurar" aria-label="Maximizar">
+        <svg id="svg-win-maximize-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+        </svg>
+      </button>
+      <button id="btn-win-close" class="win-control-btn win-control-close" onclick="closeWindow()" title="Cerrar aplicación" aria-label="Cerrar">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
       </button>
     </div>
   </header>
 
   <!-- 1. Contenedor de Tres Paneles (DesktopMainScaffold) -->
   <div class="desktop-main-scaffold" id="desktop-scaffold">
-    <!-- Zona sensible en el borde izquierdo para desplegar el menú lateral flotante en Modo Concentración (estilo Notion) -->
+    <!-- Zona sensible en el borde izquierdo para desplegar el menú lateral flotante (estilo Notion) -->
     <div id="focus-sidebar-edge-sensor" class="focus-sidebar-edge-sensor" aria-hidden="true"></div>
 
-    <!-- PANEL IZQUIERDO: Carpetas y Navegación Rápida (Ancho variable redimensionable y flotante en Modo Concentración) -->
+    <!-- PANEL IZQUIERDO: Carpetas y Navegación Rápida (Ancho variable redimensionable y flotante) -->
     <aside id="panel-folders" class="panel-folders">
       <div class="folder-header-row">
-        <span class="folder-header-title">Carpetas</span>
+        <span class="folder-header-title">Biblioteca</span>
         <div class="folder-header-actions">
           <button id="btn-collapse-sidebar" onclick="handleSidebarHeaderCollapseOrPin()" class="folder-add-icon-btn sidebar-dock-toggle-btn" data-shortcut-tooltip="toggle_sidebar" title="Cerrar barra lateral (Ctrl+\)" aria-label="Cerrar o fijar barra lateral">
             <!-- Icono « (Cerrar barra lateral cuando está fija) -->
@@ -70,7 +96,7 @@
               <polyline points="11 17 6 12 11 7"></polyline>
               <polyline points="18 17 13 12 18 7"></polyline>
             </svg>
-            <!-- Icono » (Mantener barra lateral abierta cuando está flotando en Modo Concentración) -->
+            <!-- Icono » (Mantener barra lateral abierta cuando está flotando) -->
             <svg class="icon-sidebar-pin-chevrons" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="13 17 18 12 13 7"></polyline>
               <polyline points="6 17 11 12 6 7"></polyline>
@@ -87,6 +113,10 @@
 
       <!-- Acciones Rápidas Estilo Notion (Buscar e Inicio) -->
       <div class="sidebar-notion-quick-nav">
+        <button type="button" class="folder-item sidebar-quick-action-btn" onclick="document.getElementById('open-pdf-file').click()" title="Abrir un PDF para leer, dibujar o rotar páginas">
+          <span class="folder-item-left"><span aria-hidden="true">📑</span><span>Abrir PDF</span></span>
+        </button>
+        <input id="open-pdf-file" type="file" accept="application/pdf,.pdf" hidden onchange="pickPdfDocument(this)">
         <button type="button" class="folder-item sidebar-quick-action-btn" onclick="openQuickFindModal()" title="Buscar o ir a una página (Ctrl+K)">
           <span class="folder-item-left">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; opacity:0.8;">
@@ -105,19 +135,25 @@
             <span>Inicio</span>
           </span>
         </button>
+        <!-- Acceso Rápido a Recordatorios a Pantalla Completa (R3) -->
+        <button type="button" class="folder-item sidebar-quick-action-btn" id="fitem-sidebar-reminders" onclick="navigateToReminders()" title="Ver recordatorios y agenda a pantalla completa (Alt+R)">
+          <span class="folder-item-left">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; opacity:0.8;">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <span>Recordatorios</span>
+          </span>
+          <span class="folder-item-right">
+            <span id="sidebar-reminders-count-badge" class="folder-count">0</span>
+          </span>
+        </button>
       </div>
 
       <div id="folders-section-header" class="folder-section-title" style="margin-top:10px; display:flex; align-items:center; justify-content:space-between; padding-right:8px;" title="Arrastra una subcarpeta aquí para convertirla en carpeta principal">
         <span>CARPETAS</span>
-        <div style="display:inline-flex; align-items:center; gap:3px;">
-          <button type="button" class="btn-icon-tiny smart-folder-header-btn" onclick="openSmartFolderModal('create')" title="Nueva Carpeta Inteligente (Filtros dinámicos en tiempo real)" style="font-size:11.5px; line-height:1; padding:2px 5px; display:inline-flex; align-items:center; gap:2px;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-          </button>
-          <button type="button" class="btn-icon-tiny" onclick="openFolderModal('create')" title="Nueva carpeta o subcarpeta" style="font-size:13px; line-height:1; padding:1px 5px;">+</button>
-        </div>
       </div>
       <div id="folders-list-container"></div>
 
@@ -140,15 +176,18 @@
       </div>
 
       <div class="panel-folders-spacer"></div>
+      <button id="sidebar-account" class="sidebar-account" type="button" onclick="openCloudSettings()" data-cloud="local" title="Cuenta y sincronización">
+        <span class="sidebar-account-icon" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 18h11a4 4 0 0 0 .3-8A6.5 6.5 0 0 0 6 8.5 4.8 4.8 0 0 0 7 18Z"/></svg></span>
+        <span class="sidebar-account-copy"><strong id="sidebar-account-name">Tu biblioteca</strong><span><i class="cloud-state-dot"></i><span id="sidebar-cloud-label">En esta PC</span></span></span>
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg>
+      </button>
 
-      <!-- Botón de engranaje (Ajustes) anclado en la parte inferior -->
-      <button class="btn-settings-bottom" onclick="openSettingsModal()" data-shortcut-tooltip="open_settings" title="Ajustes (Ctrl+,)">
+      <!-- Botón de engranaje (Ajustes) anclado en la parte inferior (R4 - Solo icono de engranaje) -->
+      <button class="btn-settings-bottom" onclick="openSettingsModal()" data-shortcut-tooltip="open_settings" title="Ajustes (Ctrl+,)" aria-label="Ajustes">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
-        <span style="flex:1; text-align:left;">Ajustes</span>
-        <kbd class="ui-kbd-badge" data-shortcut-badge="open_settings">Ctrl+,</kbd>
       </button>
     </aside>
 
@@ -259,6 +298,9 @@
       <!-- VISTA DE PÁGINA DE INICIO (Google Chrome Home) -->
       <div id="home-page-view" class="home-page-view" style="display:none;"></div>
 
+      <!-- VISTA A PANTALLA COMPLETA DE RECORDATORIOS Y CALENDARIO (R3) -->
+      <div id="reminders-page-view" class="reminders-page-view" style="display:none;"></div>
+
       <!-- 3. BARRA SUPERIOR DE FORMATO macOS (DesktopFormatBar) -->
       <div class="desktop-format-bar">
         <div class="format-btn-group">
@@ -275,8 +317,8 @@
 
           <!-- Menú desplegable para insertar herramientas y bloques -->
           <div style="position:relative; display:inline-block;">
-            <button id="btn-insert-dropdown" class="format-bar-btn insert-dropdown-btn" onmousedown="event.preventDefault()" onclick="toggleInsertDropdown(event)" style="border:1px solid var(--accent-amber-border); color:var(--accent-amber); display:inline-flex; align-items:center; gap:5px; height:28px; padding:0 10px;" title="Insertar bloques, columnas, imágenes, fórmulas y herramientas (Ctrl+Shift+I)">
-              <span class="insert-plus-sign" style="display:inline-flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; line-height:1; transform:translateY(-0.5px);" aria-hidden="true">+</span>
+            <button id="btn-insert-dropdown" class="format-bar-btn insert-dropdown-btn" onmousedown="event.preventDefault()" onclick="toggleInsertDropdown(event)" style="border:1px solid var(--accent-amber-border); color:var(--accent-amber); display:inline-flex; align-items:center; gap:6px; height:28px; padding:0 10px;" title="Insertar bloques, columnas, imágenes, fórmulas y herramientas (Ctrl+Shift+I)">
+              <span class="insert-plus-sign" style="display:inline-flex; align-items:center; justify-content:center; line-height:1;" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
               <span style="line-height:1; font-weight:600;">Insertar</span>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.8; margin-left:1px;">
                 <polyline points="6 9 12 15 18 9"></polyline>
@@ -292,7 +334,7 @@
                 <kbd class="ui-kbd-badge">/</kbd>
               </button>
               <button class="blocks-dropdown-item" onmousedown="event.preventDefault()" onclick="closeInsertDropdown(); openInlineMathPopover();">
-                <span class="dropdown-item-icon" style="font-family:'JetBrains Mono'; color:var(--accent-amber);">√x</span>
+                <span class="dropdown-item-icon" style="font-family:'JetBrains Mono'; color:var(--text-secondary);">√x</span>
                 <div style="flex:1;">
                   <div style="font-weight:600;">Ecuación en línea KaTeX</div>
                   <div style="font-size:11px; color:var(--text-muted);">Insertar fórmula matemática en el texto</div>
@@ -300,7 +342,7 @@
                 <kbd class="ui-kbd-badge" data-shortcut-badge="inline_math">Ctrl+Shift+E</kbd>
               </button>
               <button class="blocks-dropdown-item" onmousedown="event.preventDefault()" onclick="closeInsertDropdown(); insertColumnsBlock(2);">
-                <span class="dropdown-item-icon" style="color:var(--accent-amber);">
+                <span class="dropdown-item-icon" style="color:var(--text-secondary);">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="3" width="8" height="18" rx="1.5"></rect>
                     <rect x="13" y="3" width="8" height="18" rx="1.5"></rect>
@@ -677,28 +719,20 @@
         </div>
       </div>
 
-      <!-- Portada (Cover Banner estilo Notion con Reposicionamiento Vertical) -->
-      <div id="notion-cover" class="notion-cover-container" style="background-image: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #f59e0b 100%);">
+      <!-- Portada de la nota -->
+      <div id="notion-cover" class="notion-cover-container" style="background-image: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);">
         <div class="notion-cover-actions">
-          <button class="notion-cover-change-btn" onclick="changeCoverImage()">Cambiar portada</button>
-          <button id="btn-reposition-cover" class="notion-cover-change-btn" onclick="toggleCoverRepositionMode()">↕ Reposicionar</button>
-        </div>
-        <div id="cover-reposition-bar" class="cover-reposition-bar" style="display:none;">
-          <span>Arrastra la portada hacia arriba o abajo para reposicionar</span>
-          <div style="display:flex; gap:6px;">
-            <button type="button" class="btn-primary" style="padding:3px 10px; font-size:11px;" onclick="saveCoverReposition()">Guardar posición</button>
-            <button type="button" class="btn-secondary" style="padding:3px 9px; font-size:11px;" onclick="cancelCoverReposition()">Cancelar</button>
-          </div>
+          <button class="notion-cover-change-btn" onclick="changeCoverImage()">Cambiar foto</button>
         </div>
       </div>
 
-      <!-- Riel Lateral Derecho Fijo: Tabla de Contenidos de Nivel de Página (Sticky TOC) -->
+      <!-- Riel Lateral Derecho Fijo: Tabla de Contenidos de Nivel de Página (Sticky TOC estilo Notion) -->
       <aside id="sticky-toc-rail" class="sticky-toc-rail" aria-label="Tabla de contenidos de la página">
-        <div id="sticky-toc-bars" class="sticky-toc-rail-bars" title="Índice de encabezados de la página"></div>
-        <div class="sticky-toc-popover">
+        <div id="sticky-toc-bars" class="sticky-toc-rail-bars" onclick="toggleTocExpanded(event)" title="Índice de encabezados de la página (Pasa el cursor o haz clic)"></div>
+        <div class="sticky-toc-popover" id="sticky-toc-popover">
           <div class="sticky-toc-header" style="display:flex; justify-content:space-between; align-items:center;">
             <span>ÍNDICE DE PÁGINA</span>
-            <button type="button" class="btn-icon-tiny" onclick="togglePageStickyToc()" title="Ocultar riel de índice">✕</button>
+            <button type="button" class="btn-icon-tiny" onclick="toggleTocExpanded(event)" title="Cerrar índice">✕</button>
           </div>
           <div id="sticky-toc-list" class="sticky-toc-list"></div>
         </div>
@@ -740,7 +774,7 @@
       <div id="block-action-menu" class="block-action-menu" role="menu"></div>
 
       <!-- Lienzo del Editor -->
-      <div id="editor-body" class="editor-body">
+      <div id="editor-body" class="editor-body editor-container">
         <!-- Migas de Pan (Breadcrumbs) -->
         <div class="notion-breadcrumbs" id="notion-breadcrumbs">
           <span class="notion-breadcrumb-link" onclick="selectFolder(getActiveNote().folder)">Notas</span>
@@ -749,6 +783,8 @@
         </div>
 
         <!-- Botones de Cabecera Notion: Icono, Portada, Historial y Bloques Espaciales -->
+        <details class="page-tools">
+          <summary>Opciones de página <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary>
         <div class="notion-header-buttons-row">
           <button class="notion-header-action" onclick="changeEmojiIcon()">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
@@ -765,10 +801,6 @@
           <button class="notion-header-action" onclick="insertColumnsBlock(2)">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="18" rx="1.5"></rect><rect x="13" y="3" width="8" height="18" rx="1.5"></rect></svg>
             <span>Columnas</span>
-          </button>
-          <button class="notion-header-action" onclick="insertTableOfContentsBlock()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-            <span>Índice (/toc)</span>
           </button>
           <button class="notion-header-action" onclick="insertSyncedBlock()">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
@@ -792,6 +824,7 @@
           </button>
         </div>
 
+        </details>
         <!-- Icono Emoji de la Página -->
         <div id="page-emoji-display" class="notion-page-icon" onclick="changeEmojiIcon()" title="Haz clic para cambiar icono">📝</div>
 
@@ -950,7 +983,7 @@ function evaluateFormula(expr, row) {
                     <th style="width:13%;">Categoría</th>
                     <th style="width:13%;">Fecha</th>
                     <th style="width:11%; text-align:right;">Monto ($)</th>
-                    <th style="width:19%; cursor:pointer; color:var(--accent-amber);" id="formula-col-header" title="Haz clic para cambiar la fórmula" onclick="openFormulaModal()">
+                    <th style="width:19%; cursor:pointer; color:var(--text-secondary);" id="formula-col-header" title="Haz clic para cambiar la fórmula" onclick="openFormulaModal()">
                       <span>✨ Fórmula 2.0 ⚙️</span>
                     </th>
                     <th style="width:8%; text-align:center;">Acciones</th>
@@ -1022,7 +1055,7 @@ function evaluateFormula(expr, row) {
         <button class="floating-btn" onclick="formatDoc('bold')" title="Negrita (Ctrl+B)"><strong>B</strong></button>
         <button class="floating-btn" onclick="formatDoc('italic')" title="Cursiva (Ctrl+I)"><em>I</em></button>
         <button class="floating-btn" onclick="formatDoc('underline')" title="Subrayado (Ctrl+U)"><u>U</u></button>
-        <button class="floating-btn" onclick="openInlineMathPopover()" title="Ecuación en Línea (Ctrl+Shift+E)"><span style="font-family:'JetBrains Mono'; color:var(--accent-amber);">√x</span></button>
+        <button class="floating-btn" onclick="openInlineMathPopover()" title="Ecuación en Línea (Ctrl+Shift+E)"><span style="font-family:'JetBrains Mono'; color:inherit;">√x</span></button>
         <button class="floating-btn" onclick="openImageInsertModal()" title="Insertar bloque de imagen redimensionable (Alt+Shift+I)">🖼️</button>
         <button class="floating-btn floating-btn-danger" onclick="deleteSelectionOrLine()" title="Eliminar selección o línea">🗑</button>
       </div>
@@ -1031,7 +1064,7 @@ function evaluateFormula(expr, row) {
       <div id="inline-math-popover" class="inline-math-popover">
         <div class="inline-math-header">
           <div style="display:flex; align-items:center; gap:6px;">
-            <span style="font-weight:800; color:var(--accent-amber); font-family:'JetBrains Mono';">√x</span>
+            <span style="font-weight:800; color:var(--text-primary); font-family:'JetBrains Mono';">√x</span>
             <span style="font-weight:700; font-size:12px;">Ecuación KaTeX en Línea</span>
             <span style="font-size:10px; color:var(--text-muted); font-family:'JetBrains Mono';">(Ctrl+⇧+E)</span>
           </div>
@@ -1096,7 +1129,7 @@ function evaluateFormula(expr, row) {
       <div id="history-preview-drawer" class="history-preview-drawer" style="display:none;">
         <div class="history-preview-header">
           <div style="display:flex; align-items:center; gap:6px; min-width:0;">
-            <span style="color:var(--accent-amber); font-size:13px;">👁️</span>
+            <span style="color:var(--text-muted); font-size:13px;">👁️</span>
             <span id="history-preview-title" style="font-weight:700; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Vista previa de versión</span>
           </div>
           <button class="history-preview-close" onclick="closeHistoryPreview()" title="Cerrar vista previa">✕</button>
@@ -1188,6 +1221,20 @@ function evaluateFormula(expr, row) {
           <div class="notion-settings-group">
             <div class="notion-group-heading">Preferencias</div>
             
+            <!-- R6: Preferencia de Inicio de la Aplicación -->
+            <div class="notion-setting-row" data-search-keys="inicio arrancar empezar reanudar cero abrir startup">
+              <div class="notion-setting-info">
+                <div class="notion-setting-title">Al iniciar Note JS</div>
+                <div class="notion-setting-desc">Elige el estado inicial de la interfaz al abrir la aplicación</div>
+              </div>
+              <div class="notion-setting-control">
+                <select id="setting-startup-behavior" class="notion-select" onchange="handleStartupBehaviorChange(this.value)">
+                  <option value="clean">Iniciar siempre de cero</option>
+                  <option value="resume">Reanudar en la última nota visitada</option>
+                </select>
+              </div>
+            </div>
+
             <div class="notion-setting-row" data-search-keys="modo tema claro oscuro sistema">
               <div class="notion-setting-info">
                 <div class="notion-setting-title">Modo</div>
@@ -1422,7 +1469,20 @@ function evaluateFormula(expr, row) {
         <div id="notion-sec-account" class="notion-section-pane">
           <div class="notion-pane-header">
             <h2 class="notion-pane-title">Mi Cuenta</h2>
-            <p class="notion-pane-subtitle">Información del usuario local y estadísticas de tu biblioteca de notas</p>
+            <p class="notion-pane-subtitle">Tu cuenta y las notas que compartes con el móvil</p>
+          </div>
+
+          <div class="notion-settings-group" data-search-keys="firebase google microsoft outlook hotmail cuenta nube sincronizar móvil">
+            <div class="notion-group-heading">Sincronización con el móvil</div>
+            <p id="firebase-status" role="status" style="font-size:13px;line-height:1.6;color:var(--text-muted);">Preparando conexión…</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button id="firebase-signin" type="button" class="btn-secondary">Conectar con Google</button>
+              <button id="firebase-signin-microsoft" type="button" class="btn-secondary">Conectar con Microsoft</button>
+              <button id="firebase-link-local" type="button" class="btn-secondary" hidden>Sincronizar notas locales con esta cuenta</button>
+              <button id="firebase-sync-now" type="button" class="btn-secondary" hidden>Sincronizar ahora</button>
+              <button id="firebase-signout" type="button" class="btn-secondary" hidden>Cerrar sesión</button>
+            </div>
+            <p style="font-size:12px;line-height:1.6;color:var(--text-muted);">Tus notas se conservan en esta PC. Las notas locales se vinculan cuando tú lo eliges; las nuevas se sincronizan mientras tengas la sesión iniciada. Si hay cambios en ambos dispositivos, se conservan las dos versiones.</p>
           </div>
 
           <div class="notion-settings-group">
@@ -1434,7 +1494,7 @@ function evaluateFormula(expr, row) {
                 <div class="notion-setting-desc">Identificador del creador y autor de las notas en la base de datos local.</div>
               </div>
               <div class="notion-setting-control">
-                <span style="font-size:13px; font-weight:700; color:var(--text-primary);">Joaquin Sanz</span>
+                <span id="firebase-account" style="font-size:13px; font-weight:700; color:var(--text-primary);">Sin cuenta conectada</span>
               </div>
             </div>
 
@@ -1839,6 +1899,18 @@ function evaluateFormula(expr, row) {
         <button class="btn-secondary" onclick="closeFolderModal()" title="Cerrar (Esc)">✕</button>
       </div>
 
+      <!-- Selector Segmentado de Tipo de Carpeta (R2 - Unificación Estándar / Inteligente) -->
+      <div class="folder-type-segmented-wrap" style="padding: 10px 18px 0 18px;">
+        <div class="folder-type-segmented-control" role="radiogroup" aria-label="Tipo de Carpeta">
+          <button type="button" id="ftype-btn-standard" class="folder-type-seg-btn active" onclick="setFolderModalType('standard')">
+            📁 Carpeta Estándar
+          </button>
+          <button type="button" id="ftype-btn-smart" class="folder-type-seg-btn" onclick="setFolderModalType('smart')">
+            ⚙️ Carpeta Inteligente
+          </button>
+        </div>
+      </div>
+
       <!-- Vista previa en vivo del elemento en el panel lateral -->
       <div class="folder-modal-preview-bar">
         <span style="font-size:10.5px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Vista previa en el panel lateral:</span>
@@ -1861,7 +1933,7 @@ function evaluateFormula(expr, row) {
           </div>
         </div>
         <div class="folder-name-input-group" id="folder-name-input-wrapper">
-          <label for="folder-custom-name-input">Nombre de la carpeta o subcarpeta</label>
+          <label for="folder-custom-name-input">Nombre de la carpeta</label>
           <input id="folder-custom-name-input" type="text" class="search-box" placeholder="Ej. Proyectos, Finanzas, Laboratorio..." oninput="handleFolderCustomNameInput(this.value)" onkeydown="if(event.key==='Enter'){ event.preventDefault(); submitFolderModal(); }" />
         </div>
       </div>
@@ -1874,8 +1946,46 @@ function evaluateFormula(expr, row) {
         </select>
       </div>
 
+      <!-- Contenedor de Reglas Inteligentes Unificado (R2) -->
+      <div id="folder-smart-rules-container" style="display:none; padding: 0 18px 12px 18px;">
+        <!-- Selector de Lógica Combinatoria (AND vs OR) -->
+        <div class="smart-folder-logic-bar" style="margin-top:8px;">
+          <span style="font-size:12px; font-weight:700; color:var(--text-secondary);">Incluir notas que coincidan con:</span>
+          <div class="smart-folder-logic-segmented" role="radiogroup" aria-label="Modo de combinación de reglas">
+            <button type="button" id="unified-smart-logic-btn-all" class="smart-logic-seg-btn active" onclick="setSmartFolderMatchMode('all')">
+              <strong>Todos los filtros (AND)</strong>
+              <span>Cumple cada regla</span>
+            </button>
+            <button type="button" id="unified-smart-logic-btn-any" class="smart-logic-seg-btn" onclick="setSmartFolderMatchMode('any')">
+              <strong>Cualquier filtro (OR)</strong>
+              <span>Al menos una condición</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista Dinámica de Reglas -->
+        <div class="smart-folder-rules-section" style="margin-top:10px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+            <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Reglas y Filtros Activos</span>
+            <button type="button" class="btn-secondary smart-add-rule-btn" onclick="addSmartFolderRuleRow()">
+              <span>+ Añadir filtro</span>
+            </button>
+          </div>
+          <div id="unified-smart-folder-rules-list" class="smart-folder-rules-list"></div>
+        </div>
+
+        <!-- Vista Previa en Tiempo Real de Notas Coincidentes -->
+        <div class="smart-folder-live-preview-box" style="margin-top:10px;">
+          <div class="smart-folder-live-preview-header">
+            <span id="unified-smart-folder-preview-count" style="font-weight:800; font-size:12px; color:var(--accent-amber);">0 notas coinciden en tiempo real</span>
+            <span style="font-size:10.5px; color:var(--text-muted);">Referencias dinámicas · Nivel raíz</span>
+          </div>
+          <div id="unified-smart-folder-preview-samples" class="smart-folder-preview-samples"></div>
+        </div>
+      </div>
+
       <!-- Acceso rápido para convertir o crear como Carpeta Inteligente estilo Apple Notes -->
-      <div id="folder-modal-smart-switch-bar" class="folder-modal-smart-switch-bar">
+      <div id="folder-modal-smart-switch-bar" class="folder-modal-smart-switch-bar" style="display:none;">
         <div style="display:flex; align-items:center; gap:8px; min-width:0;">
           <span style="font-size:15px;">⚙️</span>
           <div style="min-width:0;">
@@ -1883,7 +1993,7 @@ function evaluateFormula(expr, row) {
             <div id="folder-modal-smart-switch-desc" style="font-size:11px; color:var(--text-muted);">Organiza notas automáticamente mediante consultas dinámicas y filtros en tiempo real</div>
           </div>
         </div>
-        <button type="button" id="folder-modal-smart-switch-btn" class="btn-secondary" style="white-space:nowrap; font-size:11.5px; padding:5px 10px;" onclick="switchFolderModalToSmart()">
+        <button type="button" id="folder-modal-smart-switch-btn" class="btn-secondary" style="white-space:nowrap; font-size:11.5px; padding:5px 10px;" onclick="setFolderModalType('smart')">
           ⚙️ Convertir en Inteligente
         </button>
       </div>
@@ -2549,6 +2659,34 @@ function evaluateFormula(expr, row) {
 
   <!-- Toast Notification Floating Chip -->
   <div id="app-toast" class="toast-notification"></div>
-  <script src="/app.js"></script>
+  <dialog id="pdf-reader-dialog" style="width:95vw;max-width:1500px;height:90vh;padding:0;border:1px solid #555;border-radius:12px;background:#202226;color:#eee;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 14px;"><strong>Lector PDF</strong><button id="pdf-reader-close" type="button" aria-label="Cerrar lector PDF" style="background:transparent;color:inherit;border:1px solid #666;border-radius:6px;padding:5px 12px;cursor:pointer;">Cerrar ✕</button></div>
+    <iframe id="pdf-reader-frame" title="Lector y anotador PDF" style="width:100%;height:calc(100% - 48px);border:0;"></iframe>
+  </dialog>
+  <div id="desktop-app-menu" class="desktop-app-menu" role="menu" aria-labelledby="desktop-menu-trigger" hidden>
+    <div class="desktop-menu-heading">Crear y abrir</div>
+    <button role="menuitem" data-menu-action="note"><span>Nueva nota</span><kbd>Ctrl N</kbd></button>
+    <button role="menuitem" data-menu-action="folder"><span>Nueva carpeta</span><kbd>Alt ⇧ N</kbd></button>
+    <button role="menuitem" data-menu-action="pdf"><span>Abrir PDF…</span></button>
+    <div role="separator"></div>
+    <button role="menuitem" data-menu-action="search"><span>Buscar en tus notas</span><kbd>Ctrl K</kbd></button>
+    <button role="menuitem" data-menu-action="home"><span>Inicio</span><kbd>Alt H</kbd></button>
+    <button role="menuitem" data-menu-action="reminders"><span>Recordatorios</span><kbd>Alt R</kbd></button>
+    <div role="separator"></div>
+    <div class="desktop-menu-heading">Tu cuenta</div>
+    <button role="menuitem" data-menu-action="sync"><span>Sincronizar ahora</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M5.5 7a7 7 0 0 1 12-2l2.5 3M4 16l2.5 3a7 7 0 0 0 12-2"/></svg></button>
+    <button role="menuitem" data-menu-action="account"><span>Cuenta y sincronización…</span></button>
+    <p id="desktop-cloud-detail" class="desktop-cloud-detail" role="status">Las notas se guardan en esta PC.</p>
+    <div role="separator"></div>
+    <button role="menuitem" data-menu-action="settings"><span>Ajustes…</span><kbd>Ctrl ,</kbd></button>
+    <button role="menuitem" data-menu-action="shortcuts"><span>Atajos de teclado</span><kbd>Ctrl /</kbd></button>
+  </div>
+  <input id="cover-photo-picker" type="file" accept="image/*" hidden onchange="handleCoverPhotoSelection(this)">
+  <script src="/pdf-integration.js"></script>
+  <script src="/note-cover-photos.js"></script>
+  <script src="/app.js?v=2.2"></script>
+  <script src="/cloud-table-editor.js"></script>
+  <script src="/desktop-menu.js"></script>
+  <script type="module" src="/firebase-client.mjs"></script>
 </body>
 </html>

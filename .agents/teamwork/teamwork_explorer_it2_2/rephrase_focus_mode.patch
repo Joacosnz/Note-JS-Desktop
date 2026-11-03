@@ -1,0 +1,132 @@
+--- a/frontend/index.html
++++ b/frontend/index.html
+@@ -53,10 +53,10 @@
+ 
+   <!-- 1. Contenedor de Tres Paneles (DesktopMainScaffold) -->
+   <div class="desktop-main-scaffold" id="desktop-scaffold">
+-    <!-- Zona sensible en el borde izquierdo para desplegar el menú lateral flotante en Modo Concentración (estilo Notion) -->
++    <!-- Zona sensible en el borde izquierdo para desplegar el menú lateral flotante (estilo Notion) -->
+     <div id="focus-sidebar-edge-sensor" class="focus-sidebar-edge-sensor" aria-hidden="true"></div>
+ 
+-    <!-- PANEL IZQUIERDO: Carpetas y Navegación Rápida (Ancho variable redimensionable y flotante en Modo Concentración) -->
++    <!-- PANEL IZQUIERDO: Carpetas y Navegación Rápida (Ancho variable redimensionable y flotante) -->
+     <aside id="panel-folders" class="panel-folders">
+       <div class="folder-header-row">
+         <span class="folder-header-title">Carpetas</span>
+@@ -67,7 +67,7 @@
+               <polyline points="11 17 6 12 11 7"></polyline>
+               <polyline points="18 17 13 12 18 7"></polyline>
+             </svg>
+-            <!-- Icono » (Mantener barra lateral abierta cuando está flotando en Modo Concentración) -->
++            <!-- Icono » (Mantener barra lateral abierta cuando está flotando) -->
+             <svg class="icon-sidebar-pin-chevrons" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+               <polyline points="13 17 18 12 13 7"></polyline>
+               <polyline points="6 17 11 12 6 7"></polyline>
+--- a/frontend/app.js
++++ b/frontend/app.js
+@@ -205,7 +205,7 @@
+         kanbanCollapsedLanes: [],
+         kanban: [
+           { id: "kc-1", text: "Diseño 3 paneles macOS", status: "done", category: "Diseño UI", assignee: "Ana", priority: "Alta" },
+-          { id: "kc-2", text: "Modo Concentración ☰", status: "done", category: "Diseño UI", assignee: "Carlos", priority: "Media" },
++          { id: "kc-2", text: "Vista de Enfoque ☰", status: "done", category: "Diseño UI", assignee: "Carlos", priority: "Media" },
+           { id: "kc-3", text: "Filas Horizontales (Swimlanes)", status: "in-progress", category: "Desarrollo", assignee: "Ana", priority: "Alta" },
+           { id: "kc-4", text: "Macros Markdown en vivo & Slash", status: "done", category: "Desarrollo", assignee: "Joaquín", priority: "Media" },
+           { id: "kc-5", text: "Auditoría de persistencia SQLite", status: "todo", category: "Infraestructura", assignee: "Carlos", priority: "Alta" },
+@@ -1279,7 +1279,7 @@
+       initPythonBackendSync();
+     }
+ 
+-    /* 1. Modo Concentración (Toggle ☰ / « / »), Menú Lateral Flotante ("Peek" Estilo Notion) y Divisores Redimensionables */
++    /* 1. Vista de Enfoque (Toggle ☰ / « / »), Menú Lateral Flotante ("Peek" Estilo Notion) y Divisores Redimensionables */
+     let panelTransitionTimer = null;
+     let focusPeekCloseTimer = null;
+     let focusPeekReadyTimer = null;
+@@ -1544,7 +1544,7 @@
+     function handleSidebarHeaderCollapseOrPin() {
+       const folders = document.getElementById('panel-folders');
+       if (!folders) return;
+-      // Si está en modo flotante (colapsado), el botón » fija la barra lateral abierta (sale de Modo Concentración)
++      // Si está en modo flotante (colapsado), el botón » fija la barra lateral abierta (restaura la vista normal)
+       if (folders.classList.contains('collapsed')) {
+         if (state.isFocusMode) {
+           toggleFocusMode();
+@@ -1552,7 +1552,7 @@
+           toggleSidebar(true);
+         }
+       } else {
+-        // Cuando está fija y el usuario pulsa « en la cabecera, activa el Modo Concentración como en Notion
++        // Cuando está fija y el usuario pulsa « en la cabecera, colapsa los paneles como en Notion
+         toggleFocusMode();
+       }
+     }
+@@ -1577,13 +1577,13 @@
+         focusPeekCooldownUntil = Date.now() + 400;
+         if (folders) folders.classList.add('collapsed');
+         if (gallery) gallery.classList.add('collapsed');
+-        showToast('Modo Concentración activado · Acerca el cursor al borde izquierdo para ver el menú flotante', '⚡');
++        showToast('Vista de Enfoque activada · Acerca el cursor al borde izquierdo para ver el menú flotante', '⚡');
+       } else {
+         focusPeekCooldownUntil = 0;
+         if (folders) folders.classList.remove('collapsed');
+         if (gallery) gallery.classList.remove('collapsed');
+         applyPanelWidths(state.panelWidths, false);
+-        showToast('Barra lateral fijada · Modo Concentración desactivado', '⚡');
++        showToast('Barra lateral fijada · Vista de Enfoque desactivada', '⚡');
+       }
+ 
+       checkFocusModeStateSync();
+@@ -9604,7 +9604,7 @@
+             <span class="ctx-menu-item-left"><span class="ctx-menu-icon">⚖️</span><span class="ctx-menu-label">Restablecer todos los paneles</span></span>
+           </button>
+           <button class="ctx-menu-item" onclick="closeCustomContextMenu(); toggleFocusMode();">
+-            <span class="ctx-menu-item-left"><span class="ctx-menu-icon">⚡</span><span class="ctx-menu-label">Modo Concentración</span></span>
++            <span class="ctx-menu-item-left"><span class="ctx-menu-icon">⚡</span><span class="ctx-menu-label">Vista de Enfoque</span></span>
+             <span class="ctx-menu-kbd">Ctrl+\\</span>
+           </button>
+         `;
+@@ -9725,13 +9725,13 @@
+       },
+       {
+         id: 'toggle_focus',
+-        title: 'Alternar Modo Concentración',
++        title: 'Alternar Vista de Enfoque',
+         desc: 'Oculta o muestra suavemente los paneles laterales para redactar sin distracciones',
+         icon: '⚡',
+         category: 'Global y Navegación',
+         scope: 'global',
+         defaultCombo: 'Ctrl+\\',
+-        tooltipBase: 'Modo Concentración',
++        tooltipBase: 'Vista de Enfoque',
+         action: () => {
+           toggleFocusMode();
+         }
+--- a/frontend/styles.css
++++ b/frontend/styles.css
+@@ -486,7 +486,7 @@
+       position: relative;
+     }
+ 
+-    /* Zona sensible en el borde izquierdo para abrir el menú flotante en Modo Concentración (estilo Notion) */
++    /* Zona sensible en el borde izquierdo para abrir el menú flotante (estilo Notion) */
+     .focus-sidebar-edge-sensor {
+       position: absolute;
+       left: 0;
+@@ -504,7 +504,7 @@
+       pointer-events: auto;
+     }
+ 
+-    /* 1. Panel Izquierdo: Carpetas (Ancho 250px predeterminado, redimensionable, colapsable y flotante en Modo Concentración) */
++    /* 1. Panel Izquierdo: Carpetas (Ancho 250px predeterminado, redimensionable, colapsable y flotante) */
+     .panel-folders {
+       width: var(--folders-panel-width, 250px);
+       min-width: 0;
+@@ -549,7 +549,7 @@
+       transform: translateX(-14px);
+     }
+ 
+-    /* Modo Flotante ("Peek" de Notion) cuando la barra lateral está oculta / en Modo Concentración */
++    /* Modo Flotante ("Peek" de Notion) cuando la barra lateral está oculta */
+     .panel-folders.collapsed.focus-peek-ready {
+       position: absolute !important;
+       top: 52px !important;

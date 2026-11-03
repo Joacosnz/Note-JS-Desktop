@@ -1,0 +1,18 @@
+:root { color-scheme: dark; font: 13px system-ui, sans-serif; color: #eee; background: #202226; }
+* { box-sizing: border-box; }
+body { margin: 0; height: 100vh; display: flex; flex-direction: column; }
+header, form { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 8px 12px; background: #292c31; border-bottom: 1px solid #444; }
+header strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; margin-right: auto; }
+button, input, select { font: inherit; color: inherit; background: #34383e; border: 1px solid #555; border-radius: 5px; padding: 5px 8px; }
+button { cursor: pointer; } button:hover { background: #464b54; } button:disabled { opacity: .4; cursor: default; }
+button[aria-pressed=true] { background: #315b91; border-color: #80b8ff; }
+input[type=number] { width: 58px; } input[type=color] { width: 32px; padding: 2px; }
+#query { width: min(230px, 50vw); } #results { max-width: 230px; }
+#status { margin: 0; padding: 6px 12px; min-height: 28px; color: #bac5d5; }
+main { flex: 1; min-height: 0; overflow: auto; padding: 12px; }
+#sheet { position: relative; width: fit-content; margin: 0 auto; background: white; box-shadow: 0 3px 14px #0005; }
+canvas { display: block; } #ink { position: absolute; inset: 0; pointer-events: none; touch-action: none; }
+#ink.drawing { pointer-events: auto; cursor: crosshair; }
+#text { white-space: pre-wrap; line-height: 1.7; max-width: 900px; margin: 16px auto; padding: 20px; background: #292c31; user-select: text; }
+mark { background: #ffe08a; color: #151515; }
+[hidden] { display: none !important; }

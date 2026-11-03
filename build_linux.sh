@@ -7,7 +7,7 @@ echo "[1/2] Instalando dependencias (peewee, pywebview, pyinstaller)..."
 pip3 install -r requirements.txt
 
 echo "[2/2] Compilando binario con PyInstaller + PyWebView..."
-pyinstaller --noconsole --onefile --add-data "frontend:frontend" --hidden-import peewee --hidden-import models --name "NoteJS" desktop_app.py
+pyinstaller --noconsole --onefile --add-data "frontend:frontend" --add-data "welcome_notes.json:." --hidden-import peewee --hidden-import models --name "NoteJS" desktop_app.py
 
 echo "==============================================================="
 echo "  COMPILACION COMPLETADA: ./dist/NoteJS"

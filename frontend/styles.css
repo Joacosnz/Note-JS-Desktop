@@ -1,5 +1,6 @@
 /* Note JS — Hojas de Estilo CSS (PC Desktop) */
 :root {
+      color-scheme: dark;
       --bg-canvas: #0f1115;
       --bg-surface: #16181d;
       --bg-elevated: #1e2128;
@@ -21,6 +22,7 @@
       --gallery-panel-width: 300px;
     }
     body.light-mode {
+      color-scheme: light;
       --bg-canvas: #f8fafc;
       --bg-surface: #ffffff;
       --bg-elevated: #f1f5f9;
@@ -36,7 +38,43 @@
       --success: #059669;
       --success-soft: rgba(5, 150, 105, 0.12);
     }
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+    }
+    body.light-mode * {
+      scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
+    }
+
+    /* Barras de desplazamiento (Scrollbars) elegantes, translúcidas y oscuras para WebKit/WebView2 */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.16);
+      border-radius: 9999px;
+      border: 1px solid transparent;
+      background-clip: padding-box;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.32);
+      border: 1px solid transparent;
+      background-clip: padding-box;
+    }
+    ::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+    body.light-mode ::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.18);
+    }
+    body.light-mode ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 0, 0, 0.32);
+    }
     body {
       margin: 0;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -63,10 +101,30 @@
       flex-shrink: 0;
       z-index: 25;
       position: relative;
+      -webkit-app-region: drag;
+      user-select: none;
     }
     body.light-mode .top-bar {
       background: #dee1e6;
       border-bottom-color: #c4c7cc;
+    }
+
+    /* Elementos interactivos sin arrastre dentro del Top Bar */
+    .top-bar button,
+    .top-bar input,
+    .top-bar .note-tab-item,
+    .top-bar .window-controls-bar,
+    .top-bar .note-tabs-controls,
+    .top-bar .chrome-home-btn,
+    .pywebview-no-drag {
+      -webkit-app-region: no-drag;
+    }
+
+    /* Ocultar chevron duplicado y botón Atajos en la barra de pestañas para alinearse a la vista de referencia */
+    #btn-tab-picker,
+    .note-tab-picker-wrap,
+    .top-actions {
+      display: none !important;
     }
 
     /* Botón de Inicio (Casita) estilo Google Chrome en el extremo superior izquierdo */
@@ -74,9 +132,9 @@
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      border: 1px solid var(--accent-amber-border);
-      background: var(--accent-amber-soft);
-      color: var(--accent-amber);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -85,24 +143,34 @@
       align-self: center;
       margin-right: 4px;
       transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      -webkit-app-region: no-drag;
     }
     .chrome-home-btn:hover {
-      background: var(--accent-amber);
-      color: #090a0d;
-      border-color: var(--accent-amber);
+      background: var(--accent-amber) !important;
+      color: #090a0d !important;
+      border-color: var(--accent-amber) !important;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.45);
     }
     body.light-mode .chrome-home-btn:hover {
-      background: var(--accent-amber);
-      color: #090a0d;
+      background: var(--accent-amber) !important;
+      color: #090a0d !important;
     }
     .chrome-home-btn:active {
       transform: scale(0.92);
+      background: var(--accent-amber) !important;
+      color: #090a0d !important;
     }
     .chrome-home-btn.active {
-      background: var(--accent-amber);
-      color: #090a0d;
-      border-color: var(--accent-amber);
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.45);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+      border-color: rgba(255, 255, 255, 0.12);
+      box-shadow: none;
+    }
+    body.light-mode .chrome-home-btn.active {
+      background: rgba(0, 0, 0, 0.06);
+      color: #0f172a;
+      border-color: rgba(0, 0, 0, 0.1);
+      box-shadow: none;
     }
 
     .note-tabs-bar-wrapper {
@@ -135,19 +203,18 @@
       display: none;
     }
 
-    /* Pestañas de notas estilo Google Chrome */
+    /* Pestañas de notas estilo píldora redondeada (R1 - Conforme a Imagen 1) */
     .note-tab-item {
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      height: 33px;
-      min-width: 125px;
+      height: 30px;
+      min-width: 120px;
       max-width: 220px;
-      padding: 0 10px 0 12px;
-      border-radius: 9px 9px 0 0;
-      background: transparent;
-      border: 1px solid transparent;
-      border-bottom: none;
+      padding: 0 8px 0 12px;
+      border-radius: 9999px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
       color: var(--text-secondary);
       font-family: inherit;
       font-size: 12px;
@@ -156,68 +223,71 @@
       position: relative;
       flex-shrink: 0;
       user-select: none;
-      transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
-    }
-
-    /* Separador vertical sutil entre pestañas inactivas al estilo Chrome */
-    .note-tab-item::before {
-      content: '';
-      position: absolute;
-      right: 0;
-      top: 8px;
-      bottom: 8px;
-      width: 1px;
-      background: rgba(255, 255, 255, 0.16);
-      transition: opacity 0.12s ease;
-      pointer-events: none;
-    }
-    body.light-mode .note-tab-item::before {
-      background: rgba(0, 0, 0, 0.18);
-    }
-
-    .note-tab-item:last-child::before,
-    .note-tab-item.active::before,
-    .note-tab-item:hover::before {
-      opacity: 0;
+      margin: 0 3px;
+      transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
     }
 
     .note-tab-item:hover {
       background: rgba(255, 255, 255, 0.08);
+      border-color: var(--border-subtle);
       color: var(--text-primary);
     }
     body.light-mode .note-tab-item:hover {
-      background: rgba(255, 255, 255, 0.6);
+      background: rgba(0, 0, 0, 0.06);
+      border-color: #cbd5e1;
       color: #0f172a;
     }
 
-    /* Pestaña activa Chrome fusionada con el contenido inferior */
+    /* Pestaña activa: resaltado amarillo sutil solo en activo/seleccionado */
     .note-tab-item.active {
       background: var(--bg-surface);
       color: var(--text-primary);
       font-weight: 700;
-      border-color: var(--border-hairline);
-      box-shadow: 0 -2px 0 0 var(--accent-amber);
+      border-color: var(--accent-amber);
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.25);
       z-index: 2;
     }
     body.light-mode .note-tab-item.active {
       background: #ffffff;
-      border-color: #c4c7cc;
+      border-color: var(--accent-amber);
       color: #0f172a;
-      box-shadow: 0 -2px 0 0 var(--accent-amber);
+      box-shadow: 0 0 6px rgba(245, 158, 11, 0.25);
     }
 
-    .note-tab-item.active::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: -1px;
-      height: 2px;
-      background: var(--bg-surface);
-      z-index: 3;
+    /* Controles de ventana nativa de escritorio (R1) */
+    .window-controls-bar {
+      display: inline-flex;
+      align-items: center;
+      height: 100%;
+      margin-left: 8px;
+      flex-shrink: 0;
+      -webkit-app-region: no-drag;
     }
-    body.light-mode .note-tab-item.active::after {
-      background: #ffffff;
+    .win-control-btn {
+      width: 36px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.12s ease, color 0.12s ease;
+      border-radius: 4px;
+    }
+    .win-control-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+    }
+    body.light-mode .win-control-btn:hover {
+      background: rgba(0, 0, 0, 0.06);
+      color: #0f172a;
+    }
+    .win-control-btn.win-control-close:hover {
+      background: #e81123 !important;
+      color: #ffffff !important;
     }
 
     .note-tab-item.tab-drag-over-left {
@@ -486,7 +556,7 @@
       position: relative;
     }
 
-    /* Zona sensible en el borde izquierdo para abrir el menú flotante en Modo Concentración (estilo Notion) */
+    /* Zona sensible en el borde izquierdo para abrir el menú flotante (estilo Notion) */
     .focus-sidebar-edge-sensor {
       position: absolute;
       left: 0;
@@ -504,7 +574,7 @@
       pointer-events: auto;
     }
 
-    /* 1. Panel Izquierdo: Carpetas (Ancho 250px predeterminado, redimensionable, colapsable y flotante en Modo Concentración) */
+    /* 1. Panel Izquierdo: Carpetas (Ancho 250px predeterminado, redimensionable, colapsable y flotante) */
     .panel-folders {
       width: var(--folders-panel-width, 250px);
       min-width: 0;
@@ -549,7 +619,7 @@
       transform: translateX(-14px);
     }
 
-    /* Modo Flotante ("Peek" de Notion) cuando la barra lateral está oculta / en Modo Concentración */
+    /* Modo Flotante ("Peek" de Notion) cuando la barra lateral está oculta */
     .panel-folders.collapsed.focus-peek-ready {
       position: absolute !important;
       top: 52px !important;
@@ -1257,9 +1327,9 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid var(--accent-amber-border);
-      background: var(--accent-amber-soft);
-      color: var(--accent-amber);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
       border-radius: 7px;
       cursor: pointer;
       padding: 0;
@@ -1273,6 +1343,70 @@
     }
     .folder-add-icon-btn:active {
       transform: scale(0.95);
+      background: var(--accent-amber);
+      color: #121316;
+    }
+
+    /* Botón de engranaje (Ajustes) anclado en la parte inferior (R4 - Solo icono de engranaje) */
+    .btn-settings-bottom {
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+    .btn-settings-bottom:hover {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border-color: var(--border-hairline);
+    }
+    .btn-settings-bottom:active {
+      transform: scale(0.95);
+    }
+
+    /* Selector Segmentado de Tipo de Carpeta (R2 - Unificación) */
+    .folder-type-segmented-control {
+      display: flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 4px;
+      width: 100%;
+    }
+    .folder-type-seg-btn {
+      flex: 1;
+      padding: 7px 12px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .folder-type-seg-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .folder-type-seg-btn.active {
+      background: var(--accent-amber);
+      color: #090a0d;
+      font-weight: 700;
     }
     .note-add-icon-btn {
       width: 26px;
@@ -1802,10 +1936,10 @@
     .format-bar-btn:not(.btn-trash-action) {
       height: 31px;
       padding: 0 8px;
-      background: var(--accent-amber-soft);
-      border: 1px solid var(--accent-amber-border);
+      background: transparent;
+      border: 1px solid transparent;
       border-radius: 6px;
-      color: var(--accent-amber);
+      color: var(--text-secondary);
       font-family: inherit;
       font-size: 12px;
       font-weight: 600;
@@ -1817,17 +1951,46 @@
       transition: background 0.12s, color 0.12s, border-color 0.12s;
     }
     .format-bar-btn:not(.btn-trash-action):hover {
-      background: var(--accent-amber);
-      color: #090a0d;
-      border-color: var(--accent-amber);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border-color: var(--border-hairline);
     }
     .format-bar-btn:not(.btn-trash-action).active {
-      background: var(--accent-amber);
-      color: #090a0d;
-      border-color: var(--accent-amber);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border-color: var(--border-hairline);
     }
-      border-color: var(--accent-amber-border);
+
+    /* Solo el botón de insertar en la barra de formato es amarillo/ámbar */
+    #btn-insert-dropdown,
+    .insert-dropdown-btn {
+      background: var(--accent-amber-soft) !important;
+      border: 1px solid var(--accent-amber-border) !important;
+      color: var(--accent-amber) !important;
     }
+    #btn-insert-dropdown:hover,
+    .insert-dropdown-btn:hover,
+    #btn-insert-dropdown.active,
+    .insert-dropdown-btn.active {
+      background: var(--accent-amber) !important;
+      color: #090a0d !important;
+      border-color: var(--accent-amber) !important;
+    }
+
+    .insert-plus-sign {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* Nota: Los estilos neutrales prioritarios para botones secundarios de la barra de formato (.desktop-format-bar)
+       se definen más abajo (posterior a la sección global ámbar ~línea 9895) para garantizar precedencia en la cascada. */
     .focus-toggle-btn-wrapper {
       position: relative;
       display: inline-flex;
@@ -2052,14 +2215,60 @@
       cursor: pointer;
     }
 
-    .editor-body {
+    .editor-body,
+    .editor-container {
       flex: 1;
       overflow-y: auto;
+      overflow-x: hidden;
       padding: 24px 54px 60px 54px;
       position: relative;
       max-width: 920px;
       width: 100%;
       margin: 0 auto;
+    }
+
+    /* Sub-note Block Component */
+    .block-subpage {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      margin: 4px 0;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.5;
+      transition: background 0.15s ease, transform 0.05s ease;
+      user-select: none;
+      border: 1px solid transparent;
+    }
+    .block-subpage:hover {
+      background: rgba(128, 128, 128, 0.12); /* light gray hover effect in dark mode */
+    }
+    body.light-mode .block-subpage:hover {
+      background: #e5e7eb; /* clean light gray hover in light theme */
+    }
+    .block-subpage:active {
+      transform: scale(0.99);
+    }
+    .block-subpage .subpage-icon {
+      font-size: 16px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .block-subpage .subpage-title {
+      flex: 1;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(128, 128, 128, 0.4);
+    }
+    .block-subpage:hover .subpage-title {
+      text-decoration-color: var(--text-primary);
     }
 
     /* Controles Flotantes a la Izquierda de los Bloques (Arrastre + Papelera) */
@@ -2133,7 +2342,8 @@
       gap: 6px;
       flex-wrap: wrap;
     }
-    .tag-chip {
+    .tag-chip,
+    .tag-chips-wrapper .tag-chip {
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -2141,16 +2351,16 @@
       border-radius: 12px;
       font-size: 11.5px;
       font-weight: 700;
-      background: var(--accent-amber-soft);
-      border: 1px solid var(--accent-amber-border);
-      color: var(--accent-amber);
+      background: var(--bg-elevated) !important;
+      border: 1px solid var(--border-hairline) !important;
+      color: var(--text-secondary) !important;
       user-select: none;
       transition: background 0.12s, border-color 0.12s;
     }
     .tag-chip-remove {
       background: transparent;
       border: none;
-      color: var(--accent-amber);
+      color: var(--text-muted);
       font-size: 10.5px;
       font-weight: 800;
       cursor: pointer;
@@ -2316,8 +2526,8 @@
     .notion-rich-editor h2 { font-size: 18px; font-weight: 700; margin: 14px 0 6px; color: var(--text-primary); }
     .notion-rich-editor h3 { font-size: 15.5px; font-weight: 700; margin: 12px 0 4px; color: var(--text-primary); }
     .notion-rich-editor code {
-      background: rgba(245, 158, 11, 0.12);
-      color: var(--accent-amber);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
       font-family: 'JetBrains Mono', monospace;
       padding: 1px 5px;
       border-radius: 4px;
@@ -2358,8 +2568,8 @@
       padding: 1px 6px;
       margin: 0 2px;
       border-radius: 5px;
-      background: rgba(245, 158, 11, 0.1);
-      border: 1px solid rgba(245, 158, 11, 0.3);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-hairline);
       color: inherit;
       cursor: pointer;
       vertical-align: baseline;
@@ -2367,9 +2577,9 @@
       transition: background 0.12s, border-color 0.12s, box-shadow 0.12s;
     }
     .inline-katex-node:hover {
-      background: rgba(245, 158, 11, 0.22);
-      border-color: var(--accent-amber);
-      box-shadow: 0 0 0 1px var(--accent-amber);
+      background: var(--bg-surface);
+      border-color: var(--border-hairline);
+      box-shadow: 0 0 0 1px var(--border-hairline);
     }
     .inline-katex-node .katex {
       font-size: 1.05em;
@@ -2399,7 +2609,7 @@
     }
     .block-drag-handle {
       font-size: 15px;
-      color: var(--accent-amber);
+      color: var(--text-muted);
       cursor: grab;
       user-select: none;
       line-height: 1;
@@ -2408,7 +2618,7 @@
       transition: background 0.12s, color 0.12s;
     }
     .block-drag-handle:hover {
-      background: var(--accent-amber-soft);
+      background: var(--bg-elevated);
       color: var(--text-primary);
     }
     .block-drag-handle:active {
@@ -2476,7 +2686,7 @@
     /* Estados de Drag & Drop para Bloques */
     .block-is-dragging {
       opacity: 0.35 !important;
-      outline: 2px dashed var(--accent-amber) !important;
+      outline: 2px dashed var(--border-strong) !important;
       outline-offset: 2px;
     }
     .callout-box.drag-over-top,
@@ -2497,9 +2707,8 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: var(--accent-amber);
+      background: var(--border-strong);
       border-radius: 2px;
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
       z-index: 50;
       pointer-events: none;
     }
@@ -2521,9 +2730,8 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: var(--accent-amber);
+      background: var(--border-strong);
       border-radius: 2px;
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
       z-index: 50;
       pointer-events: none;
     }
@@ -2581,9 +2789,9 @@
       white-space: nowrap;
     }
     .floating-btn:hover {
-      background: var(--accent-amber-soft);
-      border-color: var(--accent-amber);
-      color: var(--accent-amber);
+      background: var(--bg-elevated);
+      border-color: var(--border-hairline);
+      color: var(--text-primary);
     }
     .floating-btn-danger:hover {
       background: var(--danger-soft);
@@ -2596,7 +2804,7 @@
       position: fixed;
       width: 380px;
       background: var(--bg-surface);
-      border: 1px solid var(--accent-amber-border);
+      border: 1px solid var(--border-hairline);
       border-radius: 12px;
       box-shadow: 0 12px 34px rgba(0,0,0,0.55);
       z-index: 95;
@@ -2646,8 +2854,9 @@
       white-space: nowrap;
     }
     .math-chip-btn:hover {
-      border-color: var(--accent-amber);
-      color: var(--accent-amber);
+      border-color: var(--border-hairline);
+      color: var(--text-primary);
+      background: var(--bg-elevated);
     }
 
     /* Panel Lateral de Revisiones (Revision Deck) */
@@ -3024,7 +3233,7 @@
 
     /* Quote Block */
     .quote-block {
-      border-left: 3px solid var(--accent-amber);
+      border-left: 3px solid var(--border-strong);
       padding: 8px 16px;
       font-style: italic;
       color: var(--text-secondary);
@@ -3058,8 +3267,8 @@
 
     /* Callout Block */
     .callout-box {
-      background: var(--accent-amber-soft);
-      border: 1px solid var(--accent-amber-border);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-hairline);
       border-radius: 10px;
       padding: 14px 16px;
       display: flex;
@@ -5252,7 +5461,7 @@
       font-family: var(--font-mono) !important;
     }
 
-    /* 2. Reposicionamiento Interactivo de Portada */
+    /* Acciones de portada */
     .notion-cover-actions {
       position: absolute;
       right: 16px;
@@ -5269,95 +5478,101 @@
       opacity: 1;
     }
 
-    .notion-cover-container.is-repositioning {
-      cursor: ns-resize !important;
-      outline: 2px solid #3b82f6;
-      user-select: none;
-    }
-
-    .cover-reposition-bar {
-      position: absolute;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.45);
-      backdrop-filter: blur(3px);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 18px;
-      color: #ffffff;
-      font-size: 12.5px;
-      font-weight: 700;
-      z-index: 8;
-    }
-
-    /* 3. Tabla de Contenidos Flotante Lateral (Sticky Right-Rail TOC) y Bloque /toc */
+    /* 3. Tabla de Contenidos en Columna Derecha Fija Fuera de Portada (R5 - Estilo Notion) */
     .sticky-toc-rail {
-      position: fixed;
-      right: 18px;
-      top: 136px;
-      width: 26px;
-      max-height: calc(100vh - 180px);
-      z-index: 95;
+      position: absolute;
+      right: 20px;
+      top: 60px;
+      width: 220px;
+      max-height: calc(100% - 80px);
+      z-index: 85;
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      transition: width 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+      flex-direction: row-reverse;
+      align-items: flex-start;
       pointer-events: auto;
+      transition: top 0.2s cubic-bezier(0.2, 0, 0, 1), opacity 0.15s ease;
+    }
+
+    /* Cuando la portada está visible, ubicar el índice estrictamente debajo de ella (R5) */
+    .notion-cover-container.has-cover ~ .sticky-toc-rail,
+    #panel-canvas.has-cover .sticky-toc-rail {
+      top: 194px;
+      max-height: calc(100% - 215px);
     }
 
     .sticky-toc-rail.hidden-rail {
       display: none !important;
     }
 
+    /* Barras indicadoras en el margen derecho estilo Notion */
     .sticky-toc-rail-bars {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 6px;
-      padding: 8px 4px;
-      background: rgba(18, 19, 24, 0.65);
-      border: 1px solid var(--border-hairline);
-      border-radius: 8px;
+      gap: 5px;
+      padding: 6px 4px;
       cursor: pointer;
+      border-radius: 6px;
+      background: transparent;
+      transition: background 0.15s ease;
+      user-select: none;
+      width: 28px;
+      flex-shrink: 0;
     }
-
+    .sticky-toc-rail-bars:hover,
+    .sticky-toc-rail:hover .sticky-toc-rail-bars {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    body.light-mode .sticky-toc-rail-bars:hover,
+    body.light-mode .sticky-toc-rail:hover .sticky-toc-rail-bars {
+      background: rgba(0, 0, 0, 0.06);
+    }
     .sticky-toc-bar-line {
-      height: 2px;
-      border-radius: 99px;
+      display: block;
+      height: 2.5px;
+      border-radius: 2px;
       background: var(--text-muted);
-      transition: all 0.15s ease;
+      transition: background 0.15s ease, width 0.15s ease, transform 0.15s ease;
+    }
+    .sticky-toc-bar-line.level-1 { width: 18px; }
+    .sticky-toc-bar-line.level-2 { width: 13px; }
+    .sticky-toc-bar-line.level-3 { width: 8px; }
+    .sticky-toc-bar-line.active,
+    .sticky-toc-bar-line:hover {
+      background: var(--accent-amber);
+      transform: scaleY(1.4);
     }
 
-    .sticky-toc-bar-line.level-1 { width: 16px; }
-    .sticky-toc-bar-line.level-2 { width: 12px; opacity: 0.75; }
-    .sticky-toc-bar-line.level-3 { width: 8px; opacity: 0.55; }
-    .sticky-toc-bar-line.active {
-      background: #3b82f6;
-      height: 3px;
-    }
-
+    /* Popover con lista de encabezados (Despliegue suave al posar el cursor o hacer clic) */
     .sticky-toc-popover {
-      position: absolute;
-      right: 0;
-      top: 0;
-      width: 235px;
-      max-height: 68vh;
+      width: 220px;
+      max-height: calc(100vh - 240px);
       overflow-y: auto;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-subtle);
-      border-radius: 11px;
-      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5);
-      padding: 10px;
+      overflow-x: hidden;
+      background: var(--bg-surface, #16181d);
+      border: 1px solid var(--border-hairline, #272a33);
+      border-radius: 10px;
+      padding: 10px 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(16px);
+      margin-right: 8px;
       opacity: 0;
       pointer-events: none;
-      transform: translateX(6px);
+      transform: translateX(8px) scale(0.98);
       transition: opacity 0.16s ease, transform 0.16s ease;
     }
+    body.light-mode .sticky-toc-popover {
+      background: #ffffff;
+      border-color: #e2e8f0;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
 
-    .sticky-toc-rail:hover .sticky-toc-popover {
+    /* Expansión al pasar el cursor sobre el riel o al hacer clic */
+    .sticky-toc-rail:hover .sticky-toc-popover,
+    .sticky-toc-rail.is-expanded .sticky-toc-popover {
       opacity: 1;
       pointer-events: auto;
-      transform: translateX(0);
+      transform: translateX(0) scale(1);
     }
 
     .sticky-toc-header {
@@ -7188,15 +7403,67 @@
        14. NUEVO SISTEMA DE INICIO: VISTAS DE NOTAS (CUADRÍCULA/LISTA), CALENDARIO COMPACTO Y RECORDATORIOS
        ========================================================================== */
 
-    /* Ocultar panel de notas y divisor cuando se está en la Página de Inicio */
+    /* Ocultar panel de notas y divisor cuando se está en Inicio o en Recordatorios (R3) */
     .desktop-main-scaffold.is-home-active #panel-gallery,
-    .desktop-main-scaffold.is-home-active #splitter-gallery-editor {
+    .desktop-main-scaffold.is-home-active #splitter-gallery-editor,
+    .desktop-main-scaffold.is-reminders-active #panel-gallery,
+    .desktop-main-scaffold.is-reminders-active #splitter-gallery-editor {
       display: none !important;
     }
 
-    .desktop-main-scaffold.is-home-active #panel-canvas {
+    .desktop-main-scaffold.is-home-active #panel-canvas,
+    .desktop-main-scaffold.is-reminders-active #panel-canvas {
       flex: 1 1 auto;
       width: 100%;
+    }
+
+    /* Vista de Recordatorios y Calendario a Pantalla Completa (R3) */
+    .reminders-page-view {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      height: 100%;
+      overflow-y: auto;
+      padding: 24px 32px;
+      background: var(--bg-canvas);
+      color: var(--text-primary);
+    }
+    .reminders-full-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-hairline);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .reminders-full-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .reminders-full-icon-badge {
+      font-size: 24px;
+      width: 44px;
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: 12px;
+    }
+    .reminders-full-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .reminders-full-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .home-page-header-top {
@@ -7399,11 +7666,16 @@
     .home-grid-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-hairline);
-      border-radius: 10px;
-      padding: 14px;
+      border-radius: 16px;
+      padding: 0;
+      overflow: hidden;
+      text-align: left;
+      font-family: inherit;
+      width: 100%;
+      min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 0;
       cursor: pointer;
       position: relative;
       transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
@@ -7413,6 +7685,38 @@
       transform: translateY(-3px);
       border-color: var(--accent-amber-border);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    }
+
+    .home-grid-card-cover {
+      display: block;
+      width: 100%;
+      height: 160px;
+      background-color: var(--bg-surface-hover);
+    }
+
+    .home-grid-card > .home-grid-card-title {
+      display: -webkit-box;
+      box-sizing: border-box;
+      min-height: 68px;
+      padding: 14px 16px;
+      flex: none;
+      width: 100%;
+    }
+
+    .home-grid-card-content-preview {
+      box-sizing: border-box;
+      height: 140px;
+      width: calc(100% - 32px);
+      margin: 0 16px 16px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 20px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 7;
+      -webkit-box-orient: vertical;
+      white-space: normal;
     }
 
     .home-grid-card-header {
@@ -8564,9 +8868,9 @@
     }
 
     .note-folder-chip.master-folder-chip {
-      background: rgba(245, 158, 11, 0.1);
-      border-color: rgba(245, 158, 11, 0.28);
-      color: var(--accent-amber);
+      background: var(--bg-elevated) !important;
+      border-color: var(--border-hairline) !important;
+      color: var(--text-primary) !important;
     }
 
     .note-folder-chip-remove {
@@ -9670,7 +9974,7 @@
     }
 
     /* 2. Botones Secundarios, Cancelar y Acciones Generales */
-    .btn-secondary:not(.btn-trash-action):not(.btn-danger):not([class*="trash"]):not([class*="delete"]),
+    .btn-secondary:not(.btn-trash-action):not(.btn-danger):not([class*="trash"]):not([class*="delete"]):not(.format-bar-action-icon-btn):not(.in-note-find-trigger):not(.page-dots-btn),
     .btn-cancel-modal:not(.btn-trash-action):not(.btn-danger):not([class*="trash"]):not([class*="delete"]),
     .in-note-search-nav-btn,
     .search-box-clear-btn:not([class*="trash"]),
@@ -9681,16 +9985,10 @@
     .shortcut-action-btn,
     .history-btn-preview,
     .notion-cover-change-btn,
-    #btn-reposition-cover,
-    #btn-in-note-search,
-    #btn-pin-note,
-    #btn-page-appearance,
-    #btn-reopen-panels,
     #btn-insert-dropdown,
-    .folder-add-icon-btn:not(.sidebar-trash-btn):not([class*="trash"]),
     .sidebar-inline-plus-btn,
     .gallery-search-icon-btn,
-    .btn-icon-tiny:not(.btn-danger-tiny):not([class*="trash"]):not([class*="delete"]) {
+    .btn-icon-tiny:not(.btn-danger-tiny):not(.folder-add-icon-btn):not([class*="trash"]):not([class*="delete"]) {
       background: var(--accent-amber-soft) !important;
       color: var(--accent-amber) !important;
       border: 1px solid var(--accent-amber-border) !important;
@@ -9700,7 +9998,7 @@
       transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease !important;
     }
 
-    .btn-secondary:not(.btn-trash-action):not(.btn-danger):not([class*="trash"]):not([class*="delete"]):hover,
+    .btn-secondary:not(.btn-trash-action):not(.btn-danger):not([class*="trash"]):not([class*="delete"]):not(.format-bar-action-icon-btn):not(.in-note-find-trigger):not(.page-dots-btn):hover,
     .btn-cancel-modal:not(.btn-trash-action):not(.btn-danger):not([class*="trash"]):not([class*="delete"]):hover,
     .in-note-search-nav-btn:hover,
     .search-box-clear-btn:not([class*="trash"]):hover,
@@ -9711,16 +10009,10 @@
     .shortcut-action-btn:hover,
     .history-btn-preview:hover,
     .notion-cover-change-btn:hover,
-    #btn-reposition-cover:hover,
-    #btn-in-note-search:hover,
-    #btn-pin-note:hover,
-    #btn-page-appearance:hover,
-    #btn-reopen-panels:hover,
     #btn-insert-dropdown:hover,
-    .folder-add-icon-btn:not(.sidebar-trash-btn):not([class*="trash"]):hover,
     .sidebar-inline-plus-btn:hover,
     .gallery-search-icon-btn:hover,
-    .btn-icon-tiny:not(.btn-danger-tiny):not([class*="trash"]):not([class*="delete"]):hover {
+    .btn-icon-tiny:not(.btn-danger-tiny):not(.folder-add-icon-btn):not([class*="trash"]):not([class*="delete"]):hover {
       background: var(--accent-amber) !important;
       color: var(--btn-amber-fg, #090a0d) !important;
       border-color: var(--accent-amber) !important;
@@ -9735,8 +10027,6 @@
     .smart-logic-seg-btn.active,
     .view-icon-btn.active,
     .gallery-search-icon-btn.active,
-    .format-bar-btn:not(.btn-trash-action):not([class*="trash"]):not([class*="delete"]).active,
-    .chrome-home-btn.active,
     .folder-modal-smart-btn.active {
       background: var(--accent-amber) !important;
       color: var(--btn-amber-fg, #090a0d) !important;
@@ -9744,14 +10034,14 @@
       box-shadow: 0 1px 5px rgba(245, 158, 11, 0.3) !important;
     }
 
-    /* 4. Botones Circulares del Top Bar */
+    /* 4. Botones Circulares del Top Bar (R1 - Neutrales por defecto, amarillo solo al pulsar o hover) */
     .chrome-home-btn,
     .note-tab-action-btn,
     #btn-new-tab,
     #btn-tab-picker {
-      background: var(--accent-amber-soft) !important;
-      color: var(--accent-amber) !important;
-      border: 1px solid var(--accent-amber-border) !important;
+      background: transparent !important;
+      color: var(--text-secondary) !important;
+      border: 1px solid transparent !important;
     }
     .chrome-home-btn:hover,
     .note-tab-action-btn:hover,
@@ -9761,6 +10051,26 @@
       color: #090a0d !important;
       border-color: var(--accent-amber) !important;
       box-shadow: 0 0 10px rgba(245, 158, 11, 0.45) !important;
+    }
+    .chrome-home-btn:active,
+    .note-tab-action-btn:active,
+    #btn-new-tab:active,
+    #btn-tab-picker:active {
+      background: var(--accent-amber) !important;
+      color: #090a0d !important;
+      border-color: var(--accent-amber) !important;
+    }
+    .chrome-home-btn.active {
+      background: rgba(255, 255, 255, 0.08) !important;
+      color: var(--text-primary) !important;
+      border-color: rgba(255, 255, 255, 0.15) !important;
+      box-shadow: none !important;
+    }
+    body.light-mode .chrome-home-btn.active {
+      background: rgba(0, 0, 0, 0.06) !important;
+      color: #0f172a !important;
+      border-color: rgba(0, 0, 0, 0.1) !important;
+      box-shadow: none !important;
     }
 
     /* ============================================================================
@@ -9824,6 +10134,61 @@
       background: var(--danger) !important;
       color: #ffffff !important;
       border-color: var(--danger) !important;
+    }
+
+    /* ============================================================================
+       6. EXCLUSIÓN Y NEUTRALIZACIÓN: BOTONES SECUNDARIOS DE LA BARRA DE FORMATO
+       Garantiza que todos los botones de la barra de formato (.desktop-format-bar),
+       excepto #btn-insert-dropdown, tengan fondo neutro/transparente y no reciban
+       estilo ámbar de las reglas globales anteriores.
+       ============================================================================ */
+    .desktop-format-bar button.btn-secondary:not(.btn-trash-action):not(.btn-danger):not([class*="trash"]):not([class*="delete"]),
+    .desktop-format-bar button:not(#btn-insert-dropdown):not(.insert-dropdown-btn):not(.btn-trash-action):not(.btn-danger),
+    .desktop-format-bar .format-bar-btn:not(#btn-insert-dropdown):not(.insert-dropdown-btn),
+    .desktop-format-bar .btn-secondary:not(.btn-trash-action) {
+      background: transparent !important;
+      color: var(--text-secondary) !important;
+      border: 1px solid var(--border-hairline) !important;
+      box-shadow: none !important;
+    }
+    .desktop-format-bar button.btn-secondary:not(.btn-trash-action):not(.btn-danger):not([class*="trash"]):not([class*="delete"]):hover,
+    .desktop-format-bar button:not(#btn-insert-dropdown):not(.insert-dropdown-btn):not(.btn-trash-action):not(.btn-danger):hover,
+    .desktop-format-bar .format-bar-btn:not(#btn-insert-dropdown):not(.insert-dropdown-btn):hover,
+    .desktop-format-bar .btn-secondary:not(.btn-trash-action):hover {
+      background: var(--bg-elevated) !important;
+      color: var(--text-primary) !important;
+      border-color: var(--border-hairline) !important;
+    }
+    .desktop-format-bar button.btn-secondary:not(.btn-trash-action):not(.btn-danger):not([class*="trash"]):not([class*="delete"]).active,
+    .desktop-format-bar button:not(#btn-insert-dropdown):not(.insert-dropdown-btn):not(.btn-trash-action):not(.btn-danger).active,
+    .desktop-format-bar .format-bar-btn:not(#btn-insert-dropdown):not(.insert-dropdown-btn).active,
+    .desktop-format-bar .btn-secondary:not(.btn-trash-action).active {
+      background: var(--bg-elevated) !important;
+      color: var(--text-primary) !important;
+      border-color: var(--border-hairline) !important;
+    }
+
+    /* El único botón amarillo/ámbar en la edición de notas es el botón de insertar */
+    .desktop-format-bar #btn-insert-dropdown,
+    .desktop-format-bar .insert-dropdown-btn {
+      background: var(--accent-amber-soft) !important;
+      border: 1px solid var(--accent-amber-border) !important;
+      color: var(--accent-amber) !important;
+    }
+    .desktop-format-bar #btn-insert-dropdown:hover,
+    .desktop-format-bar .insert-dropdown-btn:hover {
+      background: var(--accent-amber) !important;
+      color: #090a0d !important;
+      border-color: var(--accent-amber) !important;
+    }
+
+    .desktop-format-bar button:not(#btn-insert-dropdown):not(.insert-dropdown-btn) span,
+    .desktop-format-bar button:not(#btn-insert-dropdown):not(.insert-dropdown-btn) strong,
+    .desktop-format-bar button:not(#btn-insert-dropdown):not(.insert-dropdown-btn) em,
+    .desktop-format-bar button:not(#btn-insert-dropdown):not(.insert-dropdown-btn) u,
+    .desktop-format-bar button:not(#btn-insert-dropdown):not(.insert-dropdown-btn):not(.btn-trash-action) svg {
+      color: inherit !important;
+      stroke: currentColor !important;
     }
 
     /* ============================================================================
@@ -9997,6 +10362,9 @@
       background: var(--bg-hover);
       color: var(--text-primary);
     }
+    #notion-sec-account [hidden] { display: none !important; }
+    .cloud-preserved-block { padding: 12px 16px; margin: 8px 0; border: 1px solid var(--border-hairline); border-radius: 8px; color: var(--text-muted); }
+
     .notion-section-pane {
       display: none;
       flex-direction: column;
@@ -10268,5 +10636,825 @@
       --text-secondary: #374151 !important;
     }
 
+    /* =========================================================================
+       Milestone 3: Comprehensive Notion Hierarchical Block Suite Styling
+       ========================================================================= */
 
+    /* Generic Notion Block container */
+    .notion-block {
+      position: relative;
+      box-sizing: border-box;
+      margin: 3px 0;
+      min-height: 24px;
+      line-height: 1.55;
+      font-size: 15px;
+      color: var(--text-primary);
+    }
 
+    .notion-block-content {
+      outline: none;
+      min-height: 24px;
+      word-break: break-word;
+    }
+
+    .notion-block-children {
+      margin-left: 0;
+      box-sizing: border-box;
+    }
+
+    /* Paragraph & Text */
+    .block-text,
+    .block-p,
+    .notion-block-text {
+      padding: 2px 0;
+    }
+
+    /* Headings (H1, H2, H3) */
+    .block-header,
+    .notion-block-header {
+      font-size: 1.85rem;
+      font-weight: 700;
+      margin: 20px 0 6px 0;
+      line-height: 1.25;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .block-sub-header,
+    .notion-block-sub-header {
+      font-size: 1.45rem;
+      font-weight: 600;
+      margin: 16px 0 4px 0;
+      line-height: 1.3;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .block-sub-sub-header,
+    .notion-block-sub-sub-header {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 12px 0 4px 0;
+      line-height: 1.35;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    /* Lists (Bulleted & Numbered) */
+    .block-bulleted-list,
+    .notion-block-bulleted-list,
+    .block-numbered-list,
+    .notion-block-numbered-list {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 2px 0;
+    }
+
+    .notion-bullet {
+      user-select: none;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      width: 18px;
+      text-align: center;
+    }
+
+    .notion-number-prefix {
+      user-select: none;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      min-width: 20px;
+      text-align: right;
+    }
+
+    .block-bulleted-list .notion-block-content,
+    .block-numbered-list .notion-block-content {
+      flex: 1;
+    }
+
+    /* Divider */
+    .block-divider,
+    .notion-divider-block {
+      margin: 12px 0;
+      padding: 4px 0;
+      user-select: none;
+    }
+
+    .notion-hr {
+      border: none;
+      border-top: 1px solid var(--border-hairline, rgba(255, 255, 255, 0.12));
+      margin: 0;
+      width: 100%;
+    }
+    body.light-mode .notion-hr {
+      border-top-color: var(--border-hairline, rgba(0, 0, 0, 0.12));
+    }
+
+    /* Side-by-Side Flexbox Columns */
+    .block-column-list,
+    .notion-columns-row {
+      display: flex !important;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 16px;
+      width: 100%;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+
+    .block-column,
+    .notion-column-slot {
+      flex: 1 1 0%;
+      min-width: 60px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .block-column-content,
+    .notion-column-content {
+      flex: 1;
+      min-height: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    /* Collapsible Toggle */
+    .block-toggle,
+    .notion-block-toggle {
+      margin: 4px 0;
+      padding: 2px 0;
+      border-radius: 6px;
+    }
+
+    .block-toggle-summary,
+    .notion-toggle-summary {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      cursor: pointer;
+      list-style: none;
+      outline: none;
+      user-select: none;
+    }
+
+    .block-toggle-summary::-webkit-details-marker,
+    .notion-toggle-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .notion-toggle-arrow {
+      display: inline-block;
+      font-size: 11px;
+      line-height: 1.8;
+      width: 18px;
+      text-align: center;
+      transition: transform 0.15s ease;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    details[open] > summary .notion-toggle-arrow {
+      transform: rotate(90deg);
+    }
+
+    .notion-toggle-title {
+      flex: 1;
+      outline: none;
+      min-height: 22px;
+      user-select: text;
+    }
+
+    .block-toggle-content,
+    .notion-toggle-content {
+      padding-left: 24px;
+      margin-top: 4px;
+      box-sizing: border-box;
+    }
+
+    /* Code Block */
+    .block-code,
+    .notion-block-code {
+      background: var(--bg-surface, #1e1e1e);
+      border: 1px solid var(--border-hairline, rgba(255, 255, 255, 0.1));
+      border-radius: 8px;
+      margin: 8px 0;
+      overflow: hidden;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+    body.light-mode .block-code,
+    body.light-mode .notion-block-code {
+      background: #f8fafc;
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .notion-code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 12px;
+      background: rgba(0, 0, 0, 0.15);
+      border-bottom: 1px solid var(--border-hairline, rgba(255, 255, 255, 0.08));
+    }
+    body.light-mode .notion-code-header {
+      background: rgba(0, 0, 0, 0.04);
+      border-bottom-color: rgba(0, 0, 0, 0.06);
+    }
+
+    .block-code-lang-select,
+    .notion-code-lang-select {
+      background: transparent;
+      color: var(--text-secondary);
+      border: none;
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .notion-code-copy-btn {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .block-code-body,
+    .notion-code-body {
+      display: block;
+      padding: 12px 14px;
+      margin: 0;
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--text-primary);
+      overflow-x: auto;
+      white-space: pre;
+      tab-size: 2;
+      outline: none;
+      border: none;
+    }
+
+    /* Equation Block */
+    .block-equation,
+    .notion-block-equation {
+      margin: 12px 0;
+      padding: 14px 18px;
+      background: var(--bg-surface, #1e1e1e);
+      border: 1px solid var(--border-hairline, rgba(255, 255, 255, 0.1));
+      border-radius: 8px;
+      position: relative;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+    .block-equation:hover,
+    .notion-block-equation:hover {
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+    body.light-mode .block-equation,
+    body.light-mode .notion-block-equation {
+      background: #f8fafc;
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .notion-equation-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--border-hairline, rgba(255, 255, 255, 0.08));
+      font-size: 11px;
+      color: var(--text-muted);
+      user-select: none;
+    }
+
+    .block-equation-display,
+    .notion-equation-display {
+      cursor: pointer;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      overflow-x: auto;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: background 0.15s ease;
+    }
+    .block-equation-display:hover,
+    .notion-equation-display:hover {
+      background: rgba(245, 158, 11, 0.06);
+    }
+
+    .block-equation-popover,
+    .notion-equation-popover {
+      margin-top: 10px;
+      padding: 12px;
+      background: var(--bg-elevated, #25262b);
+      border: 1px solid var(--border-hairline, rgba(255, 255, 255, 0.12));
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      text-align: left;
+    }
+
+    .notion-equation-input,
+    .notion-equation-textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 12px;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.45;
+      border-radius: 6px;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-surface, #1e1e1e);
+      color: var(--text-primary);
+      outline: none;
+      resize: vertical;
+      tab-size: 2;
+    }
+    .notion-equation-input:focus,
+    .notion-equation-textarea:focus {
+      border-color: var(--accent-amber, #f59e0b);
+    }
+
+    .notion-equation-snippets-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0;
+    }
+
+    .notion-equation-live-preview {
+      margin-top: 8px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 6px;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: auto;
+    }
+
+    .notion-equation-actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    /* Simple Table & Table Row */
+    .block-table,
+    .notion-block-table-wrapper {
+      margin: 10px 0;
+      overflow-x: auto;
+      border-radius: 6px;
+      border: 1px solid var(--border-hairline, rgba(255, 255, 255, 0.1));
+    }
+
+    .notion-simple-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .block-table-row,
+    .notion-table-row {
+      border-bottom: 1px solid var(--border-hairline, rgba(255, 255, 255, 0.08));
+    }
+    .block-table-row:last-child,
+    .notion-table-row:last-child {
+      border-bottom: none;
+    }
+
+    .block-table-cell,
+    .notion-table-cell {
+      padding: 8px 12px;
+      border-right: 1px solid var(--border-hairline, rgba(255, 255, 255, 0.08));
+      outline: none;
+      min-width: 100px;
+      vertical-align: top;
+      color: var(--text-primary);
+    }
+    .block-table-cell:last-child,
+    .notion-table-cell:last-child {
+      border-right: none;
+    }
+
+    /* Image Block */
+    .block-image,
+    .notion-block-image {
+      margin: 12px 0;
+      position: relative;
+    }
+
+    .notion-image-wrap {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+    }
+
+    .notion-image-wrap img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+
+    .block-image-caption,
+    .notion-image-caption {
+      margin-top: 6px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      text-align: center;
+      outline: none;
+    }
+
+    /* Collection Views */
+    .block-collection-view,
+    .block-collection-view-page {
+      border: 1px solid var(--border-hairline, rgba(255, 255, 255, 0.1));
+      border-radius: 8px;
+      margin: 12px 0;
+      background: var(--bg-surface, #1e1e1e);
+      overflow: hidden;
+    }
+    body.light-mode .block-collection-view,
+    body.light-mode .block-collection-view-page {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .collection-view-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-hairline, rgba(255, 255, 255, 0.08));
+      font-weight: 600;
+    }
+
+    .collection-view-icon {
+      font-size: 16px;
+    }
+
+    .collection-view-title {
+      outline: none;
+      flex: 1;
+    }
+
+    .collection-view-body {
+      padding: 12px 14px;
+      min-height: 40px;
+    }
+
+    /* Inline Rich Text Styles & Notion Colors */
+    .inline-equation,
+    .notion-inline-equation,
+    .inline-katex-node {
+      display: inline-flex;
+      align-items: center;
+      padding: 1px 5px;
+      margin: 0 1px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+      cursor: pointer;
+      vertical-align: middle;
+      font-family: KaTeX_Math, 'Times New Roman', serif;
+      font-style: italic;
+      color: var(--accent-amber, #f59e0b);
+      user-select: all;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .inline-equation:hover,
+    .notion-inline-equation:hover,
+    .inline-katex-node:hover {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.45);
+    }
+
+    .notion-color-gray { color: var(--text-muted, #9ca3af) !important; }
+    .notion-color-brown { color: #92400e !important; }
+    .notion-color-orange { color: #ea580c !important; }
+    .notion-color-yellow { color: var(--accent-amber, #f59e0b) !important; }
+    .notion-color-green { color: #16a34a !important; }
+    .notion-color-teal { color: #0d9488 !important; }
+    .notion-color-blue { color: #3b82f6 !important; }
+    .notion-color-purple { color: #a855f7 !important; }
+    .notion-color-pink { color: #ec4899 !important; }
+    .notion-color-red { color: var(--danger, #ef4444) !important; }
+
+    .notion-color-gray_background { background-color: rgba(148, 163, 184, 0.25) !important; padding: 2px 4px; border-radius: 3px; }
+    .notion-color-brown_background { background-color: rgba(146, 64, 14, 0.25) !important; padding: 2px 4px; border-radius: 3px; }
+    .notion-color-orange_background { background-color: rgba(234, 88, 12, 0.25) !important; padding: 2px 4px; border-radius: 3px; }
+    .notion-color-yellow_background { background-color: rgba(245, 158, 11, 0.25) !important; padding: 2px 4px; border-radius: 3px; }
+    .notion-color-green_background { background-color: rgba(22, 163, 74, 0.25) !important; padding: 2px 4px; border-radius: 3px; }
+    .notion-color-teal_background { background-color: rgba(13, 148, 136, 0.25) !important; padding: 2px 4px; border-radius: 3px; }
+    .notion-color-blue_background { background-color: rgba(59, 130, 246, 0.25) !important; padding: 2px 4px; border-radius: 3px; }
+    .notion-color-purple_background { background-color: rgba(168, 85, 247, 0.25) !important; padding: 2px 4px; border-radius: 3px; }
+    .notion-color-pink_background { background-color: rgba(236, 72, 153, 0.25) !important; padding: 2px 4px; border-radius: 3px; }
+    .notion-color-red_background { background-color: rgba(239, 68, 68, 0.25) !important; padding: 2px 4px; border-radius: 3px; }
+
+    /* ==========================================================================
+       Milestone 2 Extended Notion Block Types & Toggleable Headers
+       ========================================================================== */
+
+    /* Header 4 & Toggleable Headers */
+    .block-header-4,
+    .notion-block-header-4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 10px 0 2px 0;
+      line-height: 1.35;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .block-header-toggle {
+      margin: 6px 0;
+    }
+    .block-header-toggle summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      outline: none;
+    }
+    .block-header-toggle summary::-webkit-details-marker {
+      display: none;
+    }
+    .block-header-toggle-title,
+    .block-header-4-title {
+      margin: 0 !important;
+      display: inline-block;
+      outline: none;
+    }
+
+    /* Quote */
+    .block-quote,
+    .notion-block-quote {
+      border-left: 3px solid var(--text-primary, #ffffff);
+      padding: 4px 14px;
+      margin: 8px 0;
+      font-size: 1.05em;
+      font-style: italic;
+      color: var(--text-primary);
+    }
+    body.light-mode .block-quote,
+    body.light-mode .notion-block-quote {
+      border-left-color: #37352f;
+    }
+    .notion-quote-content {
+      outline: none;
+    }
+    .block-quote-children {
+      padding-left: 8px;
+      margin-top: 4px;
+    }
+
+    /* Callout */
+    .block-callout,
+    .notion-block-callout {
+      border-radius: 8px;
+      border: 1px solid var(--border-hairline, rgba(255, 255, 255, 0.1));
+      background: var(--bg-surface, rgba(255, 255, 255, 0.04));
+      padding: 12px 16px;
+      margin: 8px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    body.light-mode .block-callout,
+    body.light-mode .notion-block-callout {
+      background: rgba(0, 0, 0, 0.03);
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+    .notion-callout-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .notion-callout-icon {
+      font-size: 20px;
+      line-height: 1.2;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .notion-callout-body {
+      flex: 1;
+      outline: none;
+      min-height: 24px;
+    }
+    .block-callout-children {
+      padding-left: 32px;
+    }
+
+    /* To-Do */
+    .block-to-do,
+    .notion-block-to-do {
+      margin: 3px 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .notion-to-do-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 28px;
+    }
+    .notion-to-do-checkbox {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: var(--accent-amber, #f59e0b);
+      margin: 0;
+      flex-shrink: 0;
+    }
+    .notion-to-do-title {
+      flex: 1;
+      outline: none;
+      min-height: 20px;
+    }
+    .notion-to-do-title.completed {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+    .block-to-do-children {
+      padding-left: 24px;
+    }
+
+    /* Synced Blocks (transclusion_container & transclusion_reference) */
+    .notion-synced-block,
+    .block-transclusion-container,
+    .block-transclusion-reference {
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin: 10px 0;
+      position: relative;
+      background: rgba(239, 68, 68, 0.03);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .notion-synced-block:focus-within,
+    .notion-synced-block:hover {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.3);
+    }
+    .notion-synced-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 11px;
+      color: #ef4444;
+      user-select: none;
+    }
+    .notion-synced-badge {
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .notion-synced-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .notion-synced-btn {
+      background: transparent;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: 4px;
+      color: #ef4444;
+      font-size: 11px;
+      padding: 2px 8px;
+      cursor: pointer;
+      transition: background 0.12s ease;
+    }
+    .notion-synced-btn:hover {
+      background: rgba(239, 68, 68, 0.12);
+    }
+    .notion-synced-body {
+      min-height: 24px;
+    }
+
+    /* Media: Video, Audio, File, PDF, Bookmark */
+    .block-video,
+    .notion-block-video {
+      margin: 12px 0;
+    }
+    .notion-media-player-wrap video {
+      max-width: 100%;
+      border-radius: 6px;
+      display: block;
+    }
+    .block-video-caption {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      outline: none;
+    }
+
+    .block-audio,
+    .notion-block-audio {
+      margin: 10px 0;
+    }
+    .notion-audio-wrap audio {
+      width: 100%;
+      border-radius: 6px;
+    }
+    .block-audio-title {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--text-muted);
+      outline: none;
+    }
+
+    .block-file,
+    .notion-block-file {
+      margin: 8px 0;
+    }
+    .notion-file-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border: 1px solid var(--border-hairline, rgba(255, 255, 255, 0.12));
+      border-radius: 6px;
+      background: var(--bg-surface, rgba(255, 255, 255, 0.04));
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: background 0.15s ease;
+    }
+    .notion-file-link:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .notion-file-icon {
+      font-size: 16px;
+    }
+    .notion-file-title {
+      outline: none;
+    }
+    .notion-file-size {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .block-pdf,
+    .notion-block-pdf {
+      margin: 12px 0;
+    }
+    .notion-pdf-wrap iframe {
+      width: 100%;
+      height: 500px;
+      border: 1px solid var(--border-hairline, rgba(255, 255, 255, 0.12));
+      border-radius: 6px;
+    }
+
+    .block-bookmark,
+    .notion-block-bookmark {
+      margin: 10px 0;
+    }
+    .notion-bookmark-inner {
+      display: block;
+      border: 1px solid var(--border-hairline, rgba(255, 255, 255, 0.12));
+      border-radius: 6px;
+      padding: 12px 16px;
+      background: var(--bg-surface, rgba(255, 255, 255, 0.03));
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .notion-bookmark-inner:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    body.light-mode .notion-bookmark-inner {
+      background: #f8fafc;
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+    .notion-bookmark-title {
+      font-weight: 600;
+      font-size: 14px;
+      outline: none;
+      margin-bottom: 4px;
+    }
+    .notion-bookmark-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      outline: none;
+      margin-bottom: 6px;
+    }
+    .notion-bookmark-url {
+      font-size: 11px;
+      color: var(--accent-amber, #f59e0b);
+    }

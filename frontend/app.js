@@ -1,6 +1,6 @@
 // Note JS — Frontend JavaScript (Conectado a Backend Python + SQLite)
 const COVER_PRESETS = [
-      'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #f59e0b 100%)',
+      'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)',
       'linear-gradient(135deg, #0f172a 0%, #334155 50%, #475569 100%)',
       'linear-gradient(135deg, #064e3b 0%, #059669 50%, #10b981 100%)',
       'linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #c084fc 100%)',
@@ -54,14 +54,21 @@ const COVER_PRESETS = [
       { id: 'heading1', cat: '1. Bloques Básicos (Estructura y Texto)', title: 'Encabezado 1 (H1)', desc: 'Título principal grande (# )', icon: 'H1' },
       { id: 'heading2', cat: '1. Bloques Básicos (Estructura y Texto)', title: 'Encabezado 2 (H2)', desc: 'Subencabezado de sección medio (## )', icon: 'H2' },
       { id: 'heading3', cat: '1. Bloques Básicos (Estructura y Texto)', title: 'Encabezado 3 (H3)', desc: 'Subencabezado pequeño (### )', icon: 'H3' },
+      { id: 'heading4', cat: '1. Bloques Básicos (Estructura y Texto)', title: 'Encabezado 4 (H4)', desc: 'Subencabezado menor (#### )', icon: 'H4' },
       { id: 'inline_toggle', cat: '1. Bloques Básicos (Estructura y Texto)', title: 'Lista desplegable (Toggle)', desc: 'Oculta y anida bloques dentro de un título colapsable (> )', icon: '▶' },
       { id: 'simple_table', cat: '1. Bloques Básicos (Estructura y Texto)', title: 'Tabla simple', desc: 'Filas y columnas estáticas para organizar texto visualmente', icon: '⊞' },
       { id: 'quote', cat: '1. Bloques Básicos (Estructura y Texto)', title: 'Cita (Quote)', desc: 'Texto con formato ampliado y borde vertical ("" )', icon: '❝' },
       { id: 'divider', cat: '1. Bloques Básicos (Estructura y Texto)', title: 'Divisor (Divider)', desc: 'Línea horizontal gris muy delgada para separar secciones (---)', icon: '—' },
+      { id: 'callout', cat: '1. Bloques Básicos (Estructura y Texto)', title: 'Caja de llamada (Callout)', desc: 'Rectángulo resaltado con borde claro, fondo tenue y emoji (/callout)', icon: '💡' },
       { id: 'inline_callout', cat: '1. Bloques Básicos (Estructura y Texto)', title: 'Caja de llamada (Callout)', desc: 'Rectángulo resaltado con borde claro, fondo tenue y emoji', icon: '💡' },
 
-      // 2. Bloques de Medios y Archivos (Sin Audio ni Video)
+      // 2. Bloques de Medios y Archivos
       { id: 'image', cat: '2. Bloques de Medios y Archivos', title: 'Imagen', desc: 'Sube una imagen o pega un enlace externo redimensionable', icon: '🖼️' },
+      { id: 'video', cat: '2. Bloques de Medios y Archivos', title: 'Video', desc: 'Incrusta o reproduce un video (/video)', icon: '🎥' },
+      { id: 'audio', cat: '2. Bloques de Medios y Archivos', title: 'Audio', desc: 'Incrusta un archivo o pista de audio (/audio)', icon: '🎵' },
+      { id: 'file', cat: '2. Bloques de Medios y Archivos', title: 'Archivo', desc: 'Adjunta un archivo descargable (/file)', icon: '📎' },
+      { id: 'pdf', cat: '2. Bloques de Medios y Archivos', title: 'Documento PDF', desc: 'Incrusta un visor o documento PDF (/pdf)', icon: '📑' },
+      { id: 'bookmark', cat: '2. Bloques de Medios y Archivos', title: 'Marcador Web (Bookmark)', desc: 'Crea una tarjeta de vista previa de enlace web (/bookmark)', icon: '🔖' },
       { id: 'pdf_file', cat: '2. Bloques de Medios y Archivos', title: 'Archivo y PDF', desc: 'Incrusta un PDF para leerlo en la página o adjúntalo (/pdf)', icon: '📑' },
       { id: 'code', cat: '2. Bloques de Medios y Archivos', title: 'Código', desc: 'Caja para programadores con formato de sintaxis (```)', icon: '</>' },
       { id: 'catalog', cat: '2. Bloques de Medios y Archivos', title: 'Catálogo de Bloques Notion', desc: 'Abre el catálogo interactivo de 48 bloques y 7 familias (/catalog)', icon: '📖' },
@@ -105,201 +112,7 @@ const COVER_PRESETS = [
       { id: 'bg_red', cat: 'Colores y Resaltados', title: 'Fondo Rojo', desc: 'Resaltado con fondo rojo (/red background)', icon: '🟥', isBg: true, color: 'red_background' }
     ];
 
-    const INITIAL_NOTES = [
-      {
-        id: 1,
-        title: "Guía de Arquitectura: Notion en Note JS",
-        emoji: "🚀",
-        hasCover: true,
-        coverStyle: COVER_PRESETS[0],
-        content: `Bienvenido a la integración profunda de la arquitectura de Notion en Note JS.
-
-# Formato y Atajos de Teclado
-• Usa <strong>Ctrl + B</strong> para negrita, <strong>Ctrl + I</strong> para cursiva y <strong>Ctrl + U</strong> para subrayado.
-• Escribe un asterisco y un espacio (<code>*&nbsp;</code>) al inicio de línea para crear una viñeta automáticamente.
-
-# Ecuaciones Matemáticas en Línea (KaTeX)
-Inserta fórmulas fluidas en la misma línea del texto con <strong>Ctrl + Shift + E</strong> (o ⌘⇧E) o tecleando delimitadores como <span class="inline-katex-node" contenteditable="false" data-latex="E = mc^2" onclick="editInlineEquation(this)"></span> o química con <span class="inline-katex-node" contenteditable="false" data-latex="\\ce{H2O}" onclick="editInlineEquation(this)"></span>. Haz clic en cualquier ecuación para editarla o convertirla en bloque.
-
-# Notas Vinculadas Directamente en el Texto
-Arrastra cualquier nota desde la lista central y suéltala en cualquier posición de tu redacción (ideal para ejercicios resueltos, libros de consulta o documentación anidada):
-
-<div class="note-embedded-card" contenteditable="false" data-note-id="101" draggable="true" style="background:linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #f59e0b 100%);" title="Haz clic para abrir nota: Roadmap Técnico de Bases de Datos">
-  <div class="embedded-card-top">
-    <span class="embedded-card-badge">
-      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h6v6m0-6L10 14"/></svg>
-      Acceso
-    </span>
-    <button class="btn-delete-embedded-card" title="Quitar este acceso del documento" aria-label="Eliminar acceso">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-    </button>
-  </div>
-  <div class="embedded-card-bottom">
-    <div class="embedded-card-title-row">
-      <span class="embedded-card-emoji">📊</span>
-      <span class="embedded-card-title">Roadmap Técnico de Bases de Datos</span>
-    </div>
-    <div class="embedded-card-meta">
-      <span class="embedded-card-folder">Trabajo</span>
-      <span>· ↗ Abrir</span>
-    </div>
-  </div>
-</div><div class="note-embedded-card" contenteditable="false" data-note-id="102" draggable="true" style="background:linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #c084fc 100%);" title="Haz clic para abrir nota: Manual de Estilo y Tipografía Aa">
-  <div class="embedded-card-top">
-    <span class="embedded-card-badge">
-      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h6v6m0-6L10 14"/></svg>
-      Acceso
-    </span>
-    <button class="btn-delete-embedded-card" title="Quitar este acceso del documento" aria-label="Eliminar acceso">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-    </button>
-  </div>
-  <div class="embedded-card-bottom">
-    <div class="embedded-card-title-row">
-      <span class="embedded-card-emoji">🎨</span>
-      <span class="embedded-card-title">Manual de Estilo y Tipografía Aa</span>
-    </div>
-    <div class="embedded-card-meta">
-      <span class="embedded-card-folder">Ideas</span>
-      <span>· ↗ Abrir</span>
-    </div>
-  </div>
-</div>
-
-<p>Puedes seguir redactando aquí abajo sin interrupciones ni secciones fijas.</p>
-
-# Reordenar y Eliminar Bloques
-Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordenar con un solo movimiento, y un icono de papelera para eliminarlo.`,
-        folder: "Trabajo",
-        tags: "notion, macros, formulas",
-        isPinned: true,
-        updatedAt: Date.now(),
-        parentId: null,
-        subpages: [
-          { id: 101, title: "Roadmap Técnico de Bases de Datos", emoji: "📊" },
-          { id: 102, title: "Manual de Estilo y Tipografía Aa", emoji: "🎨" }
-        ],
-        revisions: [
-          {
-            id: 1001,
-            author: "Ana Silva",
-            time: Date.now() - 360000,
-            type: "replacement",
-            originalText: "motor básico",
-            suggestedText: "arquitectura profunda de Notion",
-            status: "pending"
-          }
-        ],
-        showCallout: true,
-        calloutEmoji: "💡",
-        callout: "Escribe '/' para abrir el menú flotante con navegación rápida, o usa la barra superior fija macOS.",
-        showQuote: true,
-        quote: "La modularidad de bloques transforma documentos lineales en sistemas vivos de información.",
-        showToggle: true,
-        toggleHeader: "¿Cómo funcionan las Fórmulas 2.0 y cálculos de columna?",
-        toggleBody: "La columna Fórmula 2.0 evalúa expresiones en tiempo real con funciones de texto (upper, format, concat, padStart), condicionales if() y estilo enriquecido con style().",
-        showCode: true,
-        code: "// Motor de Fórmulas 2.0 y Procesamiento de Texto\nfunction evaluateFormula(expr, row) {\n  return style(upper(prop(\"Nombre\")), \"b\", \"blue\");\n}",
-        showKanban: true,
-        kanbanGroupBy: "category",
-        kanbanCollapsedLanes: [],
-        kanban: [
-          { id: "kc-1", text: "Diseño 3 paneles macOS", status: "done", category: "Diseño UI", assignee: "Ana", priority: "Alta" },
-          { id: "kc-2", text: "Modo Concentración ☰", status: "done", category: "Diseño UI", assignee: "Carlos", priority: "Media" },
-          { id: "kc-3", text: "Filas Horizontales (Swimlanes)", status: "in-progress", category: "Desarrollo", assignee: "Ana", priority: "Alta" },
-          { id: "kc-4", text: "Macros Markdown en vivo & Slash", status: "done", category: "Desarrollo", assignee: "Joaquín", priority: "Media" },
-          { id: "kc-5", text: "Auditoría de persistencia SQLite", status: "todo", category: "Infraestructura", assignee: "Carlos", priority: "Alta" },
-          { id: "kc-6", text: "Fórmulas 2.0 con style()", status: "done", category: "Desarrollo", assignee: "Joaquín", priority: "Baja" }
-        ],
-        showTable: true,
-        tableFormula: 'style(upper(prop("Nombre")), "b", "blue")',
-        tableRows: [
-          { name: "Licencia de Servidor", status: "Pagado", category: "Infra", date: "27 Oct", amount: 150 },
-          { name: "Desarrollo Frontend", status: "En Proceso", category: "Dev", date: "28 Oct", amount: 450 },
-          { name: "Documentación Notion", status: "Listo", category: "Docs", date: "29 Oct", amount: 200 }
-        ],
-        showChecklist: true,
-        checklists: [
-          { text: "Macros Markdown en tiempo real", done: true },
-          { text: "Modo Sugerencia con diffs visuales", done: true },
-          { text: "Ecuaciones en línea KaTeX (Ctrl+Shift+E) y controles de mover/eliminar", done: true },
-          { text: "Columna de Fórmulas 2.0 con style()", done: true }
-        ],
-        katex: "\\sigma = \\sqrt{\\frac{1}{N}\\sum_{i=1}^{N}(x_i - \\mu)^2}"
-      },
-      {
-        id: 101,
-        title: "Roadmap Técnico de Bases de Datos",
-        emoji: "📊",
-        hasCover: true,
-        coverStyle: COVER_PRESETS[1],
-        content: "Subpágina vinculada a la nota principal con especificaciones técnicas de datos y esquemas.",
-        folder: "Trabajo",
-        tags: "subpagina, roadmap",
-        isPinned: false,
-        updatedAt: Date.now() - 1800000,
-        parentId: 1,
-        subpages: [],
-        revisions: [],
-        showCallout: false,
-        showKanban: false,
-        kanban: [],
-        showTable: false,
-        tableFormula: 'concat(prop("Nombre"), " [OK]")',
-        tableRows: [],
-        showChecklist: false,
-        checklists: [],
-        katex: ""
-      },
-      {
-        id: 102,
-        title: "Manual de Estilo y Tipografía Aa",
-        emoji: "🎨",
-        hasCover: true,
-        coverStyle: COVER_PRESETS[3],
-        content: "Guía de estilos, tipografías y composición para el motor de bloques de Note JS.",
-        folder: "Ideas",
-        tags: "diseño, estilo, ui",
-        isPinned: false,
-        updatedAt: Date.now() - 2500000,
-        parentId: 1,
-        subpages: [],
-        revisions: [],
-        showCallout: false,
-        showKanban: false,
-        kanban: [],
-        showTable: false,
-        tableFormula: '',
-        tableRows: [],
-        showChecklist: false,
-        checklists: [],
-        katex: ""
-      },
-      {
-        id: 2,
-        title: "Fórmulas de Física y Mecánica Cuántica",
-        emoji: "🔬",
-        hasCover: true,
-        coverStyle: COVER_PRESETS[2],
-        content: "Apuntes de ecuaciones diferenciales y constantes universales calculadas en KaTeX.",
-        folder: "Universidad",
-        tags: "fisica, formulas, katex",
-        isPinned: false,
-        updatedAt: Date.now() - 3600000,
-        parentId: null,
-        subpages: [],
-        revisions: [],
-        showCallout: false,
-        showKanban: false,
-        kanban: [],
-        showTable: false,
-        tableFormula: '',
-        tableRows: [],
-        showChecklist: false,
-        checklists: [],
-        katex: "i\\hbar\\frac{\\partial}{\\partial t}\\Psi = \\hat{H}\\Psi"
-      }
-    ];
+    const INITIAL_NOTES = [];
 
     const PANEL_WIDTH_DEFAULTS = {
       folders: 250,
@@ -312,14 +125,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       editorMin: 340
     };
 
-    const INITIAL_REMINDERS = [
-      { id: 1, title: 'Reunión de arquitectura y bloques en Note JS', date: '2026-10-28', time: '10:00 - 11:30', category: 'Trabajo', completed: false },
-      { id: 2, title: 'Revisión y pruebas de sincronización SQLite', date: '2026-10-28', time: '14:00 - 15:00', category: 'Desarrollo', completed: true },
-      { id: 3, title: 'Entrega de propuesta de vistas de bases de datos', date: '2026-10-28', time: '18:30', category: 'Urgente', completed: false },
-      { id: 4, title: 'Revisión de apuntes de Física Cuántica', date: '2026-10-29', time: '09:00', category: 'Universidad', completed: false },
-      { id: 5, title: 'Planificación de sprint semanal y backlog', date: '2026-10-30', time: '11:00', category: 'Trabajo', completed: false },
-      { id: 6, title: 'Cierre mensual de proyectos y notas personales', date: '2026-10-31', time: '17:00', category: 'Personal', completed: false }
-    ];
+    const INITIAL_REMINDERS = [];
 
     let state = {
       isFocusMode: false,
@@ -328,21 +134,48 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       isRevisionsPanelOpen: false,
       isHistoryPanelOpen: false,
       activeNoteHistory: [],
-      previewingVersionId: null,
-      activeNoteId: 1,
-      openTabIds: (() => {
+      isRemindersActive: false,
+      startupBehavior: (() => {
         try {
-          const s = localStorage.getItem('notejs_open_tabs_v1');
-          return s !== null ? JSON.parse(s) : [1, 101];
+          const c = JSON.parse(localStorage.getItem('notejs_settings_cache') || '{}');
+          return c.startupBehavior || 'clean';
         } catch (_) {
-          return [1, 101];
+          return 'clean';
         }
       })(),
+      activeNoteId: (() => {
+        try {
+          const c = JSON.parse(localStorage.getItem('notejs_settings_cache') || '{}');
+          if (c.startupBehavior === 'resume') {
+            const last = localStorage.getItem('notejs_last_visited_note');
+            return last !== null ? Number(last) : null;
+          }
+        } catch (_) {}
+        return null;
+      })(),
+      openTabIds: (() => {
+        try {
+          const c = JSON.parse(localStorage.getItem('notejs_settings_cache') || '{}');
+          if (c.startupBehavior === 'resume') {
+            const s = localStorage.getItem('notejs_open_tabs_v1');
+            return s !== null ? JSON.parse(s) : [];
+          }
+        } catch (_) {}
+        return [];
+      })(),
       selectedCollection: 'ALL',
-      selectedFolder: MASTER_ALL_NOTES_FOLDER,
+      selectedFolder: (() => {
+        try {
+          const c = JSON.parse(localStorage.getItem('notejs_settings_cache') || '{}');
+          if (c.startupBehavior === 'resume') {
+            return MASTER_ALL_NOTES_FOLDER;
+          }
+        } catch (_) {}
+        return null;
+      })(),
       selectedTag: null,
       notes: JSON.parse(localStorage.getItem('notejs_desktop_notion_v9') || 'null') || INITIAL_NOTES,
-      folders: JSON.parse(localStorage.getItem('notejs_folders_v1') || 'null') || [MASTER_ALL_NOTES_FOLDER, 'Personal', 'Trabajo', 'Universidad', 'Ideas'],
+      folders: JSON.parse(localStorage.getItem('notejs_folders_v1') || 'null') || [MASTER_ALL_NOTES_FOLDER, 'Primeros pasos'],
       folderEmojis: JSON.parse(localStorage.getItem('notejs_folder_emojis_v1') || 'null') || { ...DEFAULT_FOLDER_EMOJIS },
       smartFolders: JSON.parse(localStorage.getItem('notejs_smart_folders_v1') || 'null') || {},
       panelWidths: JSON.parse(localStorage.getItem('notejs_panel_widths_v1') || 'null') || { ...PANEL_WIDTH_DEFAULTS },
@@ -357,9 +190,9 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       language: 'es',
       typeStyleIndex: 0,
       homeNotesView: localStorage.getItem('notejs_home_notes_view') || 'grid',
-      calendarYear: 2026,
-      calendarMonth: 9,
-      selectedCalendarDate: '2026-10-28',
+      calendarYear: new Date().getFullYear(),
+      calendarMonth: new Date().getMonth(),
+      selectedCalendarDate: getTodayDateString(),
       eventsFilter: 'day',
       homeNotesSearchQuery: '',
       homeFolderFilter: null,
@@ -467,6 +300,17 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         if (clean) set.add(clean);
       });
       return Array.from(set);
+    }
+
+    function getNotePreviewText(note) {
+      let html = String(note.content || '');
+      if (html.includes('cloud-table-toolbar')) {
+        const template = document.createElement('template');
+        template.innerHTML = html;
+        template.content.querySelectorAll('.cloud-table-toolbar').forEach(toolbar => toolbar.remove());
+        html = template.innerHTML;
+      }
+      return html.replace(/<\/t[dh]>/gi, ' · ').replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim();
     }
 
     function extractNoteMentionsList(note) {
@@ -1014,6 +858,8 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
 
     /* Sincronización con Backend en Python (PyWebView Bridge + SQLite & Peewee ORM) */
     let syncTimeout = null;
+    let resolveCloudLocalReady;
+    const cloudLocalReady = new Promise(resolve => { resolveCloudLocalReady = resolve; });
 
     function hasPyWebViewBridge() {
       return Boolean(window.pywebview && window.pywebview.api);
@@ -1106,15 +952,33 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
           } catch (_) {}
         }
 
-        if (data.settings && data.settings.openTabIds) {
-          try {
-            const parsedTabs = typeof data.settings.openTabIds === "string"
-              ? JSON.parse(data.settings.openTabIds)
-              : data.settings.openTabIds;
-            if (Array.isArray(parsedTabs) && parsedTabs.length > 0) {
-              state.openTabIds = parsedTabs.map(Number).filter(Boolean);
-            }
-          } catch (_) {}
+        // R6: Comportamiento de Inicio de la Aplicación (Predeterminado de fábrica: Iniciar siempre de cero)
+        const startupBehavior = (data.settings && data.settings.startupBehavior) || state.startupBehavior || 'clean';
+        state.startupBehavior = startupBehavior;
+
+        if (startupBehavior === 'clean') {
+          state.openTabIds = [];
+          state.activeNoteId = null;
+          state.selectedFolder = null;
+          state.isHomeActive = true;
+        } else if (startupBehavior === 'resume') {
+          const lastNoteId = Number((data.settings && data.settings.lastVisitedNoteId) || localStorage.getItem('notejs_last_visited_note'));
+          if (lastNoteId && (data.notes || state.notes || []).some(n => n.id === lastNoteId && !n.isTrashed)) {
+            state.activeNoteId = lastNoteId;
+            state.openTabIds = [lastNoteId];
+            state.isHomeActive = false;
+          } else if (data.settings && data.settings.openTabIds) {
+            try {
+              const parsedTabs = typeof data.settings.openTabIds === "string"
+                ? JSON.parse(data.settings.openTabIds)
+                : data.settings.openTabIds;
+              if (Array.isArray(parsedTabs) && parsedTabs.length > 0) {
+                state.openTabIds = parsedTabs.map(Number).filter(Boolean);
+                state.activeNoteId = state.openTabIds[0];
+                state.isHomeActive = false;
+              }
+            } catch (_) {}
+          }
         }
 
         if (data.settings && data.settings.panelWidths) {
@@ -1129,19 +993,15 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         }
 
         if (Array.isArray(data.reminders)) {
-          if (data.reminders.length > 0) {
-            state.reminders = data.reminders;
-            persistRemindersLocal();
-          } else if (Array.isArray(state.reminders) && state.reminders.length > 0) {
-            syncRemindersToBackend(state.reminders);
-          }
+          state.reminders = data.reminders;
+          persistRemindersLocal();
           if (state.isHomeActive) {
             renderHomeCalendar();
             renderHomeEventsList();
           }
         }
 
-        if (Array.isArray(data.notes) && data.notes.length > 0) {
+        if (Array.isArray(data.notes)) {
           applyNoteMetaOverlay(data.notes);
           state.notes = data.notes;
           localStorage.setItem("notejs_desktop_notion_v9", JSON.stringify(state.notes));
@@ -1159,12 +1019,11 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
             loadActiveNote();
           }
           setSyncStatus("synced");
-        } else {
-          // Primera ejecución: poblar la base de datos SQLite + Peewee ORM en Python
-          await syncAllToPythonBackend();
         }
       } catch (err) {
         setSyncStatus("offline");
+      } finally {
+        resolveCloudLocalReady();
       }
     }
 
@@ -1250,6 +1109,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       if (syncTimeout) clearTimeout(syncTimeout);
 
       const noteToSave = targetNote || getActiveNote();
+      if (window.NoteJSCloud) window.NoteJSCloud.changed();
       syncTimeout = setTimeout(() => {
         syncNoteToPython(noteToSave);
       }, isUserTyping ? 300 : 60);
@@ -1279,7 +1139,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       initPythonBackendSync();
     }
 
-    /* 1. Modo Concentración (Toggle ☰ / « / »), Menú Lateral Flotante ("Peek" Estilo Notion) y Divisores Redimensionables */
+    /* 1. Vista de Enfoque (Toggle ☰ / « / »), Menú Lateral Flotante ("Peek" Estilo Notion) y Divisores Redimensionables */
     let panelTransitionTimer = null;
     let focusPeekCloseTimer = null;
     let focusPeekReadyTimer = null;
@@ -1321,7 +1181,6 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
     function checkFocusModeStateSync() {
       const folders = document.getElementById('panel-folders');
       const gallery = document.getElementById('panel-gallery');
-      const indicator = document.getElementById('focus-mode-indicator');
       const toggleBtn = document.getElementById('btn-focus-mode');
       const tooltipLabel = document.getElementById('focus-toggle-tooltip-label');
       const sidebarCollapseBtn = document.getElementById('btn-collapse-sidebar');
@@ -1335,7 +1194,6 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       document.body.classList.toggle('is-sidebar-collapsed', isFoldersCollapsed);
       document.body.classList.toggle('is-focus-mode', bothCollapsed);
 
-      if (indicator) indicator.style.display = bothCollapsed ? 'inline-block' : 'none';
       if (toggleBtn) toggleBtn.classList.toggle('active', bothCollapsed);
 
       if (tooltipLabel) {
@@ -1546,7 +1404,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
     function handleSidebarHeaderCollapseOrPin() {
       const folders = document.getElementById('panel-folders');
       if (!folders) return;
-      // Si está en modo flotante (colapsado), el botón » fija la barra lateral abierta (sale de Modo Concentración)
+      // Si está en modo flotante (colapsado), el botón » fija la barra lateral abierta (restaura la vista normal)
       if (folders.classList.contains('collapsed')) {
         if (state.isFocusMode) {
           toggleFocusMode();
@@ -1554,7 +1412,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
           toggleSidebar(true);
         }
       } else {
-        // Cuando está fija y el usuario pulsa « en la cabecera, activa el Modo Concentración como en Notion
+        // Cuando está fija y el usuario pulsa « en la cabecera, colapsa los paneles como en Notion
         toggleFocusMode();
       }
     }
@@ -1579,13 +1437,13 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         focusPeekCooldownUntil = Date.now() + 400;
         if (folders) folders.classList.add('collapsed');
         if (gallery) gallery.classList.add('collapsed');
-        showToast('Modo Concentración activado · Acerca el cursor al borde izquierdo para ver el menú flotante', '⚡');
+        showToast('Vista de Enfoque activada · Acerca el cursor al borde izquierdo para ver el menú flotante', '⚡');
       } else {
         focusPeekCooldownUntil = 0;
         if (folders) folders.classList.remove('collapsed');
         if (gallery) gallery.classList.remove('collapsed');
         applyPanelWidths(state.panelWidths, false);
-        showToast('Barra lateral fijada · Modo Concentración desactivado', '⚡');
+        showToast('Barra lateral fijada · Vista de Enfoque desactivada', '⚡');
       }
 
       checkFocusModeStateSync();
@@ -1928,13 +1786,23 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
 
       const homeBtn = document.getElementById('fitem-sidebar-home');
       if (homeBtn) {
-        homeBtn.classList.toggle('active', Boolean(state.isHomeActive && !isTrashFolder(state.selectedFolder)));
+        homeBtn.classList.toggle('active', Boolean(state.isHomeActive && !state.isRemindersActive && !isTrashFolder(state.selectedFolder)));
+      }
+
+      const remindersBtn = document.getElementById('fitem-sidebar-reminders');
+      const remindersBadge = document.getElementById('sidebar-reminders-count-badge');
+      if (remindersBtn) {
+        remindersBtn.classList.toggle('active', Boolean(state.isRemindersActive));
+      }
+      if (remindersBadge) {
+        const pendingCount = (state.reminders || []).filter(r => !r.completed).length;
+        remindersBadge.textContent = String(pendingCount);
       }
 
       const trashBtn = document.getElementById('fitem-sidebar-trash');
       const trashBadge = document.getElementById('trash-count-badge');
       if (trashBtn) {
-        trashBtn.classList.toggle('active', isTrashFolder(state.selectedFolder));
+        trashBtn.classList.toggle('active', Boolean(!state.isRemindersActive && isTrashFolder(state.selectedFolder)));
       }
       if (trashBadge) {
         trashBadge.textContent = String(trashedNotes.length);
@@ -1948,9 +1816,9 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         const count = isMaster
           ? activeNotes.length
           : activeNotes.filter(n => noteBelongsToFolder(n, f)).length;
-        const isAct = !isTrashFolder(state.selectedFolder) && (
+        const isAct = !isTrashFolder(state.selectedFolder) && state.selectedFolder !== null && !state.isRemindersActive && (
           isMaster
-            ? ((state.isHomeActive && !state.homeFolderFilter) || (!state.isHomeActive && isMasterAllNotesFolder(state.selectedFolder)))
+            ? ((state.isHomeActive && !state.homeFolderFilter && state.selectedFolder !== null) || (!state.isHomeActive && isMasterAllNotesFolder(state.selectedFolder)))
             : ((state.isHomeActive && state.homeFolderFilter === f) || (!state.isHomeActive && state.selectedFolder === f))
         );
         const folderEmoji = getFolderEmoji(f);
@@ -3174,7 +3042,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       const isSel = !n.isTrashed && n.id === state.activeNoteId;
       const dateStr = new Date(n.trashedAt || n.updatedAt || Date.now()).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
       const emoji = n.emoji || '📝';
-      const cleanSnippet = (n.content || '').replace(/<[^>]*>?/gm, '');
+      const cleanSnippet = getNotePreviewText(n);
       const noteTags = extractNoteTagsList(n);
       const tagsBadgesHtml = noteTags.slice(0, 2).map(t => `<span style="background:var(--accent-amber-soft); color:var(--accent-amber); padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:700;">#${t}</span>`).join(' ');
 
@@ -3714,6 +3582,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       const deletedId = Number(id);
       const note = state.notes.find(n => Number(n.id) === deletedId);
       const noteTitle = note ? (note.title || 'Sin título') : 'Nota';
+      if (window.NoteJSCloud) window.NoteJSCloud.deleted(note);
 
       state.notes = state.notes.filter(n => Number(n.id) !== deletedId);
       if (Array.isArray(state.openTabIds)) {
@@ -3742,6 +3611,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       const trashed = getTrashedNotesList();
       if (!trashed.length) return;
       trashed.forEach(n => {
+        if (window.NoteJSCloud) window.NoteJSCloud.deleted(n);
         if (hasPyWebViewBridge() && typeof window.pywebview.api.delete_note === "function") {
           window.pywebview.api.delete_note(n.id).catch(() => {});
         } else {
@@ -4013,6 +3883,25 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       return state.notes.find(n => Number(n.id) === Number(state.activeNoteId)) || null;
     }
 
+    function loadNote(pageId) {
+      if (!pageId && pageId !== 0) {
+        showToast('ID de nota inválido', '⚠️');
+        return false;
+      }
+      const note = state.notes.find(n => String(n.id) === String(pageId) || Number(n.id) === Number(pageId));
+      if (!note) {
+        showToast('Nota no encontrada', '⚠️');
+        return false;
+      }
+      if (note.isTrashed) {
+        showToast('Restaura la nota desde la papelera para abrirla y editarla', '🗑️');
+        return false;
+      }
+      selectNote(note.id);
+      return true;
+    }
+    window.loadNote = loadNote;
+
     function selectNote(id) {
       const numericId = Number(id);
       const note = state.notes.find(n => n.id === numericId);
@@ -4021,10 +3910,20 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         showToast('Restaura la nota desde la papelera para abrirla y editarla', '🗑️');
         return;
       }
+      // Register the destination before rendering tabs while leaving Home.
+      // An empty tab list would otherwise switch Home back on during the transition.
+      state.activeNoteId = numericId;
+      if (state.isRemindersActive) {
+        exitRemindersView();
+      }
       if (state.isHomeActive) {
         exitHomeView();
       }
-      state.activeNoteId = numericId;
+      try {
+        localStorage.setItem('notejs_last_visited_note', String(numericId));
+      } catch (_) {}
+      saveSettingsPayload({ lastVisitedNoteId: numericId });
+
       if (isTrashFolder(state.selectedFolder)) {
         state.selectedFolder = MASTER_ALL_NOTES_FOLDER;
       }
@@ -4040,6 +3939,13 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
     }
 
     function loadActiveNote() {
+      const targetNoteId = arguments.length > 0 ? arguments[0] : null;
+      if (targetNoteId !== null && targetNoteId !== undefined) {
+        state.activeNoteId = targetNoteId;
+      }
+      if (state.isRemindersActive) {
+        exitRemindersView();
+      }
       if (state.isHomeActive || !state.activeNoteId) {
         navigateToHome();
         return;
@@ -4050,6 +3956,11 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         return;
       }
       exitHomeView();
+      try {
+        localStorage.setItem('notejs_last_visited_note', String(note.id));
+      } catch (_) {}
+      saveSettingsPayload({ lastVisitedNoteId: note.id });
+
       if (Array.isArray(state.openTabIds) && !state.openTabIds.includes(note.id)) {
         state.openTabIds.push(note.id);
         saveOpenTabsState();
@@ -4075,7 +3986,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         document.getElementById('cover-btn-label').textContent = 'Quitar portada';
       } else {
         coverEl.classList.remove('has-cover');
-        document.getElementById('cover-btn-label').textContent = 'Añadir portada';
+        document.getElementById('cover-btn-label').textContent = 'Elegir foto de portada';
       }
 
       // Icono Emoji
@@ -4094,9 +4005,9 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         pinBtn.title = note.isPinned ? 'Desfijar nota (Ctrl+Shift+P)' : 'Fijar nota (Ctrl+Shift+P)';
         pinBtn.classList.toggle('active', Boolean(note.isPinned));
         if (note.isPinned) {
-          pinBtn.style.borderColor = 'var(--accent-amber)';
-          pinBtn.style.color = 'var(--accent-amber)';
-          pinBtn.style.background = 'var(--accent-amber-soft)';
+          pinBtn.style.borderColor = 'var(--border-hairline)';
+          pinBtn.style.color = 'var(--text-primary)';
+          pinBtn.style.background = 'var(--bg-elevated)';
         } else {
           pinBtn.style.borderColor = 'var(--border-hairline)';
           pinBtn.style.color = 'var(--text-secondary)';
@@ -4107,8 +4018,13 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
 
       // Lienzo Rich Text
       const editorCanvas = document.getElementById('rich-editor-canvas');
+      const noteIdToFetch = String(note.id);
       editorCanvas.innerHTML = note.content || '';
+      attachSubpageBlockListeners();
       setTimeout(renderAllInlineEquations, 30);
+
+      // Cloud notes retain mobile block payloads in HTML for lossless round trips.
+      if (!note.cloud) loadAndRenderRecordMap(noteIdToFetch, editorCanvas);
 
       // Activar manejadores de notas, imágenes, columnas, bloques sincronizados y TOC
       attachEmbeddedNoteCardListeners();
@@ -4118,6 +4034,52 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       if (typeof attachColumnResizerListeners === 'function') attachColumnResizerListeners();
       if (typeof attachSyncedBlockListeners === 'function') attachSyncedBlockListeners();
       if (typeof refreshPageTableOfContents === 'function') setTimeout(refreshPageTableOfContents, 40);
+    }
+
+    function loadAndRenderRecordMap(noteIdToFetch, editorCanvas) {
+      const note = state.notes.find(item => String(item.id) === String(noteIdToFetch));
+      if (!note) return;
+      const applyRecordMap = (rmap) => {
+        if (rmap && rmap.block && typeof rmap.block === 'object') {
+          state.activeRecordMap = rmap;
+          let rootId = noteIdToFetch;
+          if (!rmap.block[rootId]) {
+            const pageEntryKey = Object.keys(rmap.block).find(k => {
+              const b = rmap.block[k]?.value;
+              return b && (b.type === 'page' || String(b.id) === noteIdToFetch);
+            });
+            if (pageEntryKey) rootId = pageEntryKey;
+          }
+          if (rmap.block[rootId] && Array.isArray(rmap.block[rootId]?.value?.content) && rmap.block[rootId].value.content.length > 0) {
+            renderTreeFromRecordMap(rmap, rootId, editorCanvas);
+            return true;
+          }
+        }
+        return false;
+      };
+
+      if (hasPyWebViewBridge() && typeof window.pywebview.api.get_record_map === 'function') {
+        try {
+          const rmapResult = window.pywebview.api.get_record_map(noteIdToFetch);
+          if (rmapResult && typeof rmapResult.then === 'function') {
+            rmapResult.then(res => {
+              const rmap = (res && res.block) ? res : (res && res.recordMap ? res.recordMap : null);
+              if (rmap) applyRecordMap(rmap);
+            }).catch(() => {});
+          } else if (rmapResult && (rmapResult.block || rmapResult.recordMap)) {
+            applyRecordMap(rmapResult.block ? rmapResult : rmapResult.recordMap);
+          }
+        } catch (_) {}
+      } else {
+        fetch(`/api/notes/${encodeURIComponent(noteIdToFetch)}/recordMap`)
+          .then(r => r.ok ? r.json() : null)
+          .then(data => {
+            if (data && data.block) {
+              applyRecordMap(data);
+            }
+          })
+          .catch(() => {});
+      }
 
       // Callout
       const calloutEl = document.getElementById('block-callout');
@@ -4476,6 +4438,18 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
 
     let syncBlocksDebounceTimer = null;
 
+    function pdfViewerUrl(source, title = 'Documento.pdf') {
+      return '/pdf-viewer.html?src=' + encodeURIComponent(source) + '&name=' + encodeURIComponent(title);
+    }
+
+    function createPdfEmbedHTML(source, title = 'Documento.pdf') {
+      if (!source) return '<button type="button" onclick="openMediaEmbedModal(\'pdf\')">Seleccionar PDF</button>';
+      if (!/^(https?:\/\/|\/(?!\/)|data:application\/pdf[;,])/i.test(source)) {
+        return '<p>El enlace del PDF no es válido. Selecciona el archivo de nuevo.</p>';
+      }
+      return `<iframe class="notejs-pdf-frame" title="${escapeHtml(title)}" src="${escapeHtml(pdfViewerUrl(source, title))}" loading="lazy" style="width:100%;height:560px;border:1px solid var(--border-hairline);border-radius:8px;"></iframe>`;
+    }
+
     function collectAndSyncNoteBlocks(noteId) {
       const editor = document.getElementById('rich-editor-canvas');
       if (!editor || !noteId) return;
@@ -4483,14 +4457,29 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       Array.from(editor.children).forEach(el => {
         const id = el.getAttribute('data-block-id');
         if (id) {
-          blocks.push({
+          const isSubpage = el.classList.contains('block-subpage') || el.getAttribute('data-type') === 'sub_page';
+          const btype = isSubpage ? 'sub_page' : (el.getAttribute('data-type') || el.tagName.toLowerCase());
+          const blockObj = {
             id: id,
             noteId: noteId,
             parentId: el.getAttribute('data-parent-id') || null,
             sortIndex: el.getAttribute('data-sort-index') || 'a0',
-            type: el.tagName.toLowerCase(),
+            type: btype,
             properties: { text: el.innerText || '', html: el.innerHTML || '' }
-          });
+          };
+          if (isSubpage) {
+            const pageId = el.getAttribute('data-page-id');
+            const title = el.getAttribute('data-title') || el.querySelector('.subpage-title')?.innerText || '';
+            blockObj.page_id = pageId;
+            blockObj.title = title;
+            blockObj.properties.page_id = pageId;
+            blockObj.properties.title = title;
+          }
+          if (btype === 'pdf') {
+            blockObj.properties.source = [[el.getAttribute('data-source') || '', []]];
+            blockObj.properties.title = [[el.getAttribute('data-title') || 'Documento.pdf', []]];
+          }
+          blocks.push(blockObj);
         }
       });
       if (blocks.length > 0 && typeof apiSyncNoteBlocks === 'function') {
@@ -4591,6 +4580,53 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         }
       }
 
+      // Block-level Enter key handling
+      if (e.key === 'Enter' && !e.shiftKey) {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount) {
+          const anchor = sel.anchorNode;
+          const editableEl = anchor ? (anchor.nodeType === Node.ELEMENT_NODE ? anchor.closest('[contenteditable="true"]') : anchor.parentElement?.closest('[contenteditable="true"]')) : null;
+          const blockEl = editableEl ? editableEl.closest('[data-block-id]') : null;
+          if (blockEl && blockEl.id !== 'rich-editor-canvas') {
+            const btype = blockEl.getAttribute('data-type') || 'text';
+            if (btype === 'code') {
+              document.execCommand('insertLineBreak');
+              e.preventDefault();
+              return;
+            }
+            e.preventDefault();
+            insertBlockBelow(blockEl);
+            return;
+          }
+        }
+      }
+
+      // Block-level Backspace handling
+      if (e.key === 'Backspace') {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount) {
+          const anchor = sel.anchorNode;
+          const editableEl = anchor ? (anchor.nodeType === Node.ELEMENT_NODE ? anchor.closest('[contenteditable="true"]') : anchor.parentElement?.closest('[contenteditable="true"]')) : null;
+          const blockEl = editableEl ? editableEl.closest('[data-block-id]') : null;
+          if (blockEl && blockEl.id !== 'rich-editor-canvas') {
+            const btype = blockEl.getAttribute('data-type') || 'text';
+            const textContent = editableEl.textContent.trim();
+            if (textContent === '' && btype !== 'text' && btype !== 'p') {
+              e.preventDefault();
+              convertBlockType(blockEl.getAttribute('data-block-id'), 'text');
+              return;
+            } else if (textContent === '' && (btype === 'text' || btype === 'p')) {
+              const prev = blockEl.previousElementSibling;
+              if (prev && prev.getAttribute('data-block-id')) {
+                e.preventDefault();
+                deleteBlockElement(blockEl, prev);
+                return;
+              }
+            }
+          }
+        }
+      }
+
       // Triggers al teclear '/'
       if (e.key === '/') {
         openSlashMenu();
@@ -4613,6 +4649,30 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
 
     function handleRichEditorInput(e) {
       const editor = document.getElementById('rich-editor-canvas');
+
+      const target = e.target;
+      const editableEl = (target && target.closest) ? target.closest('[contenteditable="true"]') : null;
+      if (editableEl) {
+        const blockEl = editableEl.closest('[data-block-id]');
+        if (blockEl && blockEl.id !== 'rich-editor-canvas') {
+          const blockId = blockEl.getAttribute('data-block-id');
+          const propName = editableEl.getAttribute('data-property') || 'title';
+          const tuples = htmlToRichTextTuples(editableEl);
+          if (typeof state !== 'undefined' && state.activeRecordMap && state.activeRecordMap.block[blockId]) {
+            if (!state.activeRecordMap.block[blockId].value.properties) {
+              state.activeRecordMap.block[blockId].value.properties = {};
+            }
+            state.activeRecordMap.block[blockId].value.properties[propName] = tuples;
+          }
+          persistBlockUpdate(blockId, { properties: { [propName]: tuples } });
+          const btype = blockEl.getAttribute('data-type');
+          if (btype === 'header' || btype === 'sub_header' || btype === 'sub_sub_header') {
+            if (typeof refreshPageTableOfContents === 'function') {
+              refreshPageTableOfContents();
+            }
+          }
+        }
+      }
 
       // Live Markdown Triggers al pulsar espacio
       if (e.data === ' ') {
@@ -4857,7 +4917,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         activeInlineKatexNode = null;
       } else {
         const span = document.createElement('span');
-        span.className = 'inline-katex-node';
+        span.className = 'inline-equation notion-inline-equation inline-katex-node';
         span.contentEditable = 'false';
         span.setAttribute('data-latex', latex);
         span.setAttribute('title', `Ecuación: ${latex} (haz clic para editar)`);
@@ -4903,16 +4963,34 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
     function turnCurrentInlineToBlockEquation() {
       const input = document.getElementById('inline-katex-input');
       const latex = (input.value || '').trim() || '\\int_{0}^{\\infty} e^{-x^2} dx';
+      let parentBlockEl = null;
       if (activeInlineKatexNode) {
+        parentBlockEl = activeInlineKatexNode.closest ? activeInlineKatexNode.closest('.notion-block') : null;
         activeInlineKatexNode.remove();
         activeInlineKatexNode = null;
       }
-      const note = getActiveNote();
-      if (!note) return;
-      note.katex = latex;
-      save();
-      loadActiveNote();
       closeInlineMathPopover();
+
+      if (typeof window.createBlock === 'function' && parentBlockEl) {
+        const parentId = parentBlockEl.getAttribute('data-parent-id') || (typeof state !== 'undefined' && state.activeNoteId ? String(state.activeNoteId) : null);
+        window.createBlock({
+          type: 'equation',
+          parent_id: parentId,
+          after_id: parentBlockEl.id,
+          properties: { title: [[latex, []]] },
+          crdt_data: typeof buildEquationCrdt === 'function' ? buildEquationCrdt(latex, 1) : {}
+        });
+        if (typeof showToast === 'function') showToast('Ecuación convertida a bloque', '∑');
+        return;
+      }
+
+      const note = getActiveNote();
+      if (note) {
+        note.katex = latex;
+        save();
+        loadActiveNote();
+      }
+      if (typeof showToast === 'function') showToast('Ecuación convertida a bloque', '∑');
     }
 
     function editInlineEquation(spanNode) {
@@ -4962,10 +5040,11 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
 
     function renderAllInlineEquations() {
       if (!window.katex) return;
-      const nodes = document.querySelectorAll('.inline-katex-node');
+      const nodes = document.querySelectorAll('.inline-katex-node, .notion-inline-equation, .inline-equation');
       nodes.forEach(node => {
         const latex = node.getAttribute('data-latex') || node.textContent;
         node.setAttribute('data-latex', latex);
+        node.setAttribute('title', `Ecuación: ${latex} (haz clic para editar)`);
         node.onclick = function(e) {
           e.stopPropagation();
           editInlineEquation(this);
@@ -4975,6 +5054,8 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         } catch (_) {}
       });
     }
+    window.renderAllInlineEquations = renderAllInlineEquations;
+    window.editInlineEquation = editInlineEquation;
 
     /* 5. Controles de Movimiento (Drag & Drop) y Eliminación de Bloques */
     let currentDraggedBlock = null;
@@ -5327,32 +5408,63 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       const note = getActiveNote();
       if (!note) return;
 
+      const activeBlock = (typeof document !== 'undefined' && document.activeElement) ? document.activeElement.closest('.notion-block') : null;
+      const activeBlockId = activeBlock ? activeBlock.getAttribute('data-block-id') : null;
+
       if (id === 'text') {
-        formatDoc('formatBlock', '<p>');
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'text');
+        else formatDoc('formatBlock', '<p>');
       } else if (id === 'heading1') {
-        formatDoc('formatBlock', '<h1>');
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'header');
+        else formatDoc('formatBlock', '<h1>');
       } else if (id === 'heading2') {
-        formatDoc('formatBlock', '<h2>');
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'sub_header');
+        else formatDoc('formatBlock', '<h2>');
       } else if (id === 'heading3') {
-        formatDoc('formatBlock', '<h3>');
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'sub_sub_header');
+        else formatDoc('formatBlock', '<h3>');
+      } else if (id === 'heading4') {
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'header_4');
+        else formatDoc('formatBlock', '<h4>');
       } else if (id === 'todo') {
-        insertChecklistBlock();
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'to_do');
+        else insertChecklistBlock();
       } else if (id === 'bullet') {
-        formatDoc('insertUnorderedList');
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'bulleted_list');
+        else formatDoc('insertUnorderedList');
       } else if (id === 'numbered') {
-        formatDoc('insertOrderedList');
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'numbered_list');
+        else formatDoc('insertOrderedList');
       } else if (id === 'toggle') {
-        insertToggleBlock();
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'toggle');
+        else insertToggleBlock();
       } else if (id === 'inline_toggle') {
         insertInlineToggleElement();
       } else if (id === 'callout') {
-        toggleCalloutBlock(true);
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'callout');
+        else toggleCalloutBlock(true);
       } else if (id === 'inline_callout') {
         insertInlineCalloutElement();
       } else if (id === 'simple_table') {
         insertSimpleTableBlock();
       } else if (id === 'quote') {
-        toggleQuoteBlock(true);
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'quote');
+        else toggleQuoteBlock(true);
+      } else if (id === 'video') {
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'video');
+        else if (typeof openMediaEmbedModal === 'function') openMediaEmbedModal('video');
+      } else if (id === 'audio') {
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'audio');
+        else if (typeof openMediaEmbedModal === 'function') openMediaEmbedModal('audio');
+      } else if (id === 'file') {
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'file');
+        else if (typeof openMediaEmbedModal === 'function') openMediaEmbedModal('file');
+      } else if (id === 'pdf') {
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'pdf');
+        else if (typeof openMediaEmbedModal === 'function') openMediaEmbedModal('pdf');
+      } else if (id === 'bookmark') {
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'bookmark');
+        else if (typeof openMediaEmbedModal === 'function') openMediaEmbedModal('bookmark');
       } else if (id === 'code') {
         insertInlineCodeBlock();
       } else if (id === 'divider') {
@@ -5392,7 +5504,8 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       } else if (id === 'toc') {
         insertTableOfContentsBlock();
       } else if (id === 'synced') {
-        insertSyncedBlock();
+        if (activeBlockId && typeof convertBlockType === 'function') convertBlockType(activeBlockId, 'transclusion_container');
+        else insertSyncedBlock();
       } else if (id === 'button') {
         openMacroButtonModal();
       } else if (id === 'breadcrumbs') {
@@ -5648,7 +5761,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
              contenteditable="false" 
              data-note-id="${targetNote.id}" 
              draggable="true"
-             style="background:${coverBg};" 
+             style="background:${coverBg}; background-size:cover; background-position:center ${targetNote.coverPositionY ?? 50}%;" 
              title="Haz clic para abrir nota: ${escapedTitle}">
           <div class="embedded-card-top">
             <span class="embedded-card-badge">
@@ -5882,7 +5995,1562 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
     function renderSubpages(note) {
       // Compatibilidad: garantizar manejadores activos
       attachEmbeddedNoteCardListeners();
+      attachSubpageBlockListeners();
     }
+
+    // -------------------------------------------------------------------------
+    // Notion Rich Text Tuple Engine & Full Block Suite (Milestone 3)
+    // -------------------------------------------------------------------------
+
+    const NOTION_COLOR_HEX_MAP = {
+      default: 'inherit',
+      gray: 'var(--text-muted, #9ca3af)',
+      brown: '#92400e',
+      orange: '#ea580c',
+      yellow: 'var(--accent-amber, #f59e0b)',
+      green: '#16a34a',
+      teal: '#0d9488',
+      blue: '#3b82f6',
+      purple: '#a855f7',
+      pink: '#ec4899',
+      red: 'var(--danger, #ef4444)',
+      gray_background: 'rgba(148, 163, 184, 0.25)',
+      brown_background: 'rgba(146, 64, 14, 0.25)',
+      orange_background: 'rgba(234, 88, 12, 0.25)',
+      yellow_background: 'rgba(245, 158, 11, 0.25)',
+      green_background: 'rgba(22, 163, 74, 0.25)',
+      teal_background: 'rgba(13, 148, 136, 0.25)',
+      blue_background: 'rgba(59, 130, 246, 0.25)',
+      purple_background: 'rgba(168, 85, 247, 0.25)',
+      pink_background: 'rgba(236, 72, 153, 0.25)',
+      red_background: 'rgba(239, 68, 68, 0.25)'
+    };
+
+    function escapeHtml(str) {
+      if (str == null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    const DANGEROUS_URL_SCHEMES_JS = ['javascript:', 'data:', 'vbscript:', 'file:'];
+
+    function sanitizeLinkUrl(rawUrl) {
+      if (!rawUrl || typeof rawUrl !== 'string') return '#';
+      const trimmed = rawUrl.trim();
+      const lower = trimmed.toLowerCase();
+      for (const scheme of DANGEROUS_URL_SCHEMES_JS) {
+        if (lower.startsWith(scheme)) return '#';
+      }
+      return trimmed;
+    }
+
+    function parseRichTextToHtml(tuples) {
+      if (!tuples) return '';
+      if (typeof tuples === 'string') return escapeHtml(tuples);
+      if (!Array.isArray(tuples)) return '';
+
+      const output = [];
+
+      for (const segment of tuples) {
+        if (!segment) continue;
+        if (typeof segment === 'string') {
+          output.push(escapeHtml(segment));
+          continue;
+        }
+        if (!Array.isArray(segment) || segment.length === 0) continue;
+
+        const rawText = segment[0] != null ? String(segment[0]) : '';
+        const decorators = Array.isArray(segment[1]) ? segment[1] : [];
+
+        let hasEquation = false;
+        let eqLatex = '';
+        for (const dec of decorators) {
+          if (Array.isArray(dec) && dec.length > 0 && dec[0] === 'e') {
+            hasEquation = true;
+            eqLatex = dec[1] != null ? String(dec[1]) : (rawText === '⁍' || rawText === '\u204d' ? '' : rawText);
+            break;
+          }
+        }
+
+        let inner = '';
+        if (hasEquation) {
+          const escapedFormula = escapeHtml(eqLatex);
+          const tokenAttr = (rawText === '⁍' || rawText === '\u204d') ? ' data-token="⁍"' : '';
+          inner = `<span class="inline-equation notion-inline-equation inline-katex-node"${tokenAttr} data-latex="${escapedFormula}" contenteditable="false">${escapedFormula}</span>`;
+        } else {
+          inner = escapeHtml(rawText);
+        }
+
+        for (const dec of decorators) {
+          if (!Array.isArray(dec) || dec.length === 0) continue;
+          const tag = String(dec[0]);
+          switch (tag) {
+            case 'b':
+              inner = `<strong>${inner}</strong>`;
+              break;
+            case 'i':
+              inner = `<em>${inner}</em>`;
+              break;
+            case '_':
+              inner = `<u>${inner}</u>`;
+              break;
+            case 's':
+              inner = `<s>${inner}</s>`;
+              break;
+            case 'c':
+              inner = `<code>${inner}</code>`;
+              break;
+            case 'h': {
+              const colorRaw = dec[1] != null ? String(dec[1]) : 'yellow';
+              const cleanColor = colorRaw.replace(/[^a-zA-Z0-9_\-]/g, '');
+              let styleAttr = '';
+              if (cleanColor.endsWith('_background')) {
+                const baseBg = cleanColor.replace('_background', '');
+                const bgVal = NOTION_COLOR_HEX_MAP[cleanColor] || baseBg;
+                styleAttr = `background-color: ${bgVal};`;
+              } else {
+                const colorVal = NOTION_COLOR_HEX_MAP[cleanColor] || cleanColor;
+                styleAttr = `color: ${colorVal};`;
+              }
+              inner = `<mark style="${styleAttr}" class="notion-color-${cleanColor}" data-color="${cleanColor}">${inner}</mark>`;
+              break;
+            }
+            case 'a': {
+              const safeUrl = sanitizeLinkUrl(dec[1]);
+              inner = `<a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">${inner}</a>`;
+              break;
+            }
+            case 'e':
+              break;
+          }
+        }
+
+        output.push(inner);
+      }
+
+      return output.join('');
+    }
+    window.parseRichTextToHtml = parseRichTextToHtml;
+
+    function htmlToRichTextTuples(nodeOrHtml) {
+      if (!nodeOrHtml) return [];
+
+      let root;
+      if (typeof nodeOrHtml === 'string') {
+        if (typeof document !== 'undefined') {
+          root = document.createElement('div');
+          root.innerHTML = nodeOrHtml;
+        } else {
+          return [[nodeOrHtml, []]];
+        }
+      } else if (nodeOrHtml.nodeType) {
+        root = nodeOrHtml;
+      } else {
+        return [];
+      }
+
+      const segments = [];
+
+      function extractColorFromElement(el) {
+        if (!el || !el.getAttribute) return null;
+        const dataColor = el.getAttribute('data-color');
+        if (dataColor) return dataColor.trim();
+        const cls = el.className || '';
+        if (typeof cls === 'string') {
+          for (const c of cls.split(/\s+/)) {
+            if (c.startsWith('notion-color-')) {
+              return c.substring('notion-color-'.length);
+            }
+            if (c.startsWith('notion-bg-')) {
+              return c.substring('notion-bg-'.length);
+            }
+          }
+        }
+        const style = el.getAttribute('style') || '';
+        const bgMatch = style.match(/background(?:-color)?\s*:\s*([^;]+)/i);
+        if (bgMatch) {
+          const c = bgMatch[1].trim().toLowerCase();
+          return c.endsWith('_background') ? c : `${c}_background`;
+        }
+        const colorMatch = style.match(/(?:^|;)\s*color\s*:\s*([^;]+)/i);
+        if (colorMatch) {
+          return colorMatch[1].trim().toLowerCase();
+        }
+        return null;
+      }
+
+      function areDecoratorsEqual(d1, d2) {
+        if (d1.length !== d2.length) return false;
+        for (let i = 0; i < d1.length; i++) {
+          const a = d1[i];
+          const b = d2[i];
+          if (a[0] !== b[0]) return false;
+          if (a.length > 1 && a[1] !== b[1]) return false;
+        }
+        return true;
+      }
+
+      function traverse(node, currentStyles) {
+        if (!node) return;
+
+        if (node.nodeType === 3) {
+          const text = node.nodeValue;
+          if (!text) return;
+
+          const decs = [];
+          if (currentStyles.bold) decs.push(['b']);
+          if (currentStyles.italic) decs.push(['i']);
+          if (currentStyles.underline) decs.push(['_']);
+          if (currentStyles.strike) decs.push(['s']);
+          if (currentStyles.code) decs.push(['c']);
+          if (currentStyles.color) decs.push(['h', currentStyles.color]);
+          if (currentStyles.link) decs.push(['a', currentStyles.link]);
+          if (currentStyles.equation) decs.push(['e', currentStyles.equation]);
+
+          if (segments.length > 0) {
+            const last = segments[segments.length - 1];
+            const lastDecs = last[1] || [];
+            if (areDecoratorsEqual(lastDecs, decs)) {
+              last[0] += text;
+              return;
+            }
+          }
+
+          segments.push(decs.length > 0 ? [text, decs] : [text, []]);
+          return;
+        }
+
+        if (node.nodeType === 1) {
+          const tag = (node.tagName || '').toLowerCase();
+
+          if (node.classList && (node.classList.contains('inline-equation') ||
+                                 node.classList.contains('notion-inline-equation') ||
+                                 node.classList.contains('inline-katex-node') ||
+                                 node.hasAttribute('data-latex'))) {
+            const formula = node.getAttribute('data-latex') || node.textContent || '';
+            const isCanonicalToken = (node.getAttribute && (node.getAttribute('data-token') === '⁍' || node.getAttribute('data-token') === '\u204d'));
+            const segText = isCanonicalToken ? '⁍' : formula;
+            const decs = [];
+            if (currentStyles.bold) decs.push(['b']);
+            if (currentStyles.italic) decs.push(['i']);
+            if (currentStyles.underline) decs.push(['_']);
+            if (currentStyles.strike) decs.push(['s']);
+            if (currentStyles.code) decs.push(['c']);
+            if (currentStyles.color) decs.push(['h', currentStyles.color]);
+            if (currentStyles.link) decs.push(['a', currentStyles.link]);
+            decs.push(['e', formula]);
+            segments.push([segText, decs]);
+            return;
+          }
+
+          const nextStyles = { ...currentStyles };
+
+          if (tag === 'strong' || tag === 'b') nextStyles.bold = true;
+          if (tag === 'em' || tag === 'i') nextStyles.italic = true;
+          if (tag === 'u') nextStyles.underline = true;
+          if (tag === 's' || tag === 'del' || tag === 'strike') nextStyles.strike = true;
+          if (tag === 'code') nextStyles.code = true;
+          if (tag === 'a') nextStyles.link = node.getAttribute('href') || '#';
+
+          if (tag === 'mark') {
+            const color = extractColorFromElement(node) || 'yellow_background';
+            nextStyles.color = color;
+          } else if (tag === 'span') {
+            const color = extractColorFromElement(node);
+            if (color) nextStyles.color = color;
+          }
+
+          if (node.style) {
+            const fw = node.style.fontWeight;
+            if (fw === 'bold' || fw === 'bolder' || Number(fw) >= 600) nextStyles.bold = true;
+            if (node.style.fontStyle === 'italic') nextStyles.italic = true;
+            const td = node.style.textDecoration || '';
+            if (td.includes('underline')) nextStyles.underline = true;
+            if (td.includes('line-through')) nextStyles.strike = true;
+          }
+
+          if (tag === 'br') {
+            if (segments.length > 0) {
+              segments[segments.length - 1][0] += '\n';
+            } else {
+              segments.push(['\n', []]);
+            }
+            return;
+          }
+
+          for (let child = node.firstChild; child; child = child.nextSibling) {
+            traverse(child, nextStyles);
+          }
+        }
+      }
+
+      traverse(root, {
+        bold: false,
+        italic: false,
+        underline: false,
+        strike: false,
+        code: false,
+        color: null,
+        link: null,
+        equation: null
+      });
+
+      return segments;
+    }
+    window.htmlToRichTextTuples = htmlToRichTextTuples;
+
+    function getBlockPropertyPlainText(block, propName = 'title') {
+      if (!block || !block.properties) {
+        if (block && block[propName] != null) return String(block[propName]);
+        return '';
+      }
+      const prop = block.properties[propName];
+      if (prop == null) {
+        if (block[propName] != null) return String(block[propName]);
+        if (propName === 'title') {
+          if (block.properties.text != null) return String(block.properties.text);
+          if (block.properties.html != null) return String(block.properties.html).replace(/<[^>]+>/g, '');
+        }
+        return '';
+      }
+      if (Array.isArray(prop)) {
+        return prop.map(seg => {
+          if (!seg) return '';
+          if (Array.isArray(seg)) {
+            const raw = seg[0] != null ? String(seg[0]) : '';
+            if (raw === '⁍' || raw === '\u204d') {
+              const decs = Array.isArray(seg[1]) ? seg[1] : [];
+              for (const d of decs) {
+                if (Array.isArray(d) && d[0] === 'e' && d[1]) return String(d[1]);
+              }
+            }
+            return raw;
+          }
+          return String(seg);
+        }).join('');
+      }
+      return String(prop);
+    }
+
+    function buildEquationCrdt(latex, version = 1, clientId = 'user_local') {
+      const cId = clientId || 'user_local';
+      const v = Number(version) || 1;
+      const str = String(latex || '');
+      const rangeKey = `${cId},"start","end"`;
+      return {
+        title: {
+          r: rangeKey,
+          n: {
+            [rangeKey]: {
+              s: {
+                x: cId,
+                i: [
+                  { t: 's' },
+                  {
+                    t: 't',
+                    i: [cId, v],
+                    o: 'start',
+                    l: str.length,
+                    c: str
+                  },
+                  { t: 'e' }
+                ],
+                l: ''
+              },
+              c: []
+            }
+          }
+        }
+      };
+    }
+    window.buildEquationCrdt = buildEquationCrdt;
+
+    function getBlockPropertyHtml(block, propName = 'title') {
+      if (!block || !block.properties) {
+        if (block && block[propName] != null) return escapeHtml(String(block[propName]));
+        return '';
+      }
+      const prop = block.properties[propName];
+      if (prop == null) {
+        if (block[propName] != null) return escapeHtml(String(block[propName]));
+        if (propName === 'title') {
+          if (block.properties.html != null) return String(block.properties.html);
+          if (block.properties.text != null) return escapeHtml(String(block.properties.text));
+        }
+        return '';
+      }
+      if (Array.isArray(prop)) {
+        return parseRichTextToHtml(prop);
+      }
+      if (typeof prop === 'string') {
+        return escapeHtml(prop);
+      }
+      return '';
+    }
+
+    let blockSaveDebounceTimer = null;
+    const pendingBlockUpdates = new Map();
+
+    function persistBlockUpdate(blockId, updates) {
+      if (!blockId || !updates) return;
+      const existing = pendingBlockUpdates.get(blockId) || {};
+      pendingBlockUpdates.set(blockId, { ...existing, ...updates });
+
+      clearTimeout(blockSaveDebounceTimer);
+      blockSaveDebounceTimer = setTimeout(() => {
+        flushPendingBlockUpdates();
+      }, 300);
+    }
+
+    function flushPendingBlockUpdates() {
+      if (pendingBlockUpdates.size === 0) return;
+      const entries = Array.from(pendingBlockUpdates.entries());
+      pendingBlockUpdates.clear();
+
+      for (const [blockId, updates] of entries) {
+        if (hasPyWebViewBridge() && typeof window.pywebview.api.update_block === 'function') {
+          try {
+            window.pywebview.api.update_block(blockId, updates);
+          } catch (err) {
+            fallbackFetchUpdateBlock(blockId, updates);
+          }
+        } else {
+          fallbackFetchUpdateBlock(blockId, updates);
+        }
+      }
+    }
+    if (typeof window !== 'undefined') {
+      window.persistBlockUpdate = persistBlockUpdate;
+    }
+
+    function fallbackFetchUpdateBlock(blockId, updates) {
+      fetch(`/api/blocks/${encodeURIComponent(blockId)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates)
+      }).catch(() => {});
+    }
+
+    function syncRecordMapChildrenOrder(container) {
+      if (!container) return;
+      const parentBlockEl = container.closest('[data-block-id]');
+      const activeNote = typeof getActiveNote === 'function' ? getActiveNote() : null;
+      const parentId = parentBlockEl ? parentBlockEl.getAttribute('data-block-id') : (activeNote ? String(activeNote.id) : null);
+      if (!parentId) return;
+
+      const childIds = Array.from(container.children)
+        .map(c => c.getAttribute('data-block-id'))
+        .filter(Boolean);
+
+      if (typeof state !== 'undefined' && state.activeRecordMap && state.activeRecordMap.block[parentId]) {
+        state.activeRecordMap.block[parentId].value.content = childIds;
+        childIds.forEach(cid => {
+          if (state.activeRecordMap.block[cid]) {
+            state.activeRecordMap.block[cid].value.parent_id = parentId;
+          }
+        });
+      }
+
+      if (hasPyWebViewBridge() && typeof window.pywebview.api.reorder_block_children === 'function') {
+        try {
+          window.pywebview.api.reorder_block_children(parentId, childIds);
+        } catch (_) {}
+      } else {
+        fetch(`/api/blocks/${encodeURIComponent(parentId)}/reorder`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: childIds })
+        }).catch(() => {});
+      }
+    }
+
+    function insertBlockBelow(blockEl, blockType = 'text') {
+      const newId = 'blk-' + (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 10));
+      const activeNote = typeof getActiveNote === 'function' ? getActiveNote() : null;
+      const newBlock = {
+        id: newId,
+        type: blockType,
+        properties: { title: [['', []]] },
+        content: [],
+        alive: 1,
+        parent_id: blockEl.getAttribute('data-parent-id') || (activeNote ? String(activeNote.id) : null),
+        parent_table: 'block'
+      };
+
+      const newEl = renderBlock(newBlock);
+      if (!newEl) return;
+
+      blockEl.after(newEl);
+      if (typeof state !== 'undefined' && state.activeRecordMap) {
+        state.activeRecordMap.block[newId] = { value: newBlock, role: 'editor' };
+        const parentId = newBlock.parent_id;
+        if (parentId && state.activeRecordMap.block[parentId]) {
+          const parentBlock = state.activeRecordMap.block[parentId].value;
+          if (!Array.isArray(parentBlock.content)) parentBlock.content = [];
+          const currentIdx = parentBlock.content.indexOf(blockEl.getAttribute('data-block-id'));
+          if (currentIdx !== -1) {
+            parentBlock.content.splice(currentIdx + 1, 0, newId);
+          } else {
+            parentBlock.content.push(newId);
+          }
+          if (hasPyWebViewBridge() && typeof window.pywebview.api.reorder_block_children === 'function') {
+            try { window.pywebview.api.reorder_block_children(parentId, parentBlock.content); } catch (_) {}
+          } else {
+            fetch(`/api/blocks/${encodeURIComponent(parentId)}/reorder`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ content: parentBlock.content })
+            }).catch(() => {});
+          }
+        }
+      }
+
+      if (hasPyWebViewBridge() && typeof window.pywebview.api.create_block === 'function') {
+        try { window.pywebview.api.create_block(newBlock); } catch (_) {}
+      } else {
+        fetch('/api/blocks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newBlock)
+        }).catch(() => {});
+      }
+
+      const editable = newEl.querySelector('[contenteditable="true"]') || newEl;
+      if (editable && typeof editable.focus === 'function') editable.focus();
+      syncRichEditor();
+    }
+
+    function deleteBlockElement(blockEl, focusTargetEl) {
+      const blockId = blockEl.getAttribute('data-block-id');
+      if (typeof state !== 'undefined' && state.activeRecordMap && state.activeRecordMap.block[blockId]) {
+        state.activeRecordMap.block[blockId].value.alive = 0;
+        const parentId = state.activeRecordMap.block[blockId].value.parent_id;
+        if (parentId && state.activeRecordMap.block[parentId]) {
+          const p = state.activeRecordMap.block[parentId].value;
+          if (Array.isArray(p.content)) {
+            p.content = p.content.filter(id => id !== blockId);
+          }
+        }
+      }
+
+      if (hasPyWebViewBridge() && typeof window.pywebview.api.soft_delete_block === 'function') {
+        try { window.pywebview.api.soft_delete_block(blockId); } catch (_) {}
+      } else {
+        fetch(`/api/blocks/${encodeURIComponent(blockId)}`, {
+          method: 'DELETE'
+        }).catch(() => {});
+      }
+
+      blockEl.remove();
+      if (focusTargetEl) {
+        const editable = focusTargetEl.querySelector('[contenteditable="true"]') || focusTargetEl;
+        if (editable && typeof editable.focus === 'function') {
+          editable.focus();
+          const sel = window.getSelection();
+          if (sel) {
+            const range = document.createRange();
+            range.selectNodeContents(editable);
+            range.collapse(false);
+            sel.removeAllRanges();
+            sel.addRange(range);
+          }
+        }
+      }
+      syncRichEditor();
+    }
+
+    function convertBlockType(blockIdOrEl, newType) {
+      let blockEl = null;
+      let blockId = null;
+
+      if (typeof blockIdOrEl === 'string') {
+        blockId = blockIdOrEl;
+        if (typeof document !== 'undefined' && document.querySelector) {
+          blockEl = document.querySelector(`[data-block-id="${blockId}"]`) || document.getElementById(blockId);
+        }
+      } else if (blockIdOrEl && (blockIdOrEl.nodeType === 1 || blockIdOrEl.getAttribute)) {
+        blockEl = (typeof blockIdOrEl.closest === 'function')
+          ? (blockIdOrEl.closest('[data-block-id], .notion-block') || blockIdOrEl)
+          : blockIdOrEl;
+        blockId = (blockEl.getAttribute && (blockEl.getAttribute('data-block-id') || blockEl.id)) ||
+                  (blockEl.dataset && blockEl.dataset.blockId) || null;
+      }
+      if (!blockEl && blockId && typeof document !== 'undefined' && document.querySelector) {
+        blockEl = document.querySelector(`[data-block-id="${blockId}"]`) || document.getElementById(blockId);
+      }
+      if (!blockEl) return;
+
+      const typeMap = {
+        'turn-h4': 'header_4',
+        'turn-quote': 'quote',
+        'turn-callout': 'callout',
+        'turn-todo': 'to_do',
+        'turn-p': 'text',
+        'turn-h1': 'header',
+        'turn-h2': 'sub_header',
+        'turn-h3': 'sub_sub_header',
+        'turn-bullet': 'bulleted_list',
+        'turn-num': 'numbered_list',
+        'turn-toggle': 'toggle',
+        'h4': 'header_4',
+        'todo': 'to_do',
+        'quote': 'quote',
+        'callout': 'callout',
+        'synced': 'transclusion_container'
+      };
+      const canonicalType = typeMap[newType] || newType;
+
+      const activeNote = typeof getActiveNote === 'function' ? getActiveNote() : null;
+      let blockData = (typeof state !== 'undefined' && state.activeRecordMap && state.activeRecordMap.block[blockId]?.value) || null;
+      if (!blockData) {
+        blockData = {
+          id: blockId,
+          type: canonicalType,
+          properties: { title: htmlToRichTextTuples(blockEl) },
+          content: [],
+          alive: 1,
+          parent_id: blockEl.getAttribute('data-parent-id') || (activeNote ? String(activeNote.id) : null),
+          parent_table: 'block'
+        };
+      } else {
+        blockData.type = canonicalType;
+      }
+
+      const isLeaf = ['equation', 'divider', 'code', 'image', 'video', 'audio', 'file', 'pdf', 'bookmark', 'table_row', 'transclusion_reference', 'sub_page'].includes(canonicalType);
+      if (isLeaf && !(blockData.format && blockData.format.toggleable)) {
+        blockData.content = null;
+      } else if (!Array.isArray(blockData.content)) {
+        blockData.content = [];
+      }
+
+      const newEl = renderBlock(blockData);
+      if (!newEl) return;
+
+      blockEl.replaceWith(newEl);
+      persistBlockUpdate(blockId, { type: canonicalType });
+
+      const editable = newEl.querySelector('[contenteditable="true"]') || newEl;
+      if (editable && typeof editable.focus === 'function') editable.focus();
+      if (typeof attachSubpageBlockListeners === 'function') attachSubpageBlockListeners();
+      if (typeof refreshPageTableOfContents === 'function') refreshPageTableOfContents();
+      syncRichEditor();
+    }
+    window.convertBlockType = convertBlockType;
+
+    function renderBlock(block) {
+      if (!block || !block.type) return null;
+      switch (block.type) {
+        case 'sub_page': {
+          const div = document.createElement('div');
+          div.className = 'block-subpage';
+          div.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.setAttribute('data-block-id', div.id);
+          div.setAttribute('data-type', 'sub_page');
+          const pageId = block.page_id || (block.properties && (block.properties.page_id || block.properties.pageId)) || '';
+          const title = block.title || (block.properties && block.properties.title) || 'Sin título';
+          div.setAttribute('data-page-id', String(pageId));
+          div.setAttribute('data-title', title);
+          div.setAttribute('contenteditable', 'false');
+          div.style.cursor = 'pointer';
+          div.innerHTML = `<span class="subpage-icon">📄</span><span class="subpage-title">${title}</span>`;
+          div.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            loadNote(pageId);
+          };
+          return div;
+        }
+        case 'page': {
+          const div = document.createElement('div');
+          div.className = 'block-subpage notion-block';
+          div.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.setAttribute('data-block-id', div.id);
+          div.setAttribute('data-type', 'page');
+          const pageId = block.id || block.page_id || '';
+          const title = (block.properties && getBlockPropertyPlainText(block, 'title')) || block.title || 'Sin título';
+          div.setAttribute('data-page-id', String(pageId));
+          div.setAttribute('data-title', title);
+          div.setAttribute('contenteditable', 'false');
+          div.style.cursor = 'pointer';
+          div.innerHTML = `<span class="subpage-icon">📄</span><span class="subpage-title">${escapeHtml(title)}</span>`;
+          div.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            loadNote(pageId);
+          };
+          return div;
+        }
+        case 'column_list': {
+          const div = document.createElement('div');
+          div.className = 'notion-block block-column-list notion-columns-row';
+          div.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.setAttribute('data-block-id', div.id);
+          div.setAttribute('data-type', 'column_list');
+          return div;
+        }
+        case 'column': {
+          const div = document.createElement('div');
+          div.className = 'notion-block block-column notion-column-slot';
+          div.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.setAttribute('data-block-id', div.id);
+          div.setAttribute('data-type', 'column');
+          const ratio = (block.format && typeof block.format.column_ratio === 'number') ? block.format.column_ratio : 0.5;
+          div.style.flex = `${ratio} 1 0%`;
+          div.style.minWidth = '60px';
+          div.innerHTML = `<div class="notion-column-content block-column-content notion-block-children"></div>`;
+          return div;
+        }
+        case 'divider': {
+          const div = document.createElement('div');
+          div.className = 'notion-block block-divider notion-divider-block';
+          div.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.setAttribute('data-block-id', div.id);
+          div.setAttribute('data-type', 'divider');
+          div.setAttribute('contenteditable', 'false');
+          div.innerHTML = `<hr class="notion-hr" />`;
+          return div;
+        }
+        case 'text': {
+          const div = document.createElement('div');
+          div.className = 'notion-block block-text notion-block-text';
+          div.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.setAttribute('data-block-id', div.id);
+          div.setAttribute('data-type', 'text');
+          const htmlContent = getBlockPropertyHtml(block, 'title');
+          div.innerHTML = `<div class="notion-block-content" contenteditable="true" data-property="title">${htmlContent}</div><div class="notion-block-children"></div>`;
+          return div;
+        }
+        case 'header': {
+          const id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          const htmlContent = getBlockPropertyHtml(block, 'title');
+          if (block.format && block.format.toggleable) {
+            const details = document.createElement('details');
+            details.className = 'notion-block block-header block-header-toggle notion-block-toggle';
+            details.id = id;
+            details.setAttribute('data-block-id', id);
+            details.setAttribute('data-type', 'header');
+            details.setAttribute('data-toggleable', 'true');
+            details.innerHTML = `<summary class="notion-toggle-summary block-header-toggle-summary"><span class="notion-toggle-arrow">▶</span><h1 class="notion-toggle-title block-header-toggle-title" contenteditable="true" data-property="title">${htmlContent}</h1></summary><div class="notion-toggle-content block-toggle-content notion-block-children"></div>`;
+            return details;
+          }
+          const h = document.createElement('h1');
+          h.className = 'notion-block block-header notion-block-header';
+          h.id = id;
+          h.setAttribute('data-block-id', id);
+          h.setAttribute('data-type', 'header');
+          h.setAttribute('contenteditable', 'true');
+          h.setAttribute('data-property', 'title');
+          h.innerHTML = htmlContent;
+          return h;
+        }
+        case 'sub_header': {
+          const id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          const htmlContent = getBlockPropertyHtml(block, 'title');
+          if (block.format && block.format.toggleable) {
+            const details = document.createElement('details');
+            details.className = 'notion-block block-sub-header block-header-toggle notion-block-toggle';
+            details.id = id;
+            details.setAttribute('data-block-id', id);
+            details.setAttribute('data-type', 'sub_header');
+            details.setAttribute('data-toggleable', 'true');
+            details.innerHTML = `<summary class="notion-toggle-summary block-header-toggle-summary"><span class="notion-toggle-arrow">▶</span><h2 class="notion-toggle-title block-header-toggle-title" contenteditable="true" data-property="title">${htmlContent}</h2></summary><div class="notion-toggle-content block-toggle-content notion-block-children"></div>`;
+            return details;
+          }
+          const h = document.createElement('h2');
+          h.className = 'notion-block block-sub-header notion-block-sub-header';
+          h.id = id;
+          h.setAttribute('data-block-id', id);
+          h.setAttribute('data-type', 'sub_header');
+          h.setAttribute('contenteditable', 'true');
+          h.setAttribute('data-property', 'title');
+          h.innerHTML = htmlContent;
+          return h;
+        }
+        case 'sub_sub_header': {
+          const id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          const htmlContent = getBlockPropertyHtml(block, 'title');
+          if (block.format && block.format.toggleable) {
+            const details = document.createElement('details');
+            details.className = 'notion-block block-sub-sub-header block-header-toggle notion-block-toggle';
+            details.id = id;
+            details.setAttribute('data-block-id', id);
+            details.setAttribute('data-type', 'sub_sub_header');
+            details.setAttribute('data-toggleable', 'true');
+            details.innerHTML = `<summary class="notion-toggle-summary block-header-toggle-summary"><span class="notion-toggle-arrow">▶</span><h3 class="notion-toggle-title block-header-toggle-title" contenteditable="true" data-property="title">${htmlContent}</h3></summary><div class="notion-toggle-content block-toggle-content notion-block-children"></div>`;
+            return details;
+          }
+          const h = document.createElement('h3');
+          h.className = 'notion-block block-sub-sub-header notion-block-sub-sub-header';
+          h.id = id;
+          h.setAttribute('data-block-id', id);
+          h.setAttribute('data-type', 'sub_sub_header');
+          h.setAttribute('contenteditable', 'true');
+          h.setAttribute('data-property', 'title');
+          h.innerHTML = htmlContent;
+          return h;
+        }
+        case 'header_4': {
+          const id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          const htmlContent = getBlockPropertyHtml(block, 'title');
+          if (block.format && block.format.toggleable) {
+            const details = document.createElement('details');
+            details.className = 'notion-block block-header-4 block-header-toggle notion-block-toggle';
+            details.id = id;
+            details.setAttribute('data-block-id', id);
+            details.setAttribute('data-type', 'header_4');
+            details.setAttribute('data-toggleable', 'true');
+            details.innerHTML = `<summary class="notion-toggle-summary block-header-toggle-summary"><span class="notion-toggle-arrow">▶</span><h4 class="notion-toggle-title block-header-4-title" contenteditable="true" data-property="title">${htmlContent}</h4></summary><div class="notion-toggle-content block-toggle-content notion-block-children"></div>`;
+            return details;
+          }
+          const h = document.createElement('h4');
+          h.className = 'notion-block block-header-4 notion-block-header-4';
+          h.id = id;
+          h.setAttribute('data-block-id', id);
+          h.setAttribute('data-type', 'header_4');
+          h.setAttribute('contenteditable', 'true');
+          h.setAttribute('data-property', 'title');
+          h.innerHTML = htmlContent;
+          return h;
+        }
+        case 'bulleted_list': {
+          const div = document.createElement('div');
+          div.className = 'notion-block block-bulleted-list notion-block-bulleted-list';
+          div.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.setAttribute('data-block-id', div.id);
+          div.setAttribute('data-type', 'bulleted_list');
+          const htmlContent = getBlockPropertyHtml(block, 'title');
+          div.innerHTML = `<span class="notion-bullet" contenteditable="false">•</span><div class="notion-block-content" contenteditable="true" data-property="title">${htmlContent}</div><div class="notion-block-children"></div>`;
+          return div;
+        }
+        case 'numbered_list': {
+          const div = document.createElement('div');
+          div.className = 'notion-block block-numbered-list notion-block-numbered-list';
+          div.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.setAttribute('data-block-id', div.id);
+          div.setAttribute('data-type', 'numbered_list');
+          const htmlContent = getBlockPropertyHtml(block, 'title');
+          div.innerHTML = `<span class="notion-number-prefix" contenteditable="false">1.</span><div class="notion-block-content" contenteditable="true" data-property="title">${htmlContent}</div><div class="notion-block-children"></div>`;
+          return div;
+        }
+        case 'toggle': {
+          const details = document.createElement('details');
+          details.className = 'notion-block block-toggle notion-block-toggle';
+          details.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          details.setAttribute('data-block-id', details.id);
+          details.setAttribute('data-type', 'toggle');
+          const htmlContent = getBlockPropertyHtml(block, 'title');
+          details.innerHTML = `<summary class="notion-toggle-summary block-toggle-summary"><span class="notion-toggle-arrow">▶</span><div class="notion-toggle-title" contenteditable="true" data-property="title">${htmlContent}</div></summary><div class="notion-toggle-content block-toggle-content notion-block-children"></div>`;
+          return details;
+        }
+        case 'to_do': {
+          const div = document.createElement('div');
+          div.className = 'notion-block block-to-do notion-block-to-do';
+          const id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.id = id;
+          div.setAttribute('data-block-id', id);
+          div.setAttribute('data-type', 'to_do');
+          const htmlContent = getBlockPropertyHtml(block, 'title');
+          let isChecked = false;
+          if (block.properties && block.properties.checked) {
+            const chkProp = block.properties.checked;
+            if (Array.isArray(chkProp) && chkProp[0]) {
+              const firstVal = Array.isArray(chkProp[0]) ? chkProp[0][0] : chkProp[0];
+              isChecked = (firstVal === 'Yes' || firstVal === true);
+            } else if (chkProp === true || chkProp === 'Yes') {
+              isChecked = true;
+            }
+          }
+          div.innerHTML = `<div class="notion-to-do-row"><input type="checkbox" class="notion-to-do-checkbox" ${isChecked ? 'checked' : ''} contenteditable="false" /><div class="notion-to-do-title notion-block-content ${isChecked ? 'completed' : ''}" contenteditable="true" data-property="title">${htmlContent}</div></div><div class="block-to-do-children notion-block-children"></div>`;
+          const chk = div.querySelector('.notion-to-do-checkbox');
+          const titleEl = div.querySelector('.notion-to-do-title');
+          if (chk) {
+            chk.onchange = function(e) {
+              const checked = Boolean(chk.checked !== undefined ? chk.checked : chk.hasAttribute('checked'));
+              if (titleEl) {
+                if (checked) {
+                  titleEl.classList.add('completed');
+                } else {
+                  titleEl.classList.remove('completed');
+                }
+              }
+              const val = checked ? 'Yes' : 'No';
+              if (typeof state !== 'undefined' && state.activeRecordMap && state.activeRecordMap.block && state.activeRecordMap.block[id]) {
+                const blk = state.activeRecordMap.block[id].value;
+                if (blk) {
+                  blk.properties = blk.properties || {};
+                  blk.properties.checked = [[val, []]];
+                }
+              }
+              if (typeof window !== 'undefined' && window.state && window.state.activeRecordMap && window.state.activeRecordMap.block && window.state.activeRecordMap.block[id]) {
+                const blk = window.state.activeRecordMap.block[id].value;
+                if (blk) {
+                  blk.properties = blk.properties || {};
+                  blk.properties.checked = [[val, []]];
+                }
+              }
+              const updater = (typeof window !== 'undefined' && typeof window.persistBlockUpdate === 'function')
+                ? window.persistBlockUpdate
+                : (typeof persistBlockUpdate === 'function' ? persistBlockUpdate : null);
+              if (typeof updater === 'function') {
+                updater(id, { properties: { checked: [[val, []]] } });
+              }
+              if (typeof syncRichEditor === 'function') {
+                syncRichEditor();
+              }
+            };
+          }
+          return div;
+        }
+        case 'quote': {
+          const bq = document.createElement('blockquote');
+          bq.className = 'notion-block block-quote notion-block-quote';
+          const id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          bq.id = id;
+          bq.setAttribute('data-block-id', id);
+          bq.setAttribute('data-type', 'quote');
+          const htmlContent = getBlockPropertyHtml(block, 'title');
+          bq.innerHTML = `<div class="notion-quote-content notion-block-content" contenteditable="true" data-property="title">${htmlContent}</div><div class="block-quote-children notion-block-children"></div>`;
+          return bq;
+        }
+        case 'callout': {
+          const div = document.createElement('div');
+          const id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          const bg = (block.format && block.format.block_color) || '';
+          div.className = `notion-block block-callout notion-block-callout${bg ? ' notion-color-' + bg : ''}`;
+          div.id = id;
+          div.setAttribute('data-block-id', id);
+          div.setAttribute('data-type', 'callout');
+          const icon = (block.format && block.format.page_icon) || '💡';
+          const htmlContent = getBlockPropertyHtml(block, 'title');
+          div.innerHTML = `<div class="notion-callout-inner"><span class="notion-callout-icon" contenteditable="false">${escapeHtml(icon)}</span><div class="notion-callout-body notion-block-content" contenteditable="true" data-property="title">${htmlContent}</div></div><div class="block-callout-children notion-block-children"></div>`;
+          return div;
+        }
+        case 'code': {
+          const div = document.createElement('div');
+          div.className = 'notion-block block-code notion-block-code';
+          div.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.setAttribute('data-block-id', div.id);
+          div.setAttribute('data-type', 'code');
+          const rawCode = getBlockPropertyPlainText(block, 'title');
+          const lang = getBlockPropertyPlainText(block, 'language') || 'python';
+          div.innerHTML = `<div class="notion-code-header" contenteditable="false"><select class="notion-code-lang-select block-code-lang-select" data-block-id="${div.id}"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="html">HTML</option><option value="css">CSS</option><option value="sql">SQL</option><option value="markdown">Markdown</option><option value="json">JSON</option><option value="typescript">TypeScript</option><option value="bash">Bash</option><option value="c">C / C++</option></select><button class="notion-code-copy-btn btn-secondary">Copiar</button></div><pre><code class="notion-code-body block-code-body" contenteditable="plaintext-only" spellcheck="false" data-property="title">${escapeHtml(rawCode)}</code></pre>`;
+          const sel = div.querySelector('select');
+          if (sel) sel.value = lang.toLowerCase();
+          const copyBtn = div.querySelector('.notion-code-copy-btn');
+          if (copyBtn) {
+            copyBtn.onclick = (e) => {
+              e.stopPropagation();
+              const codeBody = div.querySelector('code');
+              if (codeBody) {
+                if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                  navigator.clipboard.writeText(codeBody.textContent).then(() => {
+                    if (typeof showToast === 'function') showToast('Código copiado', '📋');
+                  }).catch(() => {});
+                }
+              }
+            };
+          }
+          return div;
+        }
+        case 'equation': {
+          const div = document.createElement('div');
+          div.className = 'notion-block block-equation notion-block-equation';
+          div.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.setAttribute('data-block-id', div.id);
+          div.setAttribute('data-type', 'equation');
+          const latex = getBlockPropertyPlainText(block, 'title') || 'E = mc^2';
+
+          div.innerHTML = `
+            <div class="notion-equation-header-bar" contenteditable="false">
+              <span style="font-weight:700; display:flex; align-items:center; gap:6px;">
+                <span style="color:var(--accent-amber, #f59e0b); font-family:'JetBrains Mono', monospace; font-weight:800;">∑</span>
+                <span>Ecuación Matemática (LaTeX)</span>
+              </span>
+              <div class="notion-equation-actions" style="display:flex; gap:6px;">
+                <button type="button" class="btn-copy-latex" title="Copiar código LaTeX" style="padding:2px 8px; font-size:11px; background:transparent; border:1px solid var(--border-hairline, rgba(255,255,255,0.15)); border-radius:4px; color:var(--text-secondary, #9ca3af); cursor:pointer;">Copiar LaTeX</button>
+                <button type="button" class="btn-toggle-edit" title="Editar fórmula" style="padding:2px 8px; font-size:11px; background:transparent; border:1px solid var(--border-hairline, rgba(255,255,255,0.15)); border-radius:4px; color:var(--text-secondary, #9ca3af); cursor:pointer;">Editar</button>
+              </div>
+            </div>
+            <div class="notion-equation-display block-equation-display" contenteditable="false" data-latex="${escapeHtml(latex)}" title="Haz clic para editar la fórmula LaTeX">${escapeHtml(latex)}</div>
+            <div class="notion-equation-popover block-equation-popover" style="display:none;" contenteditable="false">
+              <textarea class="notion-equation-input notion-equation-textarea search-box tabular-nums" rows="3" data-block-id="${div.id}" placeholder="Fórmula LaTeX (ej. \\begin{cases} 2x+3y=10 \\\\ 4x-5y=-3 \\end{cases})">${escapeHtml(latex)}</textarea>
+              <div class="notion-equation-snippets-row">
+                <button type="button" class="math-chip-btn" data-snip="\\\\begin{cases} 2x + 3y = 10 \\\\\\\\ 4x - 5y = -3 \\\\end{cases}">Sistema</button>
+                <button type="button" class="math-chip-btn" data-snip="\\\\begin{bmatrix} 1 & 0 \\\\\\\\ 0 & 1 \\\\end{bmatrix}">Matriz</button>
+                <button type="button" class="math-chip-btn" data-snip="A^{-1} = \\\\frac{1}{|A|} \\\\cdot \\\\text{adj}(A)">Inversa</button>
+                <button type="button" class="math-chip-btn" data-snip="\\\\vec{x} \\\\cdot \\\\vec{y} = \\\\|\\\\vec{x}\\\\| \\\\|\\\\vec{y}\\\\| \\\\cos(\\\\theta)">Vectores</button>
+                <button type="button" class="math-chip-btn" data-snip="\\\\mathbb{R}^n = \\\\{ (x_1, \\\\dots, x_n) : x_i \\\\in \\\\mathbb{R} \\\\}">Conjuntos</button>
+                <button type="button" class="math-chip-btn" data-snip="\\\\lim_{x \\\\to 0} \\\\frac{\\\\sin x}{x} = 1">Límite</button>
+              </div>
+              <div class="notion-equation-live-preview"></div>
+              <div class="notion-equation-actions-row">
+                <button type="button" class="btn-secondary btn-convert-inline" style="padding:3px 8px; font-size:11px;">Convertir a en línea</button>
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="btn-secondary btn-cancel-edit" style="padding:3px 8px; font-size:11px;">Cerrar</button>
+                  <button type="button" class="btn-primary btn-save-equation" style="padding:3px 12px; font-size:11px;">Listo / Guardar (Ctrl+Enter)</button>
+                </div>
+              </div>
+            </div>
+          `;
+
+          const disp = div.querySelector('.notion-equation-display');
+          const pop = div.querySelector('.notion-equation-popover');
+          const inp = div.querySelector('.notion-equation-input');
+          const preview = div.querySelector('.notion-equation-live-preview');
+          const btnCopy = div.querySelector('.btn-copy-latex');
+          const btnToggle = div.querySelector('.btn-toggle-edit');
+          const btnSave = div.querySelector('.btn-save-equation');
+          const btnCancel = div.querySelector('.btn-cancel-edit');
+          const btnConvert = div.querySelector('.btn-convert-inline');
+
+          function renderDispMath(code) {
+            const targetLatex = code != null ? String(code) : '';
+            if (disp) {
+              disp.setAttribute('data-latex', targetLatex);
+              if (typeof window !== 'undefined' && window.katex) {
+                try {
+                  window.katex.render(targetLatex, disp, { displayMode: true, throwOnError: false });
+                } catch (_) {
+                  disp.textContent = targetLatex;
+                }
+              } else {
+                disp.textContent = targetLatex;
+              }
+            }
+          }
+
+          function renderPreviewMath(code) {
+            if (!preview) return;
+            const targetLatex = code != null ? String(code) : '';
+            if (typeof window !== 'undefined' && window.katex) {
+              try {
+                window.katex.render(targetLatex, preview, { displayMode: true, throwOnError: false });
+              } catch (_) {
+                preview.textContent = targetLatex;
+              }
+            } else {
+              preview.textContent = targetLatex;
+            }
+          }
+
+          function openEditor() {
+            if (pop) {
+              pop.style.display = 'block';
+              if (inp) inp.focus();
+              renderPreviewMath(inp ? inp.value : '');
+            }
+          }
+
+          function closeEditor() {
+            if (pop) pop.style.display = 'none';
+          }
+
+          function saveEquationVal() {
+            if (!inp) return;
+            const val = inp.value;
+            renderDispMath(val);
+            const crdtPayload = typeof buildEquationCrdt === 'function' ? buildEquationCrdt(val, (block.version || 1) + 1) : {};
+            persistBlockUpdate(div.id, {
+              properties: { title: [[val, []]] },
+              crdt_data: crdtPayload,
+              version: (block.version || 1) + 1
+            });
+            closeEditor();
+            if (typeof showToast === 'function') showToast('Ecuación guardada', '∑');
+          }
+
+          if (disp && pop && inp) {
+            disp.onclick = (e) => {
+              e.stopPropagation();
+              if (pop.style.display === 'none') openEditor();
+              else closeEditor();
+            };
+
+            if (btnToggle) {
+              btnToggle.onclick = (e) => {
+                e.stopPropagation();
+                if (pop.style.display === 'none') openEditor();
+                else closeEditor();
+              };
+            }
+
+            if (btnCopy) {
+              btnCopy.onclick = (e) => {
+                e.stopPropagation();
+                const textToCopy = inp.value || (disp.getAttribute ? disp.getAttribute('data-latex') : '') || '';
+                if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+                  navigator.clipboard.writeText(textToCopy);
+                }
+                if (typeof showToast === 'function') showToast('LaTeX copiado al portapapeles', '📋');
+              };
+            }
+
+            if (btnCancel) {
+              btnCancel.onclick = (e) => {
+                e.stopPropagation();
+                closeEditor();
+              };
+            }
+
+            if (btnSave) {
+              btnSave.onclick = (e) => {
+                e.stopPropagation();
+                saveEquationVal();
+              };
+            }
+
+            if (btnConvert) {
+              btnConvert.onclick = (e) => {
+                e.stopPropagation();
+                const formula = inp.value || (disp.getAttribute ? disp.getAttribute('data-latex') : '') || '';
+                persistBlockUpdate(div.id, {
+                  type: 'text',
+                  properties: { title: [['⁍', [['e', formula]]]] },
+                  crdt_data: typeof buildEquationCrdt === 'function' ? buildEquationCrdt(formula, (block.version || 1) + 1) : {}
+                });
+                if (typeof loadActiveNoteBlocks === 'function') loadActiveNoteBlocks();
+                if (typeof showToast === 'function') showToast('Convertido a ecuación en línea', '√x');
+              };
+            }
+
+            const chips = pop.querySelectorAll ? pop.querySelectorAll('.math-chip-btn') : [];
+            if (chips && chips.forEach) {
+              chips.forEach(chip => {
+                chip.onclick = (e) => {
+                  e.stopPropagation();
+                  const snip = chip.getAttribute('data-snip');
+                  if (!snip) return;
+                  const start = inp.selectionStart || 0;
+                  const end = inp.selectionEnd || 0;
+                  const cur = inp.value || '';
+                  inp.value = cur.slice(0, start) + snip + cur.slice(end);
+                  inp.focus();
+                  inp.setSelectionRange(start + snip.length, start + snip.length);
+                  renderPreviewMath(inp.value);
+                };
+              });
+            }
+
+            inp.oninput = () => {
+              const val = inp.value;
+              renderDispMath(val);
+              renderPreviewMath(val);
+              const crdtPayload = typeof buildEquationCrdt === 'function' ? buildEquationCrdt(val, (block.version || 1) + 1) : {};
+              persistBlockUpdate(div.id, {
+                properties: { title: [[val, []]] },
+                crdt_data: crdtPayload,
+                version: (block.version || 1) + 1
+              });
+            };
+
+            inp.onkeydown = (e) => {
+              if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                saveEquationVal();
+              } else if (e.key === 'Escape') {
+                e.preventDefault();
+                closeEditor();
+              }
+            };
+
+            renderDispMath(latex);
+          }
+          return div;
+        }
+        case 'table': {
+          const div = document.createElement('div');
+          div.className = 'notion-block block-table notion-block-table-wrapper';
+          div.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.setAttribute('data-block-id', div.id);
+          div.setAttribute('data-type', 'table');
+          div.innerHTML = `<div class="notion-table-scroll"><table class="notion-simple-table"><tbody class="notion-table-body block-table-body"></tbody></table></div>`;
+          return div;
+        }
+        case 'table_row': {
+          const tr = document.createElement('tr');
+          tr.className = 'notion-block block-table-row notion-table-row';
+          tr.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          tr.setAttribute('data-block-id', tr.id);
+          tr.setAttribute('data-type', 'table_row');
+          let colOrder = [];
+          if (block.format && Array.isArray(block.format.table_block_column_order)) {
+            colOrder = block.format.table_block_column_order;
+          } else if (typeof state !== 'undefined' && state.activeRecordMap && block.parent_id && state.activeRecordMap.block[block.parent_id]) {
+            const pFormat = state.activeRecordMap.block[block.parent_id].value?.format;
+            if (pFormat && Array.isArray(pFormat.table_block_column_order)) {
+              colOrder = pFormat.table_block_column_order;
+            }
+          }
+          if (colOrder.length === 0 && block.properties && typeof block.properties === 'object') {
+            colOrder = Object.keys(block.properties);
+          }
+          if (colOrder.length === 0) colOrder = ['col_1', 'col_2'];
+          colOrder.forEach(colId => {
+            const td = document.createElement('td');
+            td.className = 'block-table-cell notion-table-cell';
+            td.setAttribute('contenteditable', 'true');
+            td.setAttribute('data-col-id', colId);
+            td.setAttribute('data-property', colId);
+            td.innerHTML = getBlockPropertyHtml(block, colId);
+            tr.appendChild(td);
+          });
+          return tr;
+        }
+        case 'collection_view': {
+          const div = document.createElement('div');
+          div.className = 'notion-block block-collection-view';
+          div.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.setAttribute('data-block-id', div.id);
+          div.setAttribute('data-type', 'collection_view');
+          const title = getBlockPropertyPlainText(block, 'title') || 'Vista de Colección';
+          div.innerHTML = `<div class="collection-view-header" contenteditable="false"><span class="collection-view-icon">📊</span><span class="collection-view-title" contenteditable="true" data-property="title">${escapeHtml(title)}</span></div><div class="collection-view-body notion-block-children"></div>`;
+          return div;
+        }
+        case 'collection_view_page': {
+          const div = document.createElement('div');
+          div.className = 'notion-block block-collection-view-page';
+          div.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.setAttribute('data-block-id', div.id);
+          div.setAttribute('data-type', 'collection_view_page');
+          const title = getBlockPropertyPlainText(block, 'title') || 'Base de Datos de Página';
+          div.innerHTML = `<div class="collection-view-header" contenteditable="false"><span class="collection-view-icon">📑</span><span class="collection-view-title" contenteditable="true" data-property="title">${escapeHtml(title)}</span></div><div class="collection-view-body notion-block-children"></div>`;
+          return div;
+        }
+        case 'image': {
+          const div = document.createElement('div');
+          div.className = 'notion-block block-image notion-block-image';
+          div.id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.setAttribute('data-block-id', div.id);
+          div.setAttribute('data-type', 'image');
+          const src = (block.format && block.format.display_source) ||
+                      getBlockPropertyPlainText(block, 'source') ||
+                      'https://images.unsplash.com/photo-1517842645767-c639042777db?w=800';
+          const caption = getBlockPropertyHtml(block, 'caption');
+          const width = (block.format && block.format.block_width) || 700;
+          div.style.maxWidth = '100%';
+          div.style.width = typeof width === 'number' ? `${width}px` : width;
+          div.innerHTML = `<div class="notion-image-wrap" contenteditable="false"><img src="${escapeHtml(src)}" alt="${escapeHtml(getBlockPropertyPlainText(block, 'caption'))}" /><div class="notion-image-resizer left"></div><div class="notion-image-resizer right"></div></div><div class="notion-image-caption block-image-caption" contenteditable="true" data-property="caption" placeholder="Escribe un pie de foto...">${caption}</div>`;
+          return div;
+        }
+        case 'transclusion_container': {
+          const div = document.createElement('div');
+          const id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.className = 'notion-block block-transclusion-container notion-synced-block';
+          div.id = id;
+          div.setAttribute('data-block-id', id);
+          div.setAttribute('data-type', 'transclusion_container');
+          div.innerHTML = `<div class="notion-synced-header" contenteditable="false"><span class="notion-synced-badge">🔴 Bloque Sincronizado Original · ${escapeHtml(String(id).slice(-4))}</span><div class="notion-synced-actions"><button type="button" class="notion-synced-btn btn-copy-synced">🔗 Copiar referencia</button></div></div><div class="notion-synced-body notion-block-children"></div>`;
+          const btnCopy = div.querySelector('.btn-copy-synced');
+          if (btnCopy) {
+            btnCopy.onclick = function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              if (typeof copySyncedBlockReference === 'function') {
+                copySyncedBlockReference(id);
+              } else if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(id);
+                if (typeof showToast === 'function') showToast('ID de bloque sincronizado copiado', '🔗');
+              }
+            };
+          }
+          return div;
+        }
+        case 'transclusion_reference': {
+          const div = document.createElement('div');
+          const id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.className = 'notion-block block-transclusion-reference notion-synced-block';
+          div.id = id;
+          div.setAttribute('data-block-id', id);
+          div.setAttribute('data-type', 'transclusion_reference');
+          const targetId = (block.format && block.format.copied_from_pointer && block.format.copied_from_pointer.id) ||
+                           (block.format && block.format.transclusion_reference_pointer && block.format.transclusion_reference_pointer.id) || '';
+          if (targetId) div.setAttribute('data-copied-from', targetId);
+          div.innerHTML = `<div class="notion-synced-header" contenteditable="false"><span class="notion-synced-badge">🔴 Referencia Sincronizada · Referencia a ${escapeHtml(String(targetId || id).slice(-4))}</span><div class="notion-synced-actions"><button type="button" class="notion-synced-btn btn-unsync">Desvincular</button></div></div><div class="notion-synced-body notion-block-children"></div>`;
+          const btnUnsync = div.querySelector('.btn-unsync');
+          if (btnUnsync) {
+            btnUnsync.onclick = function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              if (typeof unsyncBlockInstance === 'function') {
+                unsyncBlockInstance(div);
+              }
+            };
+          }
+          return div;
+        }
+        case 'video': {
+          const div = document.createElement('div');
+          const id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.className = 'notion-block block-video notion-block-video';
+          div.id = id;
+          div.setAttribute('data-block-id', id);
+          div.setAttribute('data-type', 'video');
+          const src = (block.format && block.format.display_source) ||
+                      getBlockPropertyPlainText(block, 'source') || '';
+          const captionHtml = getBlockPropertyHtml(block, 'caption');
+          div.innerHTML = `<div class="notion-media-player-wrap" contenteditable="false"><video src="${escapeHtml(src)}" controls style="max-width:100%; border-radius:6px;"></video></div><div class="notion-media-caption block-video-caption" contenteditable="true" data-property="caption" placeholder="Pie de video...">${captionHtml}</div>`;
+          return div;
+        }
+        case 'audio': {
+          const div = document.createElement('div');
+          const id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.className = 'notion-block block-audio notion-block-audio';
+          div.id = id;
+          div.setAttribute('data-block-id', id);
+          div.setAttribute('data-type', 'audio');
+          const src = (block.format && block.format.display_source) ||
+                      getBlockPropertyPlainText(block, 'source') || '';
+          const titleHtml = getBlockPropertyHtml(block, 'title');
+          div.innerHTML = `<div class="notion-audio-wrap" contenteditable="false"><audio src="${escapeHtml(src)}" controls style="width:100%;"></audio></div><div class="notion-media-caption block-audio-title" contenteditable="true" data-property="title" placeholder="Título de audio...">${titleHtml}</div>`;
+          return div;
+        }
+        case 'file': {
+          const div = document.createElement('div');
+          const id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.className = 'notion-block block-file notion-block-file';
+          div.id = id;
+          div.setAttribute('data-block-id', id);
+          div.setAttribute('data-type', 'file');
+          div.setAttribute('contenteditable', 'false');
+          const src = (block.format && block.format.display_source) ||
+                      getBlockPropertyPlainText(block, 'source') || '#';
+          const titleHtml = getBlockPropertyHtml(block, 'title') || 'Archivo adjunto';
+          const size = getBlockPropertyPlainText(block, 'size') || (block.format && block.format.file_size) || '';
+          div.innerHTML = `<a href="${escapeHtml(src)}" target="_blank" class="notion-file-link"><span class="notion-file-icon">📎</span><span class="notion-file-title" contenteditable="true" data-property="title">${titleHtml}</span>${size ? `<span class="notion-file-size">${escapeHtml(size)}</span>` : ''}</a>`;
+          return div;
+        }
+        case 'pdf': {
+          const div = document.createElement('div');
+          const id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.className = 'notion-block block-pdf notion-block-pdf';
+          div.id = id;
+          div.setAttribute('data-block-id', id);
+          div.setAttribute('data-type', 'pdf');
+          const src = (block.format && block.format.display_source) ||
+                      getBlockPropertyPlainText(block, 'source') || '';
+          div.innerHTML = `<div class="notion-pdf-wrap" contenteditable="false">${createPdfEmbedHTML(src, getBlockPropertyPlainText(block, 'title') || 'Documento.pdf')}</div>`;
+          div.setAttribute('data-source', src);
+          div.setAttribute('data-title', getBlockPropertyPlainText(block, 'title') || 'Documento.pdf');
+          return div;
+        }
+        case 'bookmark': {
+          const div = document.createElement('div');
+          const id = block.id || ('blk-' + Math.random().toString(36).substring(2, 9));
+          div.className = 'notion-block block-bookmark notion-block-bookmark';
+          div.id = id;
+          div.setAttribute('data-block-id', id);
+          div.setAttribute('data-type', 'bookmark');
+          const link = getBlockPropertyPlainText(block, 'link') ||
+                       (block.format && block.format.bookmark_url) ||
+                       getBlockPropertyPlainText(block, 'source') || 'https://';
+          const titleHtml = getBlockPropertyHtml(block, 'title');
+          const descHtml = getBlockPropertyHtml(block, 'description');
+          div.innerHTML = `<a href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer" class="notion-bookmark-inner" contenteditable="false"><div class="notion-bookmark-content"><div class="notion-bookmark-title" contenteditable="true" data-property="title">${titleHtml || escapeHtml(link)}</div>${descHtml ? `<div class="notion-bookmark-desc" contenteditable="true" data-property="description">${descHtml}</div>` : ''}<div class="notion-bookmark-url">🔗 ${escapeHtml(link)}</div></div></a>`;
+          return div;
+        }
+        case 'p':
+        default: {
+          const p = document.createElement('p');
+          p.className = 'notion-block block-p';
+          if (block.id) p.id = block.id;
+          p.setAttribute('data-block-id', p.id || ('blk-' + Math.random().toString(36).substring(2, 9)));
+          p.setAttribute('data-type', block.type || 'p');
+          p.setAttribute('contenteditable', 'true');
+          p.setAttribute('data-property', 'title');
+          p.innerHTML = (block.properties && (block.properties.html || block.properties.text)) || getBlockPropertyHtml(block, 'title');
+          return p;
+        }
+      }
+    }
+    window.renderBlock = renderBlock;
+
+    function renderBlocks(blocks, container = null) {
+      const target = container || document.getElementById('rich-editor-canvas');
+      if (!target || !Array.isArray(blocks)) return;
+      target.innerHTML = '';
+      blocks.forEach(block => {
+        const el = renderBlock(block);
+        if (el) target.appendChild(el);
+      });
+      attachSubpageBlockListeners();
+    }
+    window.renderBlocks = renderBlocks;
+
+    function attachSubpageBlockListeners() {
+      const canvas = document.getElementById('rich-editor-canvas');
+      if (!canvas) return;
+      canvas.querySelectorAll('.block-subpage').forEach(el => {
+        if (!el.dataset.subpageListenerAttached) {
+          el.dataset.subpageListenerAttached = 'true';
+          el.setAttribute('contenteditable', 'false');
+          el.style.cursor = 'pointer';
+          const pageId = el.getAttribute('data-page-id');
+          el.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            loadNote(pageId);
+          };
+        }
+      });
+    }
+    window.attachSubpageBlockListeners = attachSubpageBlockListeners;
+
+    function renderTreeFromRecordMap(recordMap, rootId, container) {
+      const mountTarget = container || document.getElementById('rich-editor-canvas');
+      if (!mountTarget || !recordMap || !recordMap.block) return;
+
+      const ancestors = new Set();
+      mountTarget.innerHTML = '';
+
+      function renderSubtree(blockId, parentElement) {
+        if (!blockId || ancestors.has(blockId)) {
+          return;
+        }
+        ancestors.add(blockId);
+        try {
+          const entry = recordMap.block[blockId];
+          if (!entry || !entry.value) return;
+          const block = entry.value;
+
+          if (block.alive === 0 || block.alive === false) return;
+
+          if (blockId === rootId) {
+            if (Array.isArray(block.content)) {
+              block.content.forEach(childId => renderSubtree(childId, parentElement));
+            }
+            return;
+          }
+
+          const blockEl = renderBlock(block);
+          if (!blockEl) return;
+
+          blockEl.setAttribute('data-block-id', block.id);
+          blockEl.setAttribute('data-type', block.type);
+          if (block.parent_id) {
+            blockEl.setAttribute('data-parent-id', block.parent_id);
+          }
+
+          if (Array.isArray(block.content) && block.content.length > 0) {
+            const childrenSlot = blockEl.querySelector(
+              '.notion-block-children, .block-column-content, .notion-column-content, .block-toggle-content, .notion-toggle-content, .block-table-body, .notion-table-body, .block-quote-children, .block-callout-children, .block-to-do-children, .notion-synced-body'
+            ) || blockEl;
+            block.content.forEach(childId => renderSubtree(childId, childrenSlot));
+          }
+
+          if (block.type === 'transclusion_reference') {
+            const targetId = (block.format && block.format.copied_from_pointer && block.format.copied_from_pointer.id) ||
+                             (block.format && block.format.transclusion_reference_pointer && block.format.transclusion_reference_pointer.id);
+            if (targetId && recordMap.block[targetId] && recordMap.block[targetId].value) {
+              const targetBlock = recordMap.block[targetId].value;
+              if (targetBlock.alive !== 0 && targetBlock.alive !== false && Array.isArray(targetBlock.content) && targetBlock.content.length > 0) {
+                if (!ancestors.has(targetId)) {
+                  ancestors.add(targetId);
+                  try {
+                    const syncedSlot = blockEl.querySelector('.notion-synced-body, .notion-block-children') || blockEl;
+                    targetBlock.content.forEach(childId => renderSubtree(childId, syncedSlot));
+                  } finally {
+                    ancestors.delete(targetId);
+                  }
+                }
+              }
+            }
+          }
+
+          parentElement.appendChild(blockEl);
+        } finally {
+          ancestors.delete(blockId);
+        }
+      }
+
+      renderSubtree(rootId, mountTarget);
+
+      if (typeof attachSubpageBlockListeners === 'function') attachSubpageBlockListeners();
+      if (typeof renderAllInlineEquations === 'function') renderAllInlineEquations();
+      if (typeof attachColumnResizerListeners === 'function') attachColumnResizerListeners();
+      if (typeof tagAllEditorBlocks === 'function') tagAllEditorBlocks();
+      if (typeof refreshPageTableOfContents === 'function') refreshPageTableOfContents();
+    }
+    window.renderTreeFromRecordMap = renderTreeFromRecordMap;
+
+    function copySyncedBlockReference(blockIdOrSyncId) {
+      const idStr = String(blockIdOrSyncId || '');
+      if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(idStr).then(() => {
+          if (typeof showToast === 'function') showToast('Referencia de bloque copiada al portapapeles', '🔗');
+        }).catch(() => {});
+      } else if (typeof showToast === 'function') {
+        showToast('Referencia: ' + idStr, '🔗');
+      }
+
+      // Compatibilidad con buffer legacy si existe elemento con data-synced-id
+      if (typeof document !== 'undefined') {
+        const editor = document.getElementById('rich-editor-canvas');
+        const sourceBlock = editor ? editor.querySelector(`.notion-synced-block[data-synced-id="${idStr}"]`) : null;
+        if (sourceBlock) {
+          const bodyEl = sourceBlock.querySelector('.notion-synced-body');
+          copiedSyncedBlockBuffer = {
+            syncId: idStr,
+            html: bodyEl ? bodyEl.innerHTML : '<p>Contenido sincronizado...</p>'
+          };
+        }
+      }
+    }
+    window.copySyncedBlockReference = copySyncedBlockReference;
+
+    function unsyncBlockInstance(referenceElOrBtn) {
+      let refEl = null;
+      let blockId = null;
+
+      if (typeof referenceElOrBtn === 'string') {
+        blockId = referenceElOrBtn;
+        if (typeof document !== 'undefined' && document.querySelector) {
+          refEl = document.querySelector(`[data-block-id="${blockId}"]`) || document.getElementById(blockId);
+        }
+      } else if (referenceElOrBtn) {
+        if (typeof referenceElOrBtn.closest === 'function') {
+          refEl = referenceElOrBtn.closest('.block-transclusion-reference, .notion-synced-block, [data-block-id]');
+        }
+        if (!refEl) refEl = referenceElOrBtn;
+        if (refEl && refEl.getAttribute) {
+          blockId = refEl.getAttribute('data-block-id') || refEl.id || null;
+        }
+        if (!blockId && refEl && refEl.dataset) {
+          blockId = refEl.dataset.blockId || null;
+        }
+      }
+
+      const converter = (typeof window !== 'undefined' && typeof window.convertBlockType === 'function')
+        ? window.convertBlockType
+        : (typeof convertBlockType === 'function' ? convertBlockType : null);
+
+      const toast = (typeof window !== 'undefined' && typeof window.showToast === 'function')
+        ? window.showToast
+        : (typeof showToast === 'function' ? showToast : null);
+
+      if (blockId && typeof converter === 'function') {
+        converter(blockId, 'text');
+        if (typeof toast === 'function') toast('Bloque desvinculado (convertido a texto)', '✂️');
+        return;
+      }
+
+      // Fallback para bloques sincronizados legacy sin data-block-id
+      const legacyBlock = refEl && (typeof refEl.closest === 'function' ? refEl.closest('.notion-synced-block') : (refEl.classList && refEl.classList.contains('notion-synced-block') ? refEl : null));
+      if (legacyBlock) {
+        const bodyEl = legacyBlock.querySelector('.notion-synced-body');
+        const wrapper = (typeof document !== 'undefined') ? document.createElement('div') : null;
+        if (wrapper) {
+          wrapper.innerHTML = bodyEl ? bodyEl.innerHTML : '';
+          legacyBlock.replaceWith(...Array.from(wrapper.childNodes));
+        }
+        if (typeof syncRichEditor === 'function') syncRichEditor();
+        if (typeof toast === 'function') toast('Bloque desvinculado y convertido en texto independiente', '🔓');
+      }
+    }
+    window.unsyncBlockInstance = unsyncBlockInstance;
 
     /* Modal Picker para seleccionar y vincular notas en el texto */
     let currentLinkerNotes = [];
@@ -5941,7 +7609,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         return `
           <div class="note-item-card" onclick="selectNoteToLink(${n.id})" style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px; cursor:pointer;">
             <div style="display:flex; align-items:center; gap:10px;">
-              <div style="width:28px; height:36px; border-radius:4px; background:${coverBg}; display:flex; align-items:center; justify-content:center; font-size:16px; border:1px solid var(--border-hairline); flex-shrink:0;">
+              <div style="width:28px; height:36px; border-radius:4px; background:${coverBg}; background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; font-size:16px; border:1px solid var(--border-hairline); flex-shrink:0;">
                 ${n.emoji || '📝'}
               </div>
               <div>
@@ -5993,10 +7661,39 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       };
 
       state.notes.push(subpage);
-      insertNoteCardAtSelection(newId, savedSelectionRange);
+
+      const canvas = document.getElementById('rich-editor-canvas');
+      const blkId = 'blk-' + Date.now();
+      const subpageEl = renderBlock({
+        id: blkId,
+        type: 'sub_page',
+        page_id: String(newId),
+        title: subpage.title
+      });
+
+      let inserted = false;
+      if (savedSelectionRange && canvas && canvas.contains(savedSelectionRange.startContainer)) {
+        savedSelectionRange.insertNode(subpageEl);
+        inserted = true;
+      } else {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0 && canvas && canvas.contains(sel.anchorNode)) {
+          const r = sel.getRangeAt(0);
+          r.insertNode(subpageEl);
+          inserted = true;
+        }
+      }
+
+      if (!inserted && canvas) {
+        canvas.appendChild(subpageEl);
+      }
+      savedSelectionRange = null;
+
+      attachSubpageBlockListeners();
+      syncRichEditor();
       save();
       renderNotesList();
-      showToast(`Nota vinculada "${subpage.title}" creada e insertada`, '✨');
+      showToast(`Subpágina "${subpage.title}" creada e insertada`, '📄');
     }
 
     /* Toast Notification Floating Chip */
@@ -6848,22 +8545,15 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
     function toggleCover() {
       const note = getActiveNote();
       if (!note) return;
-      note.hasCover = !note.hasCover;
-      if (note.hasCover && !note.coverStyle) {
-        note.coverStyle = COVER_PRESETS[0];
-      }
+      if (!note.hasCover) { chooseNoteCoverPhoto(note.id); return; }
+      note.hasCover = false;
+      note.updatedAt = Date.now();
       save();
       loadActiveNote();
     }
 
     function changeCoverImage() {
-      const note = getActiveNote();
-      if (!note) return;
-      const currentIdx = COVER_PRESETS.indexOf(note.coverStyle);
-      const nextIdx = (currentIdx + 1) % COVER_PRESETS.length;
-      note.coverStyle = COVER_PRESETS[nextIdx];
-      save();
-      loadActiveNote();
+      chooseNoteCoverPhoto();
     }
 
     function changeEmojiIcon() {
@@ -6929,6 +8619,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         katex: ""
       };
       setNoteFolders(newNote, initialFolders);
+      if (window.NoteJSCloud) window.NoteJSCloud.attachNew(newNote);
 
       state.notes.unshift(newNote);
       state.activeNoteId = newNote.id;
@@ -6936,6 +8627,9 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         ? initialExtraFolder
         : MASTER_ALL_NOTES_FOLDER;
 
+      if (state.isRemindersActive) {
+        exitRemindersView();
+      }
       if (state.isHomeActive) {
         exitHomeView();
       }
@@ -6966,11 +8660,87 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
        ============================================================================ */
     let folderModalState = {
       mode: 'create', // 'create' | 'emoji' | 'edit'
+      folderType: 'standard', // 'standard' | 'smart'
       targetFolder: null,
       parentFolder: '',
       selectedEmoji: '📁',
       activeCategoryId: 'organizacion'
     };
+
+    function setFolderModalType(type) {
+      const cleanType = (type === 'smart') ? 'smart' : 'standard';
+      folderModalState.folderType = cleanType;
+
+      const btnStandard = document.getElementById('ftype-btn-standard');
+      const btnSmart = document.getElementById('ftype-btn-smart');
+      if (btnStandard) btnStandard.classList.toggle('active', cleanType === 'standard');
+      if (btnSmart) btnSmart.classList.toggle('active', cleanType === 'smart');
+
+      const parentGroup = document.getElementById('folder-parent-select-group');
+      const smartRulesContainer = document.getElementById('folder-smart-rules-container');
+      const smartSwitchBar = document.getElementById('folder-modal-smart-switch-bar');
+      const titleEl = document.getElementById('folder-modal-title');
+      const subtitleEl = document.getElementById('folder-modal-subtitle');
+      const submitBtnEl = document.getElementById('folder-modal-submit-btn');
+      const emojiInputEl = document.getElementById('folder-custom-emoji-input');
+      const headerIconEl = document.getElementById('folder-modal-header-icon');
+
+      if (cleanType === 'smart') {
+        if (parentGroup) parentGroup.style.display = 'none';
+        if (smartRulesContainer) smartRulesContainer.style.display = 'block';
+        if (smartSwitchBar) smartSwitchBar.style.display = 'none';
+
+        if (titleEl) {
+          titleEl.textContent = folderModalState.mode === 'edit'
+            ? `Editar Carpeta Inteligente "${getFolderDisplayName(folderModalState.targetFolder)}"`
+            : 'Nueva Carpeta Inteligente';
+        }
+        if (subtitleEl) {
+          subtitleEl.textContent = 'Filtro dinámico de notas por etiquetas, fechas o tareas (no almacena notas físicamente)';
+        }
+        if (submitBtnEl) {
+          submitBtnEl.textContent = '⚙️ Guardar Carpeta Inteligente';
+        }
+
+        if (emojiInputEl && (!emojiInputEl.value || emojiInputEl.value === '📁')) {
+          emojiInputEl.value = '⚙️';
+          folderModalState.selectedEmoji = '⚙️';
+          if (headerIconEl) headerIconEl.textContent = '⚙️';
+        }
+
+        if (!smartFolderModalState.rules || !smartFolderModalState.rules.length) {
+          smartFolderModalState.rules = [createDefaultSmartRule('tags')];
+        }
+
+        setSmartFolderMatchMode(smartFolderModalState.matchMode || 'all', false);
+        renderSmartFolderRulesList();
+        updateSmartFolderLivePreview();
+      } else {
+        if (parentGroup && folderModalState.mode !== 'emoji') parentGroup.style.display = 'block';
+        if (smartRulesContainer) smartRulesContainer.style.display = 'none';
+        if (smartSwitchBar && folderModalState.mode !== 'emoji') smartSwitchBar.style.display = 'flex';
+
+        if (titleEl) {
+          titleEl.textContent = folderModalState.mode === 'create'
+            ? 'Nueva Carpeta Personalizada'
+            : `Editar Carpeta "${getFolderDisplayName(folderModalState.targetFolder)}"`;
+        }
+        if (subtitleEl) {
+          subtitleEl.textContent = 'Elige un icono de emoji personalizado y nombre; se guardará en SQLite';
+        }
+        if (submitBtnEl) {
+          submitBtnEl.textContent = folderModalState.mode === 'create' ? '+ Crear carpeta' : 'Guardar carpeta';
+        }
+
+        if (emojiInputEl && emojiInputEl.value === '⚙️') {
+          emojiInputEl.value = '📁';
+          folderModalState.selectedEmoji = '📁';
+          if (headerIconEl) headerIconEl.textContent = '📁';
+        }
+      }
+
+      updateFolderModalPreview();
+    }
 
     function promptNewFolder() {
       openFolderModal('create');
@@ -7015,6 +8785,26 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       folderModalState.targetFolder = folderName || null;
       const existingParent = folderName ? getFolderParentPath(folderName) : (presetParentFolder || '');
       folderModalState.parentFolder = existingParent;
+
+      const isTargetSmart = Boolean(folderName && isSmartFolder(folderName));
+      const initialType = isTargetSmart ? 'smart' : 'standard';
+
+      if (initialType === 'smart') {
+        const cfg = getSmartFolderConfig(folderName) || { matchMode: 'all', rules: [] };
+        smartFolderModalState.mode = 'edit';
+        smartFolderModalState.targetFolder = folderName;
+        smartFolderModalState.emoji = getFolderEmoji(folderName) || '⚙️';
+        smartFolderModalState.matchMode = cfg.matchMode === 'any' ? 'any' : 'all';
+        smartFolderModalState.rules = (cfg.rules && cfg.rules.length)
+          ? JSON.parse(JSON.stringify(cfg.rules))
+          : [createDefaultSmartRule('tags')];
+      } else {
+        smartFolderModalState.mode = 'create';
+        smartFolderModalState.targetFolder = null;
+        smartFolderModalState.emoji = '⚙️';
+        smartFolderModalState.matchMode = 'all';
+        smartFolderModalState.rules = [createDefaultSmartRule('tags')];
+      }
 
       const currentEmoji = folderName ? getFolderEmoji(folderName) : '📁';
       folderModalState.selectedEmoji = currentEmoji;
@@ -7079,6 +8869,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       renderFolderModalCategories();
       renderFolderModalEmojiGrid();
       updateFolderModalPreview();
+      setFolderModalType(initialType);
 
       modal.classList.add('open');
 
@@ -7233,6 +9024,10 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
     }
 
     function submitFolderModal() {
+      if (folderModalState.folderType === 'smart') {
+        submitSmartFolderModal();
+        return;
+      }
       const nameInputEl = document.getElementById('folder-custom-name-input');
       const emojiInputEl = document.getElementById('folder-custom-emoji-input');
       const parentSelectEl = document.getElementById('folder-parent-select');
@@ -7510,66 +9305,28 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
 
     function openSmartFolderModal(mode = 'create', folderName = null, presetName = '', presetEmoji = '⚙️') {
       closeCustomContextMenu();
-      const modal = document.getElementById('smart-folder-modal');
-      if (!modal) return;
-
-      smartFolderModalState.mode = mode === 'edit' ? 'edit' : 'create';
-      smartFolderModalState.targetFolder = folderName || null;
-
-      const nameInput = document.getElementById('smart-folder-name-input');
-      const emojiInput = document.getElementById('smart-folder-emoji-input');
-      const headerIcon = document.getElementById('smart-folder-modal-icon-preview') || document.getElementById('smart-folder-modal-icon');
-      const titleEl = document.getElementById('smart-folder-modal-title');
-      const submitBtn = document.getElementById('smart-folder-submit-btn');
-
-      if (mode === 'edit' && folderName && isSmartFolder(folderName)) {
-        const cfg = getSmartFolderConfig(folderName) || { matchMode: 'all', rules: [] };
-        smartFolderModalState.emoji = getFolderEmoji(folderName) || '⚙️';
-        smartFolderModalState.matchMode = cfg.matchMode === 'any' ? 'any' : 'all';
-        smartFolderModalState.rules = (cfg.rules && cfg.rules.length)
-          ? JSON.parse(JSON.stringify(cfg.rules))
-          : [createDefaultSmartRule('tags')];
-
-        if (titleEl) titleEl.textContent = `Editar Carpeta Inteligente "${folderName}"`;
-        if (submitBtn) submitBtn.textContent = 'Guardar cambios del filtro';
-        if (nameInput) nameInput.value = folderName;
-        if (emojiInput) emojiInput.value = smartFolderModalState.emoji;
-        if (headerIcon) headerIcon.textContent = smartFolderModalState.emoji;
-      } else {
-        smartFolderModalState.emoji = presetEmoji || '⚙️';
-        smartFolderModalState.matchMode = 'all';
-        smartFolderModalState.rules = [
-          createDefaultSmartRule('tags')
-        ];
-        if (titleEl) titleEl.textContent = 'Nueva Carpeta Inteligente';
-        if (submitBtn) submitBtn.textContent = '⚙️ Guardar Carpeta Inteligente';
-        if (nameInput) nameInput.value = presetName || '';
-        if (emojiInput) emojiInput.value = smartFolderModalState.emoji;
-        if (headerIcon) headerIcon.textContent = smartFolderModalState.emoji;
+      const targetMode = mode === 'edit' ? 'edit' : 'create';
+      openFolderModal(targetMode, folderName);
+      setFolderModalType('smart');
+      if (presetName) {
+        const nameInput = document.getElementById('folder-custom-name-input') || document.getElementById('smart-folder-name-input');
+        if (nameInput) nameInput.value = presetName;
       }
-
-      setSmartFolderMatchMode(smartFolderModalState.matchMode, false);
-      renderSmartFolderRulesList();
-      updateSmartFolderLivePreview();
-
-      modal.classList.add('open');
-      setTimeout(() => {
-        if (nameInput) {
-          nameInput.focus();
-          nameInput.select();
-        }
-      }, 45);
+      if (presetEmoji && presetEmoji !== '📁') {
+        selectFolderModalEmoji(presetEmoji);
+      }
     }
 
     function closeSmartFolderModal() {
       const modal = document.getElementById('smart-folder-modal');
       if (modal) modal.classList.remove('open');
+      closeFolderModal();
     }
 
     function handleSmartFolderEmojiInput(val) {
       const clean = String(val || '').trim() || '⚙️';
       smartFolderModalState.emoji = clean;
-      const headerIcon = document.getElementById('smart-folder-modal-icon-preview') || document.getElementById('smart-folder-modal-icon');
+      const headerIcon = document.getElementById('smart-folder-modal-icon-preview') || document.getElementById('smart-folder-modal-icon') || document.getElementById('folder-modal-header-icon');
       if (headerIcon) headerIcon.textContent = clean;
     }
 
@@ -7578,7 +9335,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       const current = smartFolderModalState.emoji || '⚙️';
       const idx = smartEmojis.indexOf(current);
       const next = smartEmojis[(idx + 1) % smartEmojis.length];
-      const emojiInput = document.getElementById('smart-folder-emoji-input');
+      const emojiInput = document.getElementById('folder-custom-emoji-input') || document.getElementById('smart-folder-emoji-input');
       if (emojiInput) emojiInput.value = next;
       handleSmartFolderEmojiInput(next);
     }
@@ -7589,6 +9346,12 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       const btnAny = document.getElementById('smart-logic-btn-any') || document.getElementById('smart-match-any-btn');
       if (btnAll) btnAll.classList.toggle('active', smartFolderModalState.matchMode === 'all');
       if (btnAny) btnAny.classList.toggle('active', smartFolderModalState.matchMode === 'any');
+
+      const uBtnAll = document.getElementById('unified-smart-logic-btn-all');
+      const uBtnAny = document.getElementById('unified-smart-logic-btn-any');
+      if (uBtnAll) uBtnAll.classList.toggle('active', smartFolderModalState.matchMode === 'all');
+      if (uBtnAny) uBtnAny.classList.toggle('active', smartFolderModalState.matchMode === 'any');
+
       if (rerender) {
         updateSmartFolderLivePreview();
       }
@@ -7647,7 +9410,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
     }
 
     function renderSmartFolderRulesList() {
-      const container = document.getElementById('smart-folder-rules-list');
+      const container = document.getElementById('unified-smart-folder-rules-list') || document.getElementById('smart-folder-rules-list');
       if (!container) return;
 
       const knownTags = getAllKnownTagsList();
@@ -7746,8 +9509,8 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
     }
 
     function updateSmartFolderLivePreview() {
-      const countBadge = document.getElementById('smart-folder-preview-count');
-      const listEl = document.getElementById('smart-folder-preview-samples') || document.getElementById('smart-folder-preview-notes');
+      const countBadge = document.getElementById('unified-smart-folder-preview-count') || document.getElementById('smart-folder-preview-count');
+      const listEl = document.getElementById('unified-smart-folder-preview-samples') || document.getElementById('smart-folder-preview-samples') || document.getElementById('smart-folder-preview-notes');
       if (!countBadge || !listEl) return;
 
       const matched = getDraftSmartFolderMatchingNotes();
@@ -7772,8 +9535,8 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
     }
 
     function submitSmartFolderModal() {
-      const nameInput = document.getElementById('smart-folder-name-input');
-      const emojiInput = document.getElementById('smart-folder-emoji-input');
+      const nameInput = document.getElementById('folder-custom-name-input') || document.getElementById('smart-folder-name-input');
+      const emojiInput = document.getElementById('folder-custom-emoji-input') || document.getElementById('smart-folder-emoji-input');
       // Limitación: Una carpeta inteligente siempre se ubica en el nivel raíz (reemplazar '/')
       const cleanName = (nameInput ? nameInput.value.trim().replace(/\//g, '-') : '');
       const chosenEmoji = (emojiInput ? emojiInput.value.trim() : '') || smartFolderModalState.emoji || '⚙️';
@@ -8352,10 +10115,22 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       }
     }
 
+    function handleStartupBehaviorChange(value) {
+      const cleanVal = (value === 'resume') ? 'resume' : 'clean';
+      state.startupBehavior = cleanVal;
+      saveSettingsPayload({ startupBehavior: cleanVal });
+      showToast(cleanVal === 'clean' ? 'Inicio: Iniciar siempre de cero' : 'Inicio: Reanudar en la última nota visitada', '⚙️');
+    }
+
     function openSettingsModal() {
       const modal = document.getElementById('settings-modal');
       if (!modal) return;
       modal.classList.add('open');
+
+      const startupSelect = document.getElementById('setting-startup-behavior');
+      if (startupSelect) {
+        startupSelect.value = state.startupBehavior || (state.settings && state.settings.startupBehavior) || 'clean';
+      }
 
       const themeSelect = document.getElementById('setting-theme-select');
       if (themeSelect) themeSelect.value = state.themeMode || (state.isLightMode ? 'light' : 'dark');
@@ -9480,7 +11255,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
             <span class="ctx-menu-item-left"><span class="ctx-menu-icon">⚖️</span><span class="ctx-menu-label">Restablecer todos los paneles</span></span>
           </button>
           <button class="ctx-menu-item" onclick="closeCustomContextMenu(); toggleFocusMode();">
-            <span class="ctx-menu-item-left"><span class="ctx-menu-icon">⚡</span><span class="ctx-menu-label">Modo Concentración</span></span>
+            <span class="ctx-menu-item-left"><span class="ctx-menu-icon">⚡</span><span class="ctx-menu-label">Vista de Enfoque</span></span>
             <span class="ctx-menu-kbd">Ctrl+\\</span>
           </button>
         `;
@@ -9508,6 +11283,20 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
         tooltipBase: 'Página de inicio',
         action: () => {
           navigateToHome();
+        }
+      },
+      {
+        id: 'navigate_reminders',
+        title: 'Ver recordatorios a pantalla completa',
+        desc: 'Abre el panel de recordatorios y calendario a pantalla completa',
+        icon: '📅',
+        category: 'Global y Navegación',
+        scope: 'global',
+        defaultCombo: 'Alt+R',
+        altCombo: 'Ctrl+Shift+R',
+        tooltipBase: 'Recordatorios a pantalla completa',
+        action: () => {
+          navigateToReminders();
         }
       },
       {
@@ -9601,13 +11390,13 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       },
       {
         id: 'toggle_focus',
-        title: 'Alternar Modo Concentración',
+        title: 'Alternar Vista de Enfoque',
         desc: 'Oculta o muestra suavemente los paneles laterales para redactar sin distracciones',
         icon: '⚡',
         category: 'Global y Navegación',
         scope: 'global',
         defaultCombo: 'Ctrl+\\',
-        tooltipBase: 'Modo Concentración',
+        tooltipBase: 'Vista de Enfoque',
         action: () => {
           toggleFocusMode();
         }
@@ -10041,12 +11830,6 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       const searchInput = document.getElementById('notes-search-input');
       if (searchInput) {
         searchInput.setAttribute('placeholder', `Buscar por título o contenido... (${getShortcutDisplayCombo('search_notes')})`);
-      }
-
-      // Actualizar indicador de modo concentración
-      const focusInd = document.getElementById('focus-mode-indicator');
-      if (focusInd) {
-        focusInd.textContent = `⚡ Modo Concentración Activo (Presiona ☰ o ${getShortcutDisplayCombo('toggle_focus')} para salir)`;
       }
     }
 
@@ -11803,11 +13586,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       }
 
       if (!state.openTabIds.length) {
-        listEl.innerHTML = `
-          <div class="note-tabs-empty-label" style="display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--text-muted); padding:4px 10px; user-select:none; font-style:italic;">
-            <span>🏠 Sin notas abiertas</span>
-          </div>
-        `;
+        listEl.innerHTML = '';
         return;
       }
 
@@ -11859,6 +13638,9 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
 
     /* Navegación a Página de Inicio estilo Google Chrome */
     function navigateToHome() {
+      if (state.isRemindersActive) {
+        exitRemindersView();
+      }
       state.isHomeActive = true;
       if (isTrashFolder(state.selectedFolder)) {
         state.selectedFolder = MASTER_ALL_NOTES_FOLDER;
@@ -11909,9 +13691,11 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       const editorBody = document.getElementById('editor-body');
 
       if (homeView) homeView.style.display = 'none';
-      if (formatBar) formatBar.style.display = 'flex';
-      if (notionCover) notionCover.style.display = '';
-      if (editorBody) editorBody.style.display = 'block';
+      if (!state.isRemindersActive) {
+        if (formatBar) formatBar.style.display = 'flex';
+        if (notionCover) notionCover.style.display = '';
+        if (editorBody) editorBody.style.display = 'block';
+      }
 
       if (!state.selectedFolder || isTrashFolder(state.selectedFolder)) {
         state.selectedFolder = MASTER_ALL_NOTES_FOLDER;
@@ -12077,7 +13861,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
             </div>
           </div>
           <h1 class="home-page-title">${greeting} Bienvenido a tu espacio de notas</h1>
-          <p class="home-page-subtitle">Página de inicio · Acceso completo a tus notas, carpetas y agenda con respaldo SQLite.</p>
+          <p class="home-page-subtitle">Tus ideas, apuntes y tareas en un mismo lugar.</p>
         </div>
 
         <!-- BARRA DE BÚSQUEDA GRANDE DE NOTAS Y CARPETAS -->
@@ -12331,36 +14115,19 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       } else {
         // Vista de Cuadrícula (Cards)
         const cardsHtml = notesToDisplay.map(n => {
-          const emoji = n.emoji || '📝';
-          const title = escapeHtmlAttr(n.title || 'Sin título');
-          const userFolders = getNoteUserFolders(n);
-          const folderLabel = userFolders.length > 0
-            ? userFolders.slice(0, 2).map(f => `${getFolderEmoji(f)} ${escapeHtmlAttr(getFolderDisplayName(f))}`).join(' · ') + (userFolders.length > 2 ? ` +${userFolders.length - 2}` : '')
-            : `${getFolderEmoji(MASTER_ALL_NOTES_FOLDER)} ${MASTER_ALL_NOTES_FOLDER}`;
-          const cleanSnippet = (n.content || '').replace(/<[^>]*>?/gm, '').trim();
-          const rawTags = (n.tags || '').split(',').map(t => t.trim().replace(/^#/, '')).filter(Boolean);
-          const tagsHtml = rawTags.slice(0, 3).map(t => `<span class="home-grid-tag-pill">#${escapeHtmlAttr(t)}</span>`).join(' ');
-          const dateStr = new Date(n.updatedAt || Date.now()).toLocaleDateString('es-ES', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
+          const title = escapeHtmlAttr(n.isLocked ? 'Nota protegida' : (n.title || 'Sin título'));
+          const background = escapeHtmlAttr(noteCoverBackground(n));
+          const position = Number.isFinite(n.coverPositionY) ? Math.min(100, Math.max(0, n.coverPositionY)) : 50;
+          const hasCover = n.hasCover && !n.isLocked;
+          const previewTemplate = document.createElement('template');
+          previewTemplate.innerHTML = n.isLocked ? '' : getNotePreviewText(n);
+          const preview = escapeHtmlAttr(n.isLocked ? 'Contenido protegido' : (previewTemplate.content.textContent.trim() || 'Nota sin contenido'));
           return `
-            <div class="home-grid-card" data-home-note-id="${n.id}" onclick="selectNote(${n.id})" title="Abrir &quot;${title}&quot;">
-              <div class="home-grid-card-header">
-                <span class="home-grid-card-emoji">${emoji}</span>
-                <span class="home-grid-card-title">${title}</span>
-                ${n.isPinned ? '<span class="home-grid-card-pin" title="Nota fijada">📌</span>' : ''}
-                <button type="button" class="btn-icon-tiny btn-danger-tiny home-card-trash-btn" onclick="event.stopPropagation(); deleteNoteById(${n.id});" title="Enviar a la papelera">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                </button>
-              </div>
-              <div class="home-grid-card-snippet">
-                ${cleanSnippet || '<span style="opacity:0.5; font-style:italic;">Sin contenido de texto...</span>'}
-              </div>
-              ${tagsHtml ? `<div class="home-grid-card-tags">${tagsHtml}</div>` : ''}
-              <div class="home-grid-card-footer">
-                <span class="home-grid-card-folder">${folderLabel}</span>
-                <span class="tabular-nums">${dateStr}</span>
-              </div>
-            </div>
+            <button type="button" class="home-grid-card" data-home-note-id="${n.id}" onclick="selectNote(${n.id})" title="Abrir &quot;${title}&quot;">
+              ${hasCover ? `<span class="home-grid-card-cover" style="background:${background};background-size:cover;background-position:center ${position}%;"></span>` : ''}
+              <span class="home-grid-card-title">${title}</span>
+              ${hasCover ? '' : `<span class="home-grid-card-content-preview">${preview}</span>`}
+            </button>
           `;
         }).join('');
 
@@ -12614,6 +14381,14 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       persistReminderToBackend(reminder);
       renderHomeCalendar();
       renderHomeEventsList();
+      const remindersBadge = document.getElementById('sidebar-reminders-count-badge');
+      if (remindersBadge) {
+        const pendingCount = (state.reminders || []).filter(r => !r.completed).length;
+        remindersBadge.textContent = String(pendingCount);
+      }
+      if (state.isRemindersActive) {
+        renderRemindersPageView();
+      }
       showToast(reminder.completed ? 'Recordatorio marcado como completado' : 'Recordatorio marcado como pendiente', '✓');
     }
 
@@ -12624,6 +14399,14 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       deleteReminderFromBackend(numId);
       renderHomeCalendar();
       renderHomeEventsList();
+      const remindersBadge = document.getElementById('sidebar-reminders-count-badge');
+      if (remindersBadge) {
+        const pendingCount = (state.reminders || []).filter(r => !r.completed).length;
+        remindersBadge.textContent = String(pendingCount);
+      }
+      if (state.isRemindersActive) {
+        renderRemindersPageView();
+      }
       showToast('Recordatorio eliminado', '🗑️');
     }
 
@@ -12696,6 +14479,14 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       closeNewEventModal();
       renderHomeCalendar();
       renderHomeEventsList();
+      const remindersBadge = document.getElementById('sidebar-reminders-count-badge');
+      if (remindersBadge) {
+        const pendingCount = (state.reminders || []).filter(r => !r.completed).length;
+        remindersBadge.textContent = String(pendingCount);
+      }
+      if (state.isRemindersActive) {
+        renderRemindersPageView();
+      }
       showToast(`Recordatorio "${title}" guardado en el calendario`, '📅');
     }
 
@@ -12712,6 +14503,9 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
     function switchNoteTab(noteId) {
       const numericId = Number(noteId);
       if (!state.notes.some(n => n.id === numericId)) return;
+      if (state.isRemindersActive) {
+        exitRemindersView();
+      }
       if (state.isHomeActive) {
         exitHomeView();
         state.activeNoteId = numericId;
@@ -13046,7 +14840,6 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       if (!note) return;
       const editorBody = document.getElementById('editor-body');
       const coverEl = document.getElementById('notion-cover');
-      const repBtn = document.getElementById('btn-reposition-cover');
 
       const font = note.pageFont || 'sans';
       const isSmall = Boolean(note.smallText);
@@ -13063,9 +14856,6 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       if (coverEl) {
         const posY = typeof note.coverPositionY === 'number' ? note.coverPositionY : 50;
         coverEl.style.backgroundPosition = `center ${posY}%`;
-        if (repBtn) {
-          repBtn.style.display = note.hasCover ? 'inline-flex' : 'none';
-        }
       }
 
       // Actualizar controles del popover
@@ -13170,99 +14960,6 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       }
     }
 
-    // 2. Reposicionamiento Vertical Interactivo de Portada (Cover Reposition)
-    let coverRepositionState = {
-      active: false,
-      startY: 0,
-      initialPosY: 50,
-      currentPosY: 50,
-      dragging: false
-    };
-
-    function toggleCoverRepositionMode(event) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      const note = getActiveNote();
-      if (!note || !note.hasCover) return;
-      const coverEl = document.getElementById('notion-cover');
-      const barEl = document.getElementById('cover-reposition-bar');
-      if (!coverEl || !barEl) return;
-
-      coverRepositionState.active = true;
-      coverRepositionState.initialPosY = typeof note.coverPositionY === 'number' ? note.coverPositionY : 50;
-      coverRepositionState.currentPosY = coverRepositionState.initialPosY;
-      coverEl.classList.add('is-repositioning');
-      barEl.style.display = 'flex';
-    }
-
-    function saveCoverReposition(event) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      const note = getActiveNote();
-      const coverEl = document.getElementById('notion-cover');
-      const barEl = document.getElementById('cover-reposition-bar');
-      if (note) {
-        note.coverPositionY = Math.round(coverRepositionState.currentPosY);
-        note.updatedAt = Date.now();
-        save(false, note);
-      }
-      coverRepositionState.active = false;
-      coverRepositionState.dragging = false;
-      if (coverEl) coverEl.classList.remove('is-repositioning');
-      if (barEl) barEl.style.display = 'none';
-      showToast('Posición vertical de portada guardada', '↕️');
-    }
-
-    function cancelCoverReposition(event) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      const note = getActiveNote();
-      const coverEl = document.getElementById('notion-cover');
-      const barEl = document.getElementById('cover-reposition-bar');
-      coverRepositionState.active = false;
-      coverRepositionState.dragging = false;
-      if (coverEl) {
-        coverEl.classList.remove('is-repositioning');
-        coverEl.style.backgroundPosition = `center ${coverRepositionState.initialPosY}%`;
-      }
-      if (note) note.coverPositionY = coverRepositionState.initialPosY;
-      if (barEl) barEl.style.display = 'none';
-    }
-
-    function initCoverRepositionListeners() {
-      const coverEl = document.getElementById('notion-cover');
-      if (!coverEl) return;
-
-      coverEl.addEventListener('mousedown', (e) => {
-        if (!coverRepositionState.active) return;
-        if (e.target.closest('button')) return;
-        e.preventDefault();
-        coverRepositionState.dragging = true;
-        coverRepositionState.startY = e.clientY;
-      });
-
-      window.addEventListener('mousemove', (e) => {
-        if (!coverRepositionState.active || !coverRepositionState.dragging) return;
-        const deltaY = e.clientY - coverRepositionState.startY;
-        const nextPos = Math.max(0, Math.min(100, coverRepositionState.initialPosY - (deltaY * 0.45)));
-        coverRepositionState.currentPosY = nextPos;
-        coverEl.style.backgroundPosition = `center ${nextPos}%`;
-      });
-
-      window.addEventListener('mouseup', () => {
-        if (coverRepositionState.dragging) {
-          coverRepositionState.dragging = false;
-          coverRepositionState.initialPosY = coverRepositionState.currentPosY;
-        }
-      });
-    }
-
     // 3. Tabla de Contenidos Flotante Lateral (Sticky Right-Rail TOC) y Bloque /toc
     function collectEditorHeadings() {
       const editor = document.getElementById('rich-editor-canvas');
@@ -13333,6 +15030,57 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       target.scrollIntoView({ behavior: 'smooth', block: 'center' });
       target.classList.add('spatial-block-selected');
       setTimeout(() => target.classList.remove('spatial-block-selected'), 1100);
+
+      document.querySelectorAll('.sticky-toc-bar-line').forEach(el => {
+        el.classList.toggle('active', el.getAttribute('data-toc-bar') === String(idx));
+      });
+      document.querySelectorAll('.sticky-toc-item').forEach((el, i) => {
+        el.classList.toggle('active', i === Number(idx));
+      });
+    }
+
+    function toggleTocExpanded(e) {
+      if (e) e.stopPropagation();
+      const rail = document.getElementById('sticky-toc-rail');
+      if (rail) {
+        rail.classList.toggle('is-expanded');
+      }
+    }
+
+    function initTocScrollSpy() {
+      const editorBody = document.getElementById('editor-body');
+      if (!editorBody) return;
+
+      editorBody.addEventListener('scroll', () => {
+        const headings = collectEditorHeadings();
+        if (!headings.length) return;
+
+        const bodyRect = editorBody.getBoundingClientRect();
+        let activeIdx = 0;
+
+        for (let i = 0; i < headings.length; i++) {
+          const hRect = headings[i].el.getBoundingClientRect();
+          if (hRect.top - bodyRect.top <= 140) {
+            activeIdx = headings[i].idx;
+          } else {
+            break;
+          }
+        }
+
+        document.querySelectorAll('.sticky-toc-bar-line').forEach(el => {
+          el.classList.toggle('active', el.getAttribute('data-toc-bar') === String(activeIdx));
+        });
+        document.querySelectorAll('.sticky-toc-item').forEach((el, i) => {
+          el.classList.toggle('active', i === Number(activeIdx));
+        });
+      }, { passive: true });
+
+      document.addEventListener('click', (e) => {
+        const rail = document.getElementById('sticky-toc-rail');
+        if (rail && !rail.contains(e.target)) {
+          rail.classList.remove('is-expanded');
+        }
+      });
     }
 
     function insertTableOfContentsBlock() {
@@ -13486,17 +15234,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       showToast('Bloque Sincronizado con halo rojo coral creado', '🔄');
     }
 
-    function copySyncedBlockReference(syncId) {
-      const editor = document.getElementById('rich-editor-canvas');
-      const sourceBlock = editor ? editor.querySelector(`.notion-synced-block[data-synced-id="${syncId}"]`) : null;
-      const bodyEl = sourceBlock ? sourceBlock.querySelector('.notion-synced-body') : null;
-      copiedSyncedBlockBuffer = {
-        syncId,
-        html: bodyEl ? bodyEl.innerHTML : '<p>Contenido sincronizado...</p>'
-      };
-      showToast('Referencia sincronizada copiada. Usa el menú de bloque o Ctrl+Shift+V para pegarla en cualquier nota', '🔗');
-    }
-
+    // Nota: copySyncedBlockReference legacy unificado en window.copySyncedBlockReference
     function pasteCopiedSyncedBlock() {
       if (!copiedSyncedBlockBuffer) {
         showToast('Primero copia una referencia desde un Bloque Sincronizado', 'ℹ️');
@@ -13505,16 +15243,7 @@ Cada bloque cuenta con un botón único de Drag & Drop para arrastrar y reordena
       insertSyncedBlock(copiedSyncedBlockBuffer.syncId, copiedSyncedBlockBuffer.html);
     }
 
-    function unsyncBlockInstance(btnEl) {
-      const block = btnEl ? btnEl.closest('.notion-synced-block') : null;
-      if (!block) return;
-      const bodyEl = block.querySelector('.notion-synced-body');
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = bodyEl ? bodyEl.innerHTML : '';
-      block.replaceWith(...Array.from(wrapper.childNodes));
-      syncRichEditor();
-      showToast('Bloque desvinculado y convertido en texto independiente', '🔓');
-    }
+    // Nota: unsyncBlockInstance legacy unificado en window.unsyncBlockInstance
 
     function propagateSyncedBlockChange(syncId, updatedInnerHtml, sourceEl) {
       if (!syncId) return;
@@ -14397,11 +16126,24 @@ function procesarBloquesNotion(bloques) {
       document.querySelectorAll('#embed-provider-chips [data-embed-type]').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-embed-type') === currentMediaEmbedType);
       });
+      const fileInput = document.getElementById('media-embed-file-input');
+      if (fileInput) fileInput.accept = currentMediaEmbedType === 'pdf' ? 'application/pdf,.pdf' : '';
     }
 
-    function handleMediaEmbedFileUpload(fileInput) {
+    async function handleMediaEmbedFileUpload(fileInput) {
       const file = fileInput && fileInput.files && fileInput.files[0];
       if (!file) return;
+      if (currentMediaEmbedType === 'pdf') {
+        fileInput.disabled = true;
+        try {
+          const result = await uploadPdfFile(file);
+          document.getElementById('media-embed-url-input').value = result.url;
+          document.getElementById('media-embed-title-input').value = result.name;
+          showToast('PDF importado. Pulsa Insertar para adjuntarlo.', '📑');
+        } catch (error) { showToast(error.message, '📑'); }
+        finally { fileInput.disabled = false; fileInput.value = ''; }
+        return;
+      }
       const reader = new FileReader();
       reader.onload = (e) => {
         const urlInput = document.getElementById('media-embed-url-input');
@@ -14426,11 +16168,15 @@ function procesarBloquesNotion(bloques) {
 
       let bodyHtml = '';
       if (currentMediaEmbedType === 'pdf') {
-        if (rawUrl) {
-          bodyHtml = `<iframe src="${escapeHtmlAttr(rawUrl)}" style="width:100%; height:340px; border:1px solid var(--border-hairline); border-radius:7px;"></iframe><div style="margin-top:6px; text-align:right;"><a href="${escapeHtmlAttr(rawUrl)}" download="${escapeHtmlAttr(displayTitle)}" style="font-size:11.5px; color:#60a5fa; font-weight:700;">⬇ Descargar archivo adjunto</a></div>`;
-        } else {
-          bodyHtml = `<div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; background:var(--bg-elevated); border-radius:8px;"><div><strong>📑 ${escapeHtmlAttr(displayTitle)}.pdf</strong><div style="font-size:11px; color:var(--text-muted);">Visor de documento PDF incrustado en página · Listo para lectura o descarga</div></div><span class="ui-kbd-badge">PDF</span></div>`;
+        if (!rawUrl || document.getElementById('media-embed-file-input')?.disabled) {
+          showToast('Selecciona un PDF y espera a que termine de importar.', '📑');
+          return;
         }
+        bodyHtml = createPdfEmbedHTML(rawUrl, displayTitle);
+        block.classList.add('notion-block', 'block-pdf');
+        block.setAttribute('data-type', 'pdf');
+        block.setAttribute('data-source', rawUrl);
+        block.setAttribute('data-title', displayTitle);
       } else if (currentMediaEmbedType === 'gmaps') {
         const q = encodeURIComponent(rawUrl || 'Puerta del Sol, Madrid');
         bodyHtml = `<iframe src="https://maps.google.com/maps?q=${q}&t=&z=13&ie=UTF8&iwloc=&output=embed" style="width:100%; height:270px; border:none; border-radius:7px;" loading="lazy"></iframe>`;
@@ -14822,6 +16568,9 @@ function procesarBloquesNotion(bloques) {
           <button type="button" class="block-menu-item" style="padding:4px 6px; font-size:11.5px;" onclick="executeBlockMenuAction('turn-h3')">
             <span>H3 Título 3</span>
           </button>
+          <button type="button" class="block-menu-item" style="padding:4px 6px; font-size:11.5px;" onclick="executeBlockMenuAction('turn-h4')">
+            <span>H4 Título 4</span>
+          </button>
           <button type="button" class="block-menu-item" style="padding:4px 6px; font-size:11.5px;" onclick="executeBlockMenuAction('turn-todo')">
             <span>☑ Tarea To-do</span>
           </button>
@@ -14993,7 +16742,12 @@ function procesarBloquesNotion(bloques) {
             showToast('Comentario añadido al bloque', '💬');
           }
         } else if (action.startsWith('turn-') && !isSpecialBlock) {
-          if (action === 'turn-todo') {
+          const bId = block.getAttribute('data-block-id');
+          if (bId && typeof convertBlockType === 'function') {
+            convertBlockType(bId, action);
+          } else if (action === 'turn-h4') {
+            transformBlockTag(block, 'h4');
+          } else if (action === 'turn-todo') {
             const wrap = document.createElement('div');
             wrap.className = 'notion-todo-item';
             wrap.innerHTML = `<input type="checkbox" onchange="syncRichEditor()"> <span contenteditable="true">${block.innerHTML || 'Nueva tarea'}</span>`;
@@ -15030,7 +16784,7 @@ function procesarBloquesNotion(bloques) {
             callout.setAttribute('data-block-id', block.getAttribute('data-block-id') || ('blk-' + Date.now()));
             block.replaceWith(callout);
           } else {
-            const map = { 'turn-p': 'p', 'turn-h1': 'h1', 'turn-h2': 'h2', 'turn-h3': 'h3', 'turn-quote': 'blockquote' };
+            const map = { 'turn-p': 'p', 'turn-h1': 'h1', 'turn-h2': 'h2', 'turn-h3': 'h3', 'turn-h4': 'h4', 'turn-quote': 'blockquote' };
             const tag = map[action] || 'p';
             transformBlockTag(block, tag);
           }
@@ -15221,6 +16975,11 @@ function procesarBloquesNotion(bloques) {
       } else {
         apiUpdateBatchBlocks(moves);
       }
+
+      if (typeof syncRecordMapChildrenOrder === 'function') {
+        const container = (blocksToMove[0] && blocksToMove[0].parentElement) || editor;
+        syncRecordMapChildrenOrder(container);
+      }
     }
 
     function initSpatialBlockController() {
@@ -15250,24 +17009,26 @@ function procesarBloquesNotion(bloques) {
       let marqueeStartY = 0;
 
       panelCanvas.addEventListener('mousedown', (e) => {
+        // Abortar de inmediato si ocurre dentro de un elemento editable (texto nativo, input, textarea)
+        if (e.target.closest('[contenteditable="true"]') || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
         // Solo botón principal y fuera de bloques editables o controles
         if (e.button !== 0) return;
-        if (e.target.closest('#spatial-block-handle') || e.target.closest('#block-action-menu') || e.target.closest('.desktop-format-bar') || e.target.closest('button')) {
+        if (e.target.closest('#spatial-block-handle') || e.target.closest('#block-action-menu') || e.target.closest('.desktop-format-bar') || e.target.closest('button') || e.target.closest('#sticky-toc-rail')) {
           return;
         }
 
-        const editor = document.getElementById('rich-editor-canvas');
-        const insideEditor = editor && editor.contains(e.target);
-        const isBlockDirect = e.target.closest('p, h1, h2, h3, blockquote, div.notion-columns-row, .notion-block, .notion-block-box, .callout-box');
+        // Asegurar que lasso selection solo se active si e.target es panelCanvas o dentro del fondo vacío de .editor-container o márgenes exteriores
+        const isEditorContainer = e.target === panelCanvas || Boolean(e.target.closest('.editor-container, .editor-body, #blocks-container'));
+        if (!isEditorContainer) {
+          return;
+        }
 
-        // Si se hace clic en margen o espacio en blanco fuera del texto activo
-        if (!isBlockDirect || e.target === panelCanvas || e.target === editor) {
-          isMarqueeActive = true;
-          marqueeStartX = e.clientX;
-          marqueeStartY = e.clientY;
-          if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
-            clearBlockSelection();
-          }
+        isMarqueeActive = true;
+        marqueeStartX = e.clientX;
+        marqueeStartY = e.clientY;
+        if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
+          clearBlockSelection();
         }
       });
 
@@ -16185,8 +17946,341 @@ function procesarBloquesNotion(bloques) {
       syncRichEditor();
     }
 
+    /* ==========================================================================
+       16. GESTOR DE VENTANA NATIVA DE ESCRITORIO (PyWebView + API)
+       ========================================================================== */
+    async function minimizeWindow() {
+      if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.minimize_window === 'function') {
+        try {
+          return await window.pywebview.api.minimize_window();
+        } catch (e) {
+          console.warn('pywebview minimize error:', e);
+        }
+      }
+      try {
+        const res = await fetch('/api/window/minimize', { method: 'POST' });
+        return await res.json();
+      } catch (e) {
+        console.warn('API window minimize error:', e);
+      }
+    }
+
+    async function toggleMaximizeWindow() {
+      let isMax = false;
+      if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.toggle_maximize_window === 'function') {
+        try {
+          const res = await window.pywebview.api.toggle_maximize_window();
+          isMax = Boolean(res && res.action === 'maximize');
+          updateMaximizeIcon(isMax);
+          return res;
+        } catch (e) {
+          console.warn('pywebview maximize error:', e);
+        }
+      }
+      try {
+        const res = await fetch('/api/window/maximize', { method: 'POST' });
+        const data = await res.json();
+        isMax = Boolean(data && data.action === 'maximize');
+        updateMaximizeIcon(isMax);
+        return data;
+      } catch (e) {
+        console.warn('API window maximize error:', e);
+      }
+    }
+
+    async function closeWindow() {
+      if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.close_window === 'function') {
+        try {
+          return await window.pywebview.api.close_window();
+        } catch (e) {
+          console.warn('pywebview close error:', e);
+        }
+      }
+      try {
+        const res = await fetch('/api/window/close', { method: 'POST' });
+        return await res.json();
+      } catch (e) {
+        console.warn('API window close error:', e);
+      }
+    }
+
+    function updateMaximizeIcon(isMaximized) {
+      const btn = document.getElementById('btn-win-maximize');
+      const icon = document.getElementById('svg-win-maximize-icon');
+      if (!btn) return;
+      if (isMaximized) {
+        btn.title = 'Restaurar';
+        btn.setAttribute('aria-label', 'Restaurar');
+        if (icon) {
+          icon.innerHTML = `<rect x="5" y="3" width="16" height="16" rx="2" ry="2"></rect><polyline points="3 7 3 21 17 21"></polyline>`;
+        }
+      } else {
+        btn.title = 'Maximizar';
+        btn.setAttribute('aria-label', 'Maximizar');
+        if (icon) {
+          icon.innerHTML = `<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>`;
+        }
+      }
+    }
+
+    function toggleWinMenu(e) {
+      if (e) e.stopPropagation();
+      openSettingsModal();
+    }
+
+    function initTopBarWindowControls() {
+      const topBar = document.querySelector('.top-bar');
+      if (!topBar) return;
+
+      // Doble clic en espacio vacío de la barra para maximizar/restaurar
+      topBar.addEventListener('dblclick', (e) => {
+        if (!e.target.closest('button, .note-tab-item, #window-controls-bar, input, select, textarea')) {
+          toggleMaximizeWindow();
+        }
+      });
+
+      // Evitar que el clic en botones interactivos dispare arrastre de ventana en PyWebView
+      topBar.addEventListener('mousedown', (e) => {
+        if (e.target.closest('button, .note-tab-item, #window-controls-bar, input, select, textarea')) {
+          e.stopPropagation();
+        }
+      });
+    }
+
+    /* ==========================================================================
+       17. VISTA DE RECORDATORIOS Y AGENDA A PANTALLA COMPLETA (R3)
+       ========================================================================== */
+    function navigateToReminders() {
+      state.isRemindersActive = true;
+      state.isHomeActive = false;
+
+      const scaffold = document.getElementById('desktop-scaffold');
+      if (scaffold) {
+        scaffold.classList.add('is-reminders-active');
+        scaffold.classList.remove('is-home-active');
+      }
+
+      const remindersBtn = document.getElementById('fitem-sidebar-reminders');
+      if (remindersBtn) {
+        remindersBtn.classList.add('active');
+        remindersBtn.setAttribute('aria-pressed', 'true');
+      }
+
+      const homeBtn = document.getElementById('btn-top-home');
+      if (homeBtn) {
+        homeBtn.classList.remove('active');
+        homeBtn.setAttribute('aria-pressed', 'false');
+      }
+
+      const homeView = document.getElementById('home-page-view');
+      const remindersView = document.getElementById('reminders-page-view');
+      const formatBar = document.querySelector('.desktop-format-bar');
+      const notionCover = document.getElementById('notion-cover');
+      const editorBody = document.getElementById('editor-body');
+
+      if (homeView) homeView.style.display = 'none';
+      if (remindersView) remindersView.style.display = 'flex';
+      if (formatBar) formatBar.style.display = 'none';
+      if (notionCover) notionCover.style.display = 'none';
+      if (editorBody) editorBody.style.display = 'none';
+
+      renderFolders();
+      renderNoteTabs();
+      renderRemindersPageView();
+    }
+
+    function exitRemindersView() {
+      if (!state.isRemindersActive) return;
+      state.isRemindersActive = false;
+
+      const scaffold = document.getElementById('desktop-scaffold');
+      if (scaffold) {
+        scaffold.classList.remove('is-reminders-active');
+      }
+
+      const remindersBtn = document.getElementById('fitem-sidebar-reminders');
+      if (remindersBtn) {
+        remindersBtn.classList.remove('active');
+        remindersBtn.setAttribute('aria-pressed', 'false');
+      }
+
+      const remindersView = document.getElementById('reminders-page-view');
+      if (remindersView) remindersView.style.display = 'none';
+
+      renderFolders();
+      renderNoteTabs();
+    }
+
+    function setRemindersTab(tab) {
+      state.remindersTab = tab;
+      renderRemindersPageView();
+    }
+
+    function renderRemindersPageView() {
+      const container = document.getElementById('reminders-page-view');
+      if (!container) return;
+
+      const totalCount = (state.reminders || []).length;
+      const pendingList = (state.reminders || []).filter(r => !r.completed);
+      const completedList = (state.reminders || []).filter(r => r.completed);
+      const todayStr = getTodayDateString();
+      const todayCount = (state.reminders || []).filter(r => r.date === todayStr && !r.completed).length;
+
+      const currentTab = state.remindersTab || 'all';
+
+      let filteredReminders = [...(state.reminders || [])];
+      if (currentTab === 'pending') {
+        filteredReminders = pendingList;
+      } else if (currentTab === 'completed') {
+        filteredReminders = completedList;
+      }
+
+      filteredReminders.sort((a, b) => {
+        if (a.completed !== b.completed) return a.completed ? 1 : -1;
+        return (a.date || '').localeCompare(b.date || '');
+      });
+
+      const categoryClassMap = {
+        'Trabajo': 'cat-trabajo',
+        'Desarrollo': 'cat-desarrollo',
+        'Urgente': 'cat-urgente',
+        'Personal': 'cat-personal',
+        'Universidad': 'cat-universidad',
+        'Reunión': 'cat-trabajo'
+      };
+
+      container.innerHTML = `
+        <div class="reminders-full-header">
+          <div class="reminders-full-title-wrap">
+            <span class="reminders-full-icon-badge">📅</span>
+            <div>
+              <h2 style="margin:0; font-size:22px; font-weight:800; color:var(--text-primary); letter-spacing:-0.02em;">Recordatorios y Agenda</h2>
+              <span style="font-size:12.5px; color:var(--text-muted);">Gestiona tus tareas programadas, citas y plazos de entrega</span>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <button type="button" class="btn-primary" onclick="openNewEventModal('${todayStr}')" style="display:inline-flex; align-items:center; gap:6px; padding:7px 14px; font-size:12.5px; font-weight:700;">
+              <span>+ Nuevo Recordatorio</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Estadísticas Rápidas -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:14px; margin-bottom:20px;">
+          <div style="background:var(--bg-surface); border:1px solid var(--border-hairline); border-radius:10px; padding:12px 16px; display:flex; flex-direction:column; gap:4px;">
+            <span style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Total Recordatorios</span>
+            <span style="font-size:24px; font-weight:800; color:var(--text-primary);">${totalCount}</span>
+          </div>
+          <div style="background:var(--bg-surface); border:1px solid var(--border-hairline); border-radius:10px; padding:12px 16px; display:flex; flex-direction:column; gap:4px;">
+            <span style="font-size:11px; font-weight:700; color:var(--accent-amber); text-transform:uppercase;">Pendientes</span>
+            <span style="font-size:24px; font-weight:800; color:var(--accent-amber);">${pendingList.length}</span>
+          </div>
+          <div style="background:var(--bg-surface); border:1px solid var(--border-hairline); border-radius:10px; padding:12px 16px; display:flex; flex-direction:column; gap:4px;">
+            <span style="font-size:11px; font-weight:700; color:#10b981; text-transform:uppercase;">Completados</span>
+            <span style="font-size:24px; font-weight:800; color:#10b981;">${completedList.length}</span>
+          </div>
+          <div style="background:var(--bg-surface); border:1px solid var(--border-hairline); border-radius:10px; padding:12px 16px; display:flex; flex-direction:column; gap:4px;">
+            <span style="font-size:11px; font-weight:700; color:#3b82f6; text-transform:uppercase;">Para Hoy</span>
+            <span style="font-size:24px; font-weight:800; color:#3b82f6;">${todayCount}</span>
+          </div>
+        </div>
+
+        <!-- Pestañas de Filtro -->
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; border-bottom:1px solid var(--border-hairline); padding-bottom:8px;">
+          <div style="display:flex; gap:6px;">
+            <button type="button" class="btn-secondary ${currentTab === 'all' ? 'active' : ''}" onclick="setRemindersTab('all')" style="font-size:12px; padding:5px 12px; border-radius:6px;">Todos (${totalCount})</button>
+            <button type="button" class="btn-secondary ${currentTab === 'pending' ? 'active' : ''}" onclick="setRemindersTab('pending')" style="font-size:12px; padding:5px 12px; border-radius:6px;">Pendientes (${pendingList.length})</button>
+            <button type="button" class="btn-secondary ${currentTab === 'completed' ? 'active' : ''}" onclick="setRemindersTab('completed')" style="font-size:12px; padding:5px 12px; border-radius:6px;">Completados (${completedList.length})</button>
+          </div>
+        </div>
+
+        <!-- Lista de Recordatorios -->
+        <div class="reminders-full-cards-list" style="display:flex; flex-direction:column; gap:10px; max-width:900px;">
+          ${filteredReminders.length === 0 ? `
+            <div style="text-align:center; padding:48px 20px; background:var(--bg-surface); border:1px dashed var(--border-hairline); border-radius:12px;">
+              <span style="font-size:32px; display:block; margin-bottom:10px;">🎉</span>
+              <strong style="font-size:15px; color:var(--text-primary); display:block;">No hay recordatorios en esta sección</strong>
+              <span style="font-size:12px; color:var(--text-muted); display:block; margin-top:4px;">Crea uno nuevo con el botón superior para organizar tu agenda.</span>
+            </div>
+          ` : filteredReminders.map(ev => {
+            const catClass = categoryClassMap[ev.category] || '';
+            const safeTitle = escapeHtmlAttr(ev.title || 'Recordatorio');
+            const isCompleted = Boolean(ev.completed);
+
+            return `
+              <div class="home-event-card ${isCompleted ? 'completed' : ''}" id="reminders-card-${ev.id}" style="padding:12px 16px; border-radius:10px; background:var(--bg-surface); border:1px solid var(--border-hairline);">
+                <div class="home-event-card-left" style="display:flex; align-items:center; gap:12px; flex:1; min-width:0;">
+                  <button type="button" 
+                          class="home-event-checkbox" 
+                          onclick="toggleHomeReminder(${ev.id})" 
+                          title="${isCompleted ? 'Marcar como pendiente' : 'Marcar como completado'}"
+                          aria-label="Alternar estado de evento">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </button>
+                  <div class="home-event-info" style="min-width:0;">
+                    <span class="home-event-title" style="font-size:13.5px; font-weight:600; color:var(--text-primary); ${isCompleted ? 'text-decoration:line-through; opacity:0.6;' : ''}">${safeTitle}</span>
+                    <div class="home-event-meta-row" style="display:flex; align-items:center; gap:10px; margin-top:4px; font-size:11.5px; color:var(--text-muted);">
+                      ${ev.time ? `<span>🕒 ${escapeHtmlAttr(ev.time)}</span>` : '<span>🕒 Todo el día</span>'}
+                      ${ev.date ? `<span>📅 ${escapeHtmlAttr(ev.date)}</span>` : ''}
+                      ${ev.category ? `<span class="home-event-category-pill ${catClass}">${escapeHtmlAttr(ev.category)}</span>` : ''}
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="home-event-delete-btn" onclick="deleteHomeReminder(${ev.id})" title="Eliminar recordatorio" aria-label="Eliminar recordatorio">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    window.NoteJSLocal = {
+      ready: cloudLocalReady,
+      masterFolder: MASTER_ALL_NOTES_FOLDER,
+      getNotes: () => state.notes,
+      async persist(note, refresh = false) {
+        const result = await (hasPyWebViewBridge() && typeof window.pywebview.api.save_note === 'function'
+          ? window.pywebview.api.save_note(note)
+          : fetch('/api/notes', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({note})}).then(response => {if (!response.ok) throw new Error('No se pudo guardar la nota en esta PC.'); return response.json();}));
+        if (!result.ok) throw new Error(result.error || 'No se pudo guardar la nota en esta PC.');
+        const index = state.notes.findIndex(item => item.id === note.id);
+        if (index < 0) state.notes.unshift(note); else state.notes[index] = note;
+        const folder = note.folders?.find(value => value !== MASTER_ALL_NOTES_FOLDER) || note.folder;
+        if (folder && !state.folders.includes(folder)) { state.folders.push(folder); persistFoldersLocal(); saveFoldersToBackend(); }
+        persistNoteMetaOverlay();
+        localStorage.setItem('notejs_desktop_notion_v9',JSON.stringify(state.notes));
+        if (refresh) {
+          renderFolders(); renderNotesList(); renderNoteTabs();
+          if (state.activeNoteId === note.id) loadActiveNote();
+          if (state.isHomeActive) renderHomePage();
+        }
+      }
+    };
+
+    // Exponer funciones en window para unittests y llamadas globales
+    window.minimizeWindow = minimizeWindow;
+    window.toggleMaximizeWindow = toggleMaximizeWindow;
+    window.closeWindow = closeWindow;
+    window.updateMaximizeIcon = updateMaximizeIcon;
+    window.toggleWinMenu = toggleWinMenu;
+    window.navigateToReminders = navigateToReminders;
+    window.exitRemindersView = exitRemindersView;
+    window.renderRemindersPageView = renderRemindersPageView;
+    window.setRemindersTab = setRemindersTab;
+    window.setFolderModalType = setFolderModalType;
+    window.handleStartupBehaviorChange = handleStartupBehaviorChange;
+    window.toggleTocExpanded = toggleTocExpanded;
+
     window.addEventListener('DOMContentLoaded', () => {
-      initCoverRepositionListeners();
+      initTopBarWindowControls();
+      initTocScrollSpy();
       initSpatialBlockController();
       initStructuralKeyboardShortcuts();
       setTimeout(() => {

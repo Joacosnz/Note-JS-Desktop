@@ -29,22 +29,49 @@ if exist "%LOCALAPPDATA%\Python\pythoncore-3.15-64\Scripts\pyinstaller.exe" (
     set "PYINSTALLER_EXE=%PYTHON_EXE% -m PyInstaller"
 )
 
-echo [1/2] Verificando dependencias con %PYTHON_EXE%...
+:: Detectar Inno Setup
+set "ISCC_EXE="
+if exist "%LOCALAPPDATA%\Programs\Inno Setup 6\ISCC.exe" (
+    set "ISCC_EXE=%LOCALAPPDATA%\Programs\Inno Setup 6\ISCC.exe"
+) else if exist "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" (
+    set "ISCC_EXE=C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+) else if exist "C:\Program Files\Inno Setup 6\ISCC.exe" (
+    set "ISCC_EXE=C:\Program Files\Inno Setup 6\ISCC.exe"
+)
+
+echo [1/3] Verificando dependencias con %PYTHON_EXE%...
 "%PYTHON_EXE%" -m pip install -r requirements.txt
 
 echo.
-echo [2/2] Compilando NoteJS.exe autónomo con PyInstaller...
-"%PYINSTALLER_EXE%" --noconsole --onefile --add-data "frontend;frontend" --hidden-import peewee --hidden-import models --hidden-import backend --hidden-import webview.platforms.winforms --hidden-import webview.platforms.edgechromium --name "NoteJS" desktop_app.py
+echo [2/3] Compilando NoteJS.exe autónomo con PyInstaller...
+if exist "node_modules\.bin\esbuild.cmd" (
+    call npm run build:firebase
+    if errorlevel 1 exit /b 1
+)
+"%PYINSTALLER_EXE%" --noconsole --onefile --icon="public\icon.ico" --add-data "frontend;frontend" --add-data "public;public" --add-data "welcome_notes.json;." --hidden-import peewee --hidden-import models --hidden-import backend --hidden-import webview.platforms.winforms --hidden-import webview.platforms.edgechromium --name "NoteJS" desktop_app.py
 
 echo.
-if exist "dist\NoteJS.exe" (
+echo [3/3] Generando instalador para usuarios (Instalador_NoteJS.exe)...
+if defined ISCC_EXE (
+    "%ISCC_EXE%" installer.iss
+) else (
+    echo [AVISO] Inno Setup no encontrado. Omitiendo generacion de Instalador_NoteJS.exe.
+)
+
+echo.
+if exist "dist\Instalador_NoteJS.exe" (
     echo ===============================================================
-    echo   ✓ COMPILACIÓN COMPLETADA EXITOSAMENTE!
-    echo   Tu ejecutable para Windows 11 está en: dist\NoteJS.exe
+    echo   [OK] INSTALADOR Y EJECUTABLE CREADOS EXITOSAMENTE!
+    echo   Instalador para usuarios: dist\Instalador_NoteJS.exe
+    echo   Ejecutable autonomo directo: dist\NoteJS.exe
+    echo ===============================================================
+) else if exist "dist\NoteJS.exe" (
+    echo ===============================================================
+    echo   [OK] EJECUTABLE CREADO: dist\NoteJS.exe
     echo ===============================================================
 ) else (
     echo ===============================================================
-    echo   ✗ Hubo un problema al generar dist\NoteJS.exe
+    echo   [ERROR] Hubo un problema al generar los binarios.
     echo ===============================================================
 )
-pause
+if "%~1"=="" pause

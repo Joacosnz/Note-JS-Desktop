@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Conectar Note JS</title>
+<style>body{font:16px system-ui;background:#15171b;color:#eee;display:grid;min-height:95vh;place-items:center;margin:0}main{max-width:440px;padding:32px}button{font:inherit;background:#e4ad52;border:0;border-radius:8px;padding:12px 20px;cursor:pointer}p{line-height:1.6;color:#bbc2ce}</style></head>
+<body><main><h1>Conectar Note JS</h1><p>Inicia sesión con la misma cuenta de Google que usas en tu móvil. Al terminar, vuelve a Note JS.</p><button id="signin">Continuar con Google</button><p id="status" role="status"></p></main>
+<script type="module">
+import { initializeApp, getAuth, signInWithPopup, GoogleAuthProvider, setPersistence, inMemoryPersistence, signOut } from '/vendor/firebase-sdk.mjs';
+const status = document.getElementById('status'), button = document.getElementById('signin');
+button.onclick = async () => {
+  button.disabled = true;
+  try {
+    const config = await fetch('/api/firebase/config').then(response => response.json());
+    const auth = getAuth(initializeApp(config.firebase));
+    await setPersistence(auth, inMemoryPersistence);
+    const provider = new GoogleAuthProvider(); provider.setCustomParameters({ prompt: 'select_account' });
+    const result = await signInWithPopup(auth, provider);
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const response = await fetch('/api/firebase/auth/complete', { method:'POST', headers:{'Content-Type':'application/json', 'X-NoteJS-Client':'firebase'}, body:JSON.stringify({state:new URLSearchParams(location.search).get('state'), credential:{providerId:'google.com', idToken:credential.idToken}}) });
+    const data = await response.json();
+    if (!response.ok || !data.ok) throw new Error(data.error);
+    await signOut(auth);
+    status.textContent = 'Conexión completada. Puedes cerrar esta pestaña y volver a Note JS.';
+    button.hidden = true;
+  } catch (error) { status.textContent = 'No se pudo conectar: ' + error.message; button.disabled = false; }
+};
+</script></body></html>

@@ -1219,22 +1219,15 @@ class NoteJSRequestHandler(BaseHTTPRequestHandler):
             return
 
         if path == '/api/window/maximize':
-            action = 'maximize'
             try:
                 import webview
-                if webview.windows:
-                    win = webview.windows[0]
-                    if getattr(win, '_is_maximized', False):
-                        win.restore()
-                        win._is_maximized = False
-                        action = 'restore'
-                    else:
-                        win.maximize()
-                        win._is_maximized = True
-                        action = 'maximize'
-            except Exception:
-                pass
-            self._send_json({'success': True, 'action': action})
+                from window_controls import toggle_maximize
+                if not webview.windows:
+                    raise RuntimeError('No active window')
+                result = toggle_maximize(webview.windows[0])
+                self._send_json({'success': True, **result})
+            except Exception as exc:
+                self._send_json({'success': False, 'error': str(exc)})
             return
 
         if path == '/api/window/close':

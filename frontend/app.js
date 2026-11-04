@@ -10750,11 +10750,11 @@ const COVER_PRESETS = [
       }
 
       // 2. Cuadro de Nota en la Galería / Lista o Cuadrícula (.note-item-card)
-      const noteCard = e.target.closest('.note-item-card[data-note-id]');
+      const noteCard = e.target.closest('.note-item-card[data-note-id], .home-grid-card[data-home-note-id]');
       if (noteCard) {
         e.preventDefault();
         e.stopPropagation();
-        const noteId = Number(noteCard.getAttribute('data-note-id'));
+        const noteId = Number(noteCard.dataset.noteId || noteCard.dataset.homeNoteId);
         const note = state.notes.find(n => n.id === noteId);
         if (!note) return;
 

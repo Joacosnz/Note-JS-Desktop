@@ -15,6 +15,7 @@ import base64
 import webbrowser
 from urllib.parse import urlencode
 import webview
+from window_controls import toggle_maximize, enable_edit_context_menu
 from pdf_documents import MAX_PDF_BYTES, store_pdf
 from onboarding import initialize_first_run
 
@@ -333,15 +334,7 @@ class PyWebViewBridge:
     def toggle_maximize_window(self):
         try:
             if webview.windows:
-                win = webview.windows[0]
-                if getattr(win, '_is_maximized', False):
-                    win.restore()
-                    win._is_maximized = False
-                    return {'ok': True, 'action': 'restore', 'is_maximized': False}
-                else:
-                    win.maximize()
-                    win._is_maximized = True
-                    return {'ok': True, 'action': 'maximize', 'is_maximized': True}
+                return toggle_maximize(webview.windows[0])
             return {'ok': False, 'error': 'No active window'}
         except Exception as e:
             return {'ok': False, 'error': str(e)}
@@ -438,6 +431,14 @@ def launch_pywebview_app():
             except Exception:
                 pass
         window.events.shown += on_window_shown
+
+    def on_window_loaded():
+        try:
+            enable_edit_context_menu(window)
+        except Exception as exc:
+            print(f'Could not enable editing menu: {exc}')
+
+    window.events.loaded += on_window_loaded
 
     webview.start(debug=False, icon=icon_file if os.path.exists(icon_file) else None,
                   private_mode=False, storage_path=os.path.join(DATA_DIR, 'webview'))

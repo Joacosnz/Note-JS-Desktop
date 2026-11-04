@@ -1,151 +1,141 @@
-# Note JS — Aplicación de Notas Profesional para PC
+Note JS — Desktop Note-Taking App
 
-**Note JS** es una aplicación de notas y productividad para escritorio (PC con Windows, Linux y macOS), inspirada en la elegancia visual de **Apple Notes** y la potencia de bloques de **Notion**.
+Note JS is a desktop productivity and note-taking application (for Windows, Linux, and macOS PCs), inspired by the visual elegance of Apple Notes and the block-based power of Notion.
+The project has been fully migrated and optimized for PC, utilizing Python on the backend with SQLite + Peewee ORM relational storage, an ultra-lightweight native desktop window via PyWebView (avoiding the excessive memory consumption of Electron), and a fast, reactive frontend built with Vanilla JavaScript (ES6+), HTML5, and CSS3.
 
-El proyecto ha sido completamente migrado y optimizado para **PC**, utilizando **Python** en el backend con almacenamiento relacional **SQLite + Peewee ORM**, una ventana nativa de escritorio ultraligera mediante **PyWebView** (sin el consumo excesivo de memoria de Electron), y un frontend rápido y reactivo en **JavaScript Vanilla (ES6+), HTML5 y CSS3**.
+🚀 Key Features
 
----
+1. Hierarchical Folder & Subfolder Manager:
 
-## 🚀 Características Principales
+* Support for nested subfolders with unlimited levels.
+* Drag & Drop reorganization (drag one folder over another to make it a subfolder or promote it to the root).
+* Smooth visual animations for indentation and drop states.
+* Custom emoji assignment for any folder.
+* All notes always reside in the master "All notes" folder.
 
-1. **Gestor de Carpetas y Subcarpetas Jerárquicas**:
-   - Soporte para subcarpetas anidadas con niveles ilimitados.
-   - Reorganización mediante **Drag & Drop** (arrastrar una carpeta sobre otra para convertirla en subcarpeta o promoverla a la raíz).
-   - Animación visual fluida de indentación y estado de soltado.
-   - Asignación de emojis personalizados a cualquier carpeta.
-   - Todas las notas residen siempre en la carpeta maestra *"Todas las notas"*.
+2. Smart Folders:
 
-2. **Carpetas Inteligentes (Smart Folders)**:
-   - Filtros dinámicos en tiempo real basados en consultas SQLite ORM.
-   - Modos de combinación lógica: **Coincidir con todos (AND)** o **Coincidir con cualquiera (OR)**.
-   - Filtros soportados: Etiquetas (`#tags`), Fechas de modificación/creación, Listas de tareas (checklists completos/pendientes), Archivos adjuntos (fotos, videos, audio, PDF, enlaces) y estado de bloqueo.
-   - Las carpetas inteligentes son virtuales (no mueven ni duplican notas físicas).
+* Real-time dynamic filters based on SQLite ORM queries.
+* Logical combination modes: Match all (AND) or Match any (OR).
+* Supported filters: Tags (#tags), Modification/Creation dates, Task lists (completed/pending checklists), Attachments (photos, videos, audio, PDF, links), and lock state.
+* Smart folders are virtual (they do not move or duplicate physical notes).
 
-3. **Editor de Bloques Estilo Notion**:
-   - Bloques independientes (encabezados, párrafos, listas con viñetas, checklists, citas, llamadas, código con resaltado de sintaxis, tablas dinámicas y tableros Kanban).
-   - Ordenamiento fraccionario **O(1)** (*Fractional Indexing* con Base62) que permite mover bloques sin reindexar todo el documento.
-   - Imágenes locales y externas con controles de redimensionamiento visual y anclaje (*float left, right, center*).
+3. Notion-Style Block Editor:
 
-4. **Calendario y Recordatorios Integrados**:
-   - Vista de calendario interactiva en la página de inicio.
-   - Gestión de tareas y recordatorios con fecha, hora, categoría y estado completado.
-   - Persistencia directa en base de datos SQLite (`reminders`).
+* Independent blocks (headings, paragraphs, bulleted lists, checklists, quotes, callouts, syntax-highlighted code, dynamic tables, and Kanban boards).
+* O(1) fractional ordering (Fractional Indexing with Base62) allowing block movement without reindexing the entire document.
+* Local and external images with visual resizing and anchoring controls (float left, right, center).
 
-5. **Historial de Versiones y Puntos de Restauración**:
-   - Guardado automático de versiones históricas en SQLite (`note_history`).
-   - Puntos de restauración manuales nombrados.
-   - Reversión atómica a cualquier versión anterior con un solo clic.
+4. Integrated Calendar & Reminders:
 
-6. **Metadatos de Enlaces Web (OpenGraph Previews)**:
-   - Extracción automática de títulos, imágenes de portada, descripciones y favicons para tarjetas de enlaces enriquecidas, con almacenamiento en caché local (`web_link_cache`).
+* Interactive calendar view on the home page.
+* Task and reminder management with date, time, category, and completed status.
+* Direct persistence in the SQLite database (reminders).
 
-7. **Matemáticas, Audio y Firmas Digitales**:
-   - Fórmulas matemáticas en tiempo real renderizadas con KaTeX.
-   - Grabación y reproducción de notas de voz desde el propio editor.
-   - Panel de firma manuscrita y digitalización de trazos.
+5. Version History & Restore Points:
 
----
+* Automatic saving of historical versions in SQLite (note_history).
+* Named manual restore points.
+* Atomic rollback to any previous version with a single click.
 
-## 📁 Arquitectura del Proyecto
+6. Web Link Metadata (OpenGraph Previews):
 
-### Firebase y la app móvil
+* Automatic extraction of titles, cover images, descriptions, and favicons for rich link cards, with local caching (web_link_cache).
 
-Las portadas de degradado y el emoji se comparten con Android. Consulta [el contrato de portadas y las mejoras de unificación](docs/NOTE_COVERS.md). La actualización móvil incluye una migración Room 19→20 y conservación de estos campos en las copias de seguridad.
+7. Math, Audio, and Digital Signatures:
 
-El menú **Note JS** agrupa creación, apertura de PDF, búsqueda, navegación y cuenta. La barra lateral muestra el estado de sincronización. Las herramientas del documento están en **Opciones de página**, con estilos claros y oscuros.
+* Real-time mathematical formulas rendered with KaTeX.
+* Voice note recording and playback directly from the editor.
+* Handwriting signature panel and stroke digitization.
 
-Las tablas móviles mantienen sus dimensiones, encabezados, franjas y colores de celda al editar y volver a sincronizar. Incluyen botones **+ Fila** y **+ Columna**, navegación con **Tab** y pegado de rangos tabulados dentro de la tabla. Las tablas descargadas por versiones anteriores se actualizan al recibir el estado de la nube, conservando las ediciones locales pendientes.
+📁 Project Architecture
 
-El escritorio está registrado como **Note JS Desktop** en el proyecto del móvil `isentropic-tape-465216-c1`. Utiliza la base Enterprise Native `ai-studio-android-notas-e533a5f4-cda6-4bde-b5d4-c0acf42009aa`, con actualizaciones en tiempo real habilitadas y las colecciones existentes `users/{uid}/notes`. Se mantienen las reglas desplegadas del móvil; esta integración no las reemplaza.
+Firebase and the mobile app
+Gradient covers and the emoji are shared with Android. Refer to the covers contract and unification improvements. The mobile update includes a Room 19→20 migration and preservation of these fields in backups.
+The Note JS menu groups creation, PDF opening, search, navigation, and account settings. The sidebar displays the synchronization status. Document tools are located in Page Options, featuring light and dark themes.
+Mobile tables retain their dimensions, headers, stripes, and cell colors when edited and re-synced. They include + Row and + Column buttons, Tab navigation, and tabulated range pasting within the table. Tables downloaded by previous versions update upon receiving the cloud state, preserving pending local edits.
+The desktop is registered as Note JS Desktop in the mobile project isentropic-tape-465216-c1. It uses the Enterprise Native base ai-studio-android-notas-e533a5f4-cda6-4bde-b5d4-c0acf42009aa, with real-time updates enabled and the existing users/{uid}/notes collections. The deployed mobile rules are maintained; this integration does not replace them.
 
-1. Abre **Ajustes → Mi Cuenta → Conectar con Google**. El acceso se completa en el navegador del sistema.
-2. Usa la misma cuenta que en Android para recibir sus notas.
-3. Para subir tu biblioteca anterior de la PC, elige **Sincronizar notas locales con esta cuenta**. Las notas de otra cuenta nunca se vinculan automáticamente.
-4. Las notas nuevas se vinculan a la cuenta activa. SQLite conserva los cambios pendientes y se reintentan al recuperar la conexión o abrir de nuevo la app.
+1. Open Settings → My Account → Connect with Google. The login completes in the system browser.
+2. Use the same account as on Android to receive its notes.
+3. To upload your previous PC library, choose Sync local notes with this account. Notes from another account are never linked automatically.
+4. New notes are linked to the active account. SQLite preserves pending changes, and retries occur upon regaining connection or reopening the app.
 
-Se comparten título, contenido del lienzo, carpeta, etiquetas, fijado y papelera. La conversión admite texto, encabezados, listas, tareas, tablas e imágenes/PDF remotos. Los bloques móviles aún no editables se conservan con su información original. Las herramientas especiales del escritorio que están fuera del lienzo y los recordatorios/calendarios independientes siguen siendo locales en esta primera integración. Los conflictos conservan ambas versiones; una eliminación remota conserva una copia local.
+Title, canvas content, folder, tags, pinned status, and trash are shared. Conversion supports text, headings, lists, tasks, tables, and remote images/PDFs. Mobile blocks that are not yet editable are preserved with their original information. Special desktop tools outside the canvas and standalone reminders/calendars remain local in this first integration. Conflicts preserve both versions; a remote deletion preserves a local copy.
 
-**Adjuntos:** el proyecto todavía no tiene un bucket de Firebase Storage. Las notas con PDF o imágenes locales quedan pendientes y siguen guardadas en esta PC; las demás notas se sincronizan. Para compartir archivos hay que habilitar Storage, configurar sus reglas para `users/{uid}/notes_media/`, y actualizar `storageAvailable` en `frontend/firebase-config.json`. No se habilitó facturación ni se provisionó almacenamiento como parte de este cambio.
+Attachments: the project does not yet have a Firebase Storage bucket. Notes with local PDFs or images remain pending and are still saved on this PC; other notes are synchronized. To share files, Storage must be enabled, its rules configured for users/{uid}/notes_media/, and storageAvailable updated in frontend/firebase-config.json. Billing was not enabled nor was storage provisioned as part of this change.
 
-El SDK oficial está incluido en `frontend/vendor/firebase-sdk.mjs`, por lo que la app abre sin descargar dependencias. La configuración del cliente es pública; no se incluye una cuenta de servicio. La sesión de Firebase se conserva en el perfil local `webview/`, que no se distribuye con el instalador. El traspaso del acceso desde el navegador caduca en cinco minutos y se consume una sola vez.
+The official SDK is included in frontend/vendor/firebase-sdk.mjs, so the app opens without downloading dependencies. The client configuration is public; a service account is not included. The Firebase session is kept in the local webview/ profile, which is not distributed with the installer. The access handoff from the browser expires in five minutes and is consumed only once.
 
-Para reconstruir el SDK: `npm ci` y `npm run build:firebase`. Pruebas: `npm run test:firebase`, la suite Python, y `tests/firebase_client_smoke.cjs` contra emuladores Auth y Firestore Enterprise. La prueba de navegador usa cuentas sintéticas y una base SQLite temporal. Se usan listeners estándar porque la sincronización en tiempo real y el funcionamiento sin conexión son requisitos del producto.
+To rebuild the SDK: npm ci and npm run build:firebase. Tests: npm run test:firebase, the Python suite, and tests/firebase_client_smoke.cjs against Auth and Firestore Enterprise emulators. The browser test uses synthetic accounts and a temporary SQLite database. Standard listeners are used because real-time sync and offline functionality are product requirements.
 
-El instalador crea una biblioteca nueva al iniciar y conserva la existente al actualizar: no incluye la base de datos de desarrollo ni las sesiones del autor.
+The installer creates a new library on startup and preserves the existing one upon updating: it does not include the development database or the author's sessions.
 
-Para ejecutar la prueba integral, con Java disponible: `npx -y firebase-tools@latest emulators:exec --project demo-notejs-desktop --only auth,firestore --config firebase.emulators.json "node tests/firebase_client_smoke.cjs"`. Las rutas de Python y Edge se pueden indicar mediante `NOTEJS_TEST_PYTHON` y `NOTEJS_TEST_BROWSER`.
+To run the integration test, with Java available: npx -y firebase-tools@latest emulators:exec --project demo-notejs-desktop --only auth,firestore --config firebase.emulators.json "node tests/firebase_client_smoke.cjs". Python and Edge paths can be specified via NOTEJS_TEST_PYTHON and NOTEJS_TEST_BROWSER.
 
-### PDF en escritorio
+PDF on desktop
 
-- **Abrir PDF** en la barra lateral abre un documento local sin crear una nota.
-- Dentro de una nota, **Archivo y Visor PDF** permite subir un PDF o pegar un enlace.
-- El visor incluye páginas, zoom, rotación por página, búsqueda de texto, texto seleccionable mediante el botón **Texto**, dibujo a mano alzada, colores y deshacer trazos.
-- **Guardar copia** exporta un PDF con los dibujos y las rotaciones. En escritorio se elige la ubicación con el diálogo nativo; en navegador se descarga. Los cambios se guardan en la copia, no automáticamente en el adjunto original.
-- El instalador registra Note JS en **Abrir con** para `.pdf`. El ejecutable también acepta `NoteJS.exe "C:\\Documentos\\archivo.pdf"`.
-- Los documentos locales funcionan sin Internet. Se conservan en `attachments/pdfs/`, junto a la base de datos de la aplicación; hay que incluir esa carpeta al trasladar las notas o hacer una copia manual. Límite: **50 MB por archivo**.
-- Los enlaces externos requieren que el servidor permita acceso CORS; si no lo permite, descarga el PDF y súbelo como archivo local. La búsqueda requiere texto en el documento: esta implementación no incluye OCR ni edición del texto original. Los PDF cifrados pueden leerse con contraseña; su modificación depende del soporte de pdf-lib.
-- Bibliotecas incluidas localmente: [PDF.js](https://mozilla.github.io/pdf.js/) 6.5.438 (Apache-2.0) y [pdf-lib](https://pdf-lib.js.org/) 1.17.1 (MIT), con sus licencias en `frontend/vendor/`.
+* Opening a PDF from the sidebar opens a local document without creating a note.
+* Inside a note, File and PDF Viewer allows uploading a PDF or pasting a link.
+* The viewer includes pages, zoom, per-page rotation, text search, selectable text via the Text button, freehand drawing, colors, and stroke undo.
+* Save copy exports a PDF with drawings and rotations. On desktop, the location is chosen with the native dialog; in the browser, it downloads. Changes are saved in the copy, not automatically in the original attachment.
+* The installer registers Note JS in "Open with" for .pdf. The executable also accepts NoteJS.exe "C:\Documents\file.pdf".
+* Local documents work without the Internet. They are kept in attachments/pdfs/, next to the application database; that folder must be included when moving notes or making a manual backup. Limit: 50 MB per file.
+* External links require the server to allow CORS access; if it doesn't, download the PDF and upload it as a local file. Searching requires text in the document: this implementation does not include OCR or editing the original text. Encrypted PDFs can be read with a password; modifying them depends on pdf-lib support.
+* Locally included libraries: PDF.js 6.5.438 (Apache-2.0) and pdf-lib 1.17.1 (MIT), with their licenses in frontend/vendor/.
 
-Verificación: `python -m unittest discover -s tests -p test_pdf_documents.py`. La prueba real de renderizado y exportación se ejecuta con `node tests/pdf_reader_smoke.cjs`; requiere Edge y Python, cuyas rutas pueden indicarse con `NOTEJS_TEST_BROWSER` y `NOTEJS_TEST_PYTHON`.
+Verification: python -m unittest discover -s tests -p test_pdf_documents.py. The actual rendering and export test runs with node tests/pdf_reader_smoke.cjs; it requires Edge and Python, whose paths can be specified with NOTEJS_TEST_BROWSER and NOTEJS_TEST_PYTHON.
 
-```
 Notas/
 │
-├── desktop_app.py        # Ventana nativa de escritorio con PyWebView + Puente Python-JS
-├── backend.py            # Servidor HTTP multihilo y API REST
-├── server.py             # Entrypoint para servidor local
-├── app.py                # Entrypoint secundario
-├── models.py             # Capa de datos relacional con SQLite + Peewee ORM
-├── peewee.py             # ORM Peewee integrado
-├── requirements.txt      # Dependencias de Python
-├── package.json          # Configuración y scripts npm
+├── desktop_app.py        # Native desktop window with PyWebView + Python-JS Bridge
+├── backend.py            # Multithreaded HTTP server and REST API
+├── server.py             # Entrypoint for local server
+├── app.py                # Secondary entrypoint
+├── models.py             # Relational data layer with SQLite + Peewee ORM
+├── peewee.py             # Integrated Peewee ORM
+├── requirements.txt      # Python dependencies
+├── package.json          # npm configuration and scripts
 │
-├── run_desktop.bat       # Inicia la app de escritorio en modo desarrollo (Windows 11)
-├── run_server.bat        # Inicia el servidor local en modo desarrollo (Windows 11)
-├── build_exe.bat         # Recompila NoteJS.exe con PyInstaller
-├── build_linux.sh        # Compilador para binarios de Linux
+├── run_desktop.bat       # Starts the desktop app in development mode (Windows 11)
+├── run_server.bat        # Starts the local server in development mode (Windows 11)
+├── build_exe.bat         # Recompiles NoteJS.exe with PyInstaller
+├── build_linux.sh        # Compiler for Linux binaries
 │
 ├── dist/
-│   ├── NoteJS.exe        # Único ejecutable compilado con PyInstaller
-│   └── Instalador_NoteJS.exe # Único instalador de Windows
+│   ├── NoteJS.exe        # Single compiled executable via PyInstaller
+│   └── Instalador_NoteJS.exe # Single Windows installer
 │
-├── frontend/             # Frontend completo para PC
-│   ├── index.html        # Estructura del DOM y modales
-│   ├── styles.css        # Sistema de diseño macOS / Notion
-│   └── app.js            # Lógica completa de cliente y sincronización
-```
+├── frontend/             # Complete frontend for PC
+│   ├── index.html        # DOM structure and modals
+│   ├── styles.css        # macOS / Notion design system
+│   └── app.js            # Complete client and synchronization logic
 
----
+💻 How to Run on Windows 11
 
-## 💻 Cómo Ejecutar en Windows 11
+🚀 Option 1: Direct Execution with the Executable (.exe) — Recommended
+Double-click on dist/NoteJS.exe.
 
-### 🚀 Opción 1: Ejecución Directa con el Ejecutable (.exe) — Recomendada
-Haz doble clic en **[dist/NoteJS.exe](dist/NoteJS.exe)**.
-- Se abrirá la aplicación en una ventana nativa ultraligera de escritorio sin requerir terminal ni dependencias activas.
-- Todas tus notas, carpetas inteligentes y recordatorios se guardarán automáticamente en `notejs.db`.
+* The application will open in an ultra-lightweight native desktop window without requiring a terminal or active dependencies.
+* All your notes, smart folders, and reminders will be automatically saved in notejs.db.
 
----
+🛠️ Option 2: Development Mode (PyWebView)
+To develop or modify the source code in real-time:
 
-### 🛠️ Opción 2: Modo Desarrollo (PyWebView)
-Para desarrollar o modificar el código fuente en tiempo real:
-- Haz doble clic sobre **[run_desktop.bat](run_desktop.bat)**.
-- El script detecta automáticamente tu instalación de Python en Windows 11 e inicia la ventana de desarrollo.
+* Double-click on run_desktop.bat.
+* The script automatically detects your Python installation on Windows 11 and launches the development window.
 
----
+🌐 Option 3: Local Web Server Mode
 
-### 🌐 Opción 3: Modo Servidor Web Local
-- Haz doble clic sobre **[run_server.bat](run_server.bat)**.
-- Abre tu navegador en: **`http://localhost:3000`**
+* Double-click on run_server.bat.
+* Open your browser at: http://localhost:3000
 
----
+📦 Option 4: Recompile the .exe Executable
+If you modify styles, HTML templates, JavaScript logic, or Python models and wish to generate a new .exe:
 
-### 📦 Opción 4: Recompilar el Ejecutable `.exe`
-Si modificas los estilos, plantillas HTML, lógica JavaScript o modelos en Python y deseas generar un nuevo `.exe`:
-- Haz doble clic sobre **[build_exe.bat](build_exe.bat)**.
-- PyInstaller reempaquetará el binario optimizado en `dist\NoteJS.exe`.
+* Double-click on build_exe.bat.
+* PyInstaller will repackage the optimized binary into dist\NoteJS.exe.
 
-## Distribución y mantenimiento
-
-Windows mantiene únicamente `dist/NoteJS.exe` y `dist/Instalador_NoteJS.exe`. `build_exe.bat` y `npm run build:exe` utilizan `NoteJS.spec` como configuración común. Los datos locales en `dist/` no forman parte del instalador y no deben borrarse al limpiar binarios.
-
-Android se mantiene en el repositorio hermano `../Notas`; su APK de desarrollo se genera en `app/build/outputs/apk/debug/app-debug.apk`. Consulta [el registro de limpieza y validación](docs/CLEANUP.md).
+Distribution and maintenance
+Windows exclusively maintains dist/NoteJS.exe and dist/Instalador_NoteJS.exe. build_exe.bat and npm run build:exe use NoteJS.spec as common configuration. Local data in dist/ is not part of the installer and should not be deleted when cleaning binaries.
+Android is maintained in the sibling repository ../Notas; its development APK is generated at app/build/outputs/apk/debug/app-debug.apk. Refer to the cleanup and validation log.

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es"><meta charset="utf-8"><title>Conectar Google Calendar · Note JS</title>
+<style>body{font:16px system-ui;background:#18191d;color:#eee;max-width:480px;margin:12vh auto;padding:24px}p{line-height:1.6}button{font:inherit;padding:12px 20px;border:0;border-radius:12px;cursor:pointer}</style>
+<h1>Conectar Google Calendar</h1><p>Autorizá a Note JS a leer y actualizar los eventos del calendario que elijas. Este permiso es independiente del inicio de sesión de tus notas.</p>
+<button id="connect">Continuar con Google</button><p id="status" role="status"></p>
+<script type="module">
+import {initializeApp,getAuth,GoogleAuthProvider,signInWithPopup,setPersistence,inMemoryPersistence,signOut} from '/vendor/firebase-sdk.mjs';
+const button=document.querySelector('#connect'),status=document.querySelector('#status');
+button.onclick=async()=>{
+ button.disabled=true;
+ try{
+  const config=await fetch('/api/firebase/config').then(r=>r.json());
+  const auth=getAuth(initializeApp(config.firebase));await setPersistence(auth,inMemoryPersistence);
+  const provider=new GoogleAuthProvider();
+  provider.addScope('https://www.googleapis.com/auth/calendar.events');
+  provider.addScope('https://www.googleapis.com/auth/calendar.calendarlist.readonly');
+  provider.setCustomParameters({prompt:'consent select_account'});
+  const result=await signInWithPopup(auth,provider);
+  const accessToken=GoogleAuthProvider.credentialFromResult(result)?.accessToken;
+  if(!accessToken)throw new Error('Google no devolvió el permiso de Calendar.');
+  const response=await fetch('/api/google-calendar/complete',{method:'POST',headers:{'Content-Type':'application/json','X-NoteJS-Client':'calendar'},body:JSON.stringify({state:new URLSearchParams(location.search).get('state'),credential:{accessToken}})});
+  const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error);
+  await signOut(auth);button.hidden=true;status.textContent='Permiso recibido. Volvé a Note JS para elegir el calendario.';
+ }catch(error){status.textContent='No se pudo conectar: '+error.message;button.disabled=false;}
+};
+</script></html>

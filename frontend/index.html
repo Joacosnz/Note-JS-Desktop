@@ -1607,6 +1607,17 @@ function evaluateFormula(expr, row) {
             <p class="notion-pane-subtitle">Aplicación nativa de notas y bloques para Windows 11</p>
           </div>
 
+          <div class="notion-settings-group" id="project-support">
+            <div class="notion-group-heading">Apoyar Note JS</div>
+            <p style="font-size:13px;line-height:1.6;color:var(--text-secondary);margin:0 0 16px;">Si Note JS te resulta útil, podés apoyar su desarrollo con un café o participar en GitHub. El aporte es voluntario.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;">
+              <a class="btn-primary" data-project-link href="https://ko-fi.com/yubelljs" target="_blank" rel="noopener noreferrer" style="text-decoration:none;padding:10px 14px;border-radius:10px;">Apoyar en Ko-fi ↗</a>
+              <a class="btn-secondary" data-project-link href="https://github.com/Joacosnz/Note-JS-Desktop" target="_blank" rel="noopener noreferrer" style="text-decoration:none;padding:10px 14px;border-radius:10px;">GitHub · Escritorio ↗</a>
+              <a class="btn-secondary" data-project-link href="https://github.com/Joacosnz/Note-JS-movile" target="_blank" rel="noopener noreferrer" style="text-decoration:none;padding:10px 14px;border-radius:10px;">GitHub · Android ↗</a>
+            </div>
+            <p id="project-link-status" role="status" style="font-size:12px;color:var(--text-secondary);margin:12px 0 0;"></p>
+          </div>
+
           <div class="notion-settings-group">
             <div class="notion-group-heading">Información del Sistema</div>
 
@@ -2688,5 +2699,6 @@ function evaluateFormula(expr, row) {
   <script src="/cloud-table-editor.js"></script>
   <script src="/desktop-menu.js"></script>
   <script type="module" src="/firebase-client.mjs"></script>
+  <script src="/google-calendar.js"></script>
 </body>
 </html>

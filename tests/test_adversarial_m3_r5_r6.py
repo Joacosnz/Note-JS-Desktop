@@ -316,8 +316,8 @@ class TestR6AdversarialIconBinaryAssets(unittest.TestCase):
         )
         self.assertIn("('public', 'public')", spec_code)
 
-        # Batch build script includes icon argument
-        self.assertIn('--icon="public\\icon.ico"', bat_code)
+        # Batch build uses the same spec whose icon is checked above.
+        self.assertIn('-m PyInstaller --noconfirm NoteJS.spec', bat_code)
 
         # HTML references both icon.png and favicon.ico
         self.assertIn('rel="icon" type="image/png" href="/icon.png"', html_code)

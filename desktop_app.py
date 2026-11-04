@@ -83,6 +83,16 @@ class PyWebViewBridge:
     Permite que el frontend interactúe con SQLite + Peewee ORM sin latencia de red.
     """
 
+    def open_project_link(self, url):
+        links = {
+            'https://ko-fi.com/yubelljs',
+            'https://github.com/Joacosnz/Note-JS-Desktop',
+            'https://github.com/Joacosnz/Note-JS-movile',
+        }
+        if not isinstance(url, str) or url not in links:
+            return {'ok': False, 'error': 'Enlace del proyecto inválido.'}
+        return {'ok': bool(webbrowser.open(url))}
+
     def open_microsoft_signin(self):
         from urllib.parse import urlsplit
         if not webview.windows:
@@ -110,6 +120,17 @@ class PyWebViewBridge:
             return {'ok': False, 'error': 'Sesión inválida.'}
         current = urlsplit(webview.windows[0].get_current_url())
         url = f'{current.scheme}://{current.netloc}/firebase-signin.html?' + urlencode({'state': state})
+        return {'ok': bool(webbrowser.open(url))}
+
+    def open_google_calendar(self, state):
+        from urllib.parse import urlsplit
+        from google_calendar import GOOGLE_CALENDAR
+        if not isinstance(state, str) or state not in GOOGLE_CALENDAR.handoff.sessions or not webview.windows:
+            return {'ok': False, 'error': 'Conexión inválida.'}
+        current = urlsplit(webview.windows[0].get_current_url())
+        if current.scheme != 'http' or current.hostname not in ('127.0.0.1', 'localhost'):
+            return {'ok': False, 'error': 'Origen inválido.'}
+        url = f'http://{current.netloc}/google-calendar-connect.html?' + urlencode({'state': state})
         return {'ok': bool(webbrowser.open(url))}
 
     def save_pdf_copy(self, data_url, name='Documento.pdf'):

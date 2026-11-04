@@ -754,6 +754,17 @@ const COVER_PRESETS = [
     ensureMasterFolderFirst();
     applyNoteMetaOverlay(state.notes);
 
+    window.applyCalendarReminders = function (reminders) {
+      if (!Array.isArray(reminders)) return;
+      state.reminders = reminders;
+      const badge = document.getElementById('sidebar-reminders-count-badge');
+      if (badge) badge.textContent = String(reminders.filter(item => !item.completed).length);
+      persistRemindersLocal();
+      renderHomeCalendar();
+      renderHomeEventsList();
+      if (state.isRemindersActive) renderRemindersPageView();
+    };
+
     function persistRemindersLocal() {
       try {
         localStorage.setItem('notejs_calendar_reminders_v1', JSON.stringify(state.reminders));
@@ -765,6 +776,7 @@ const COVER_PRESETS = [
       try {
         if (hasPyWebViewBridge() && typeof window.pywebview.api.save_reminder === 'function') {
           await window.pywebview.api.save_reminder(reminder);
+          window.dispatchEvent(new Event("notejs-reminder-saved"));
           return;
         }
         await fetch('/api/reminders', {
@@ -772,6 +784,7 @@ const COVER_PRESETS = [
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ reminder })
         });
+        window.dispatchEvent(new Event("notejs-reminder-saved"));
       } catch (_) {}
     }
 
@@ -779,9 +792,11 @@ const COVER_PRESETS = [
       try {
         if (hasPyWebViewBridge() && typeof window.pywebview.api.delete_reminder === 'function') {
           await window.pywebview.api.delete_reminder(id);
+          window.dispatchEvent(new Event("notejs-reminder-saved"));
           return;
         }
         await fetch(`/api/reminders/${id}`, { method: 'DELETE' });
+        window.dispatchEvent(new Event("notejs-reminder-saved"));
       } catch (_) {}
     }
 

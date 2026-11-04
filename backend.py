@@ -124,6 +124,7 @@ def build_vscode_project_zip():
             ('onboarding.py', os.path.join(BASE_DIR, 'onboarding.py')),
             ('welcome_notes.json', os.path.join(BASE_DIR, 'welcome_notes.json')),
             ('firebase_connection.py', os.path.join(BASE_DIR, 'firebase_connection.py')),
+            ('google_calendar.py', os.path.join(BASE_DIR, 'google_calendar.py')),
             ('backend.py', os.path.join(BASE_DIR, 'backend.py')),
             ('desktop_app.py', os.path.join(BASE_DIR, 'desktop_app.py')),
             ('requirements.txt', os.path.join(BASE_DIR, 'requirements.txt')),
@@ -142,7 +143,7 @@ def build_vscode_project_zip():
             ('frontend/vendor/pdf-lib.min.js', os.path.join(FRONTEND_DIR, 'vendor', 'pdf-lib.min.js')),
             ('frontend/vendor/pdf-lib.LICENSE.md', os.path.join(FRONTEND_DIR, 'vendor', 'pdf-lib.LICENSE.md')),
         ]
-        for filename in ('firebase-config.json','firebase-sdk-entry.mjs','firebase-client.mjs','firebase-sync-core.mjs','firebase-mobile-codec.mjs','firebase-signin.html','desktop-menu.js','desktop-polish.css','cloud-table-editor.js','note-cover-contract.mjs','note-cover-photos.js','microsoft-auth.mjs','microsoft-signin.html'):
+        for filename in ('firebase-config.json','firebase-sdk-entry.mjs','firebase-client.mjs','firebase-sync-core.mjs','firebase-mobile-codec.mjs','firebase-signin.html','desktop-menu.js','desktop-polish.css','cloud-table-editor.js','note-cover-contract.mjs','note-cover-photos.js','microsoft-auth.mjs','microsoft-signin.html','google-calendar.js','google-calendar-connect.html'):
             files_to_pack.append((f'frontend/{filename}', os.path.join(FRONTEND_DIR, filename)))
         files_to_pack.append(('frontend/vendor/firebase-sdk.mjs', os.path.join(FRONTEND_DIR, 'vendor', 'firebase-sdk.mjs')))
         for arcname, fpath in files_to_pack:
@@ -151,8 +152,6 @@ def build_vscode_project_zip():
 
         for directory, archive_root in (
             (os.path.join(FRONTEND_DIR, 'vendor', 'pdfjs'), 'frontend/vendor/pdfjs'),
-            (os.path.join(DATA_DIR, 'attachments', 'pdfs'), 'attachments/pdfs'),
-            (os.path.join(DATA_DIR, 'attachments', 'covers'), 'attachments/covers'),
         ):
             for folder, _, filenames in os.walk(directory):
                 for filename in filenames:
@@ -160,9 +159,7 @@ def build_vscode_project_zip():
                     relative = os.path.relpath(full_path, directory).replace(os.sep, '/')
                     zf.write(full_path, arcname=f'NoteJS-Python-PyWebView/{archive_root}/{relative}')
 
-        # Incluir base de datos SQLite actual con las notas del usuario si existe
-        if os.path.exists(DB_PATH):
-            zf.write(DB_PATH, arcname="NoteJS-Python-PyWebView/notejs.db")
+        # Source distribution must never contain the user's database or attachments.
 
         readme_content = """# Note JS — Desktop App (Python + SQLite + Peewee ORM + PyWebView)
 
@@ -769,6 +766,51 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
 
 
 class NoteJSRequestHandler(BaseHTTPRequestHandler):
+    # This API has no remote authentication: only the local application may use it.
+    server_version = 'NoteJS'
+    sys_version = ''
+    MAX_REQUEST_BYTES = 72 * 1024 * 1024  # Includes base64-encoded PDF imports.
+
+    def setup(self):
+        super().setup()
+        self.connection.settimeout(30)
+
+    def parse_request(self):
+        if not super().parse_request():
+            return False
+        port = self.server.server_port
+        allowed_hosts = {f'localhost:{port}', f'127.0.0.1:{port}', f'[::1]:{port}'}
+        if port == 80:
+            allowed_hosts.update({'localhost', '127.0.0.1', '[::1]'})
+        hosts = self.headers.get_all('Host', [])
+        origins = self.headers.get_all('Origin', [])
+        if (self.client_address[0] not in ('127.0.0.1', '::1') or
+                len(hosts) != 1 or hosts[0] not in allowed_hosts or
+                len(origins) > 1 or
+                (origins and origins[0] != 'http://' + hosts[0]) or
+                self.headers.get('Sec-Fetch-Site') in ('cross-site', 'same-site')):
+            self.send_error(403, 'Local same-origin requests only')
+            return False
+        lengths = self.headers.get_all('Content-Length', [])
+        if self.headers.get('Transfer-Encoding') or len(lengths) > 1:
+            self.send_error(400, 'Ambiguous request framing')
+            return False
+        if lengths:
+            if not lengths[0].isascii() or not lengths[0].isdigit():
+                self.send_error(400, 'Invalid Content-Length')
+                return False
+            if len(lengths[0]) > 10 or int(lengths[0]) > self.MAX_REQUEST_BYTES:
+                self.send_error(413, 'Request too large')
+                return False
+        return True
+
+    def end_headers(self):
+        self.send_header('X-Content-Type-Options', 'nosniff')
+        self.send_header('X-Frame-Options', 'SAMEORIGIN')
+        self.send_header('Referrer-Policy', 'no-referrer')
+        self.send_header('Cross-Origin-Resource-Policy', 'same-origin')
+        super().end_headers()
+
     def log_message(self, format, *args):
         pass
 
@@ -778,7 +820,6 @@ class NoteJSRequestHandler(BaseHTTPRequestHandler):
         self.send_header('Content-Type', 'application/json; charset=utf-8')
         self.send_header('Content-Length', str(len(payload)))
         self.send_header('Cache-Control', 'no-store')
-        self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
         self.wfile.write(payload)
 
@@ -791,7 +832,6 @@ class NoteJSRequestHandler(BaseHTTPRequestHandler):
 
     def do_OPTIONS(self):
         self.send_response(204)
-        self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
@@ -802,7 +842,6 @@ class NoteJSRequestHandler(BaseHTTPRequestHandler):
         if path in ('/health', '/api/bootstrap', '/'):
             self.send_response(200)
             self.send_header('Content-Type', 'text/html; charset=utf-8' if path == '/' else 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
             return
         self.do_GET()
@@ -1057,6 +1096,23 @@ class NoteJSRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         parsed = urlparse(self.path)
         path = unquote(parsed.path)
+
+        if path.startswith('/api/google-calendar/'):
+            if (self.headers.get('Origin') != 'http://' + self.headers.get('Host', '') or
+                    self.headers.get('X-NoteJS-Client') != 'calendar'):
+                self._send_json({'ok': False, 'error': 'Origen no permitido.'}, status=403)
+                return
+            try:
+                if not 0 < int(self.headers.get('Content-Length', '0')) <= 20000:
+                    raise ValueError('Solicitud inválida.')
+                from google_calendar import GOOGLE_CALENDAR
+                result = GOOGLE_CALENDAR.handle(path.rsplit('/', 1)[-1], self._read_json_body())
+                self._send_json(result)
+            except (ValueError, TypeError) as exc:
+                self._send_json({'ok': False, 'error': str(exc)}, status=400)
+            except Exception:
+                self._send_json({'ok': False, 'error': 'No se pudo sincronizar Calendar. Tus recordatorios se conservaron.'}, status=500)
+            return
 
         if path.startswith('/api/firebase/auth/'):
             origin = self.headers.get('Origin')
@@ -1478,7 +1534,9 @@ class NoteJSRequestHandler(BaseHTTPRequestHandler):
 
 
 
-def run_server(port=PORT, host='0.0.0.0'):
+def run_server(port=PORT, host='127.0.0.1'):
+    if host not in ('127.0.0.1', 'localhost'):
+        raise ValueError('NoteJS is a local app; bind to 127.0.0.1 or localhost')
     init_db()
     initialize_first_run()
     server = ThreadingHTTPServer((host, port), NoteJSRequestHandler)

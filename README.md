@@ -91,7 +91,6 @@ Verificación: `python -m unittest discover -s tests -p test_pdf_documents.py`. 
 ```
 Notas/
 │
-├── NoteJS.exe            # Ejecutable nativo para Windows 11 (Listo para usar)
 ├── desktop_app.py        # Ventana nativa de escritorio con PyWebView + Puente Python-JS
 ├── backend.py            # Servidor HTTP multihilo y API REST
 ├── server.py             # Entrypoint para servidor local
@@ -107,14 +106,13 @@ Notas/
 ├── build_linux.sh        # Compilador para binarios de Linux
 │
 ├── dist/
-│   └── NoteJS.exe        # Binario compilado con PyInstaller
+│   ├── NoteJS.exe        # Único ejecutable compilado con PyInstaller
+│   └── Instalador_NoteJS.exe # Único instalador de Windows
 │
 ├── frontend/             # Frontend completo para PC
 │   ├── index.html        # Estructura del DOM y modales
 │   ├── styles.css        # Sistema de diseño macOS / Notion
 │   └── app.js            # Lógica completa de cliente y sincronización
-│
-└── android_legacy_backup/ # Archivo de seguridad con el código legacy de Android
 ```
 
 ---
@@ -122,7 +120,7 @@ Notas/
 ## 💻 Cómo Ejecutar en Windows 11
 
 ### 🚀 Opción 1: Ejecución Directa con el Ejecutable (.exe) — Recomendada
-Haz doble clic en **[`NoteJS.exe`](file:///C:/Users/Joaco/antigravity/Notas/NoteJS.exe)** (ubicado en la raíz del proyecto o en `dist/NoteJS.exe`).
+Haz doble clic en **[dist/NoteJS.exe](dist/NoteJS.exe)**.
 - Se abrirá la aplicación en una ventana nativa ultraligera de escritorio sin requerir terminal ni dependencias activas.
 - Todas tus notas, carpetas inteligentes y recordatorios se guardarán automáticamente en `notejs.db`.
 
@@ -130,18 +128,24 @@ Haz doble clic en **[`NoteJS.exe`](file:///C:/Users/Joaco/antigravity/Notas/Note
 
 ### 🛠️ Opción 2: Modo Desarrollo (PyWebView)
 Para desarrollar o modificar el código fuente en tiempo real:
-- Haz doble clic sobre **[`run_desktop.bat`](file:///C:/Users/Joaco/antigravity/Notas/run_desktop.bat)**.
+- Haz doble clic sobre **[run_desktop.bat](run_desktop.bat)**.
 - El script detecta automáticamente tu instalación de Python en Windows 11 e inicia la ventana de desarrollo.
 
 ---
 
 ### 🌐 Opción 3: Modo Servidor Web Local
-- Haz doble clic sobre **[`run_server.bat`](file:///C:/Users/Joaco/antigravity/Notas/run_server.bat)**.
+- Haz doble clic sobre **[run_server.bat](run_server.bat)**.
 - Abre tu navegador en: **`http://localhost:3000`**
 
 ---
 
 ### 📦 Opción 4: Recompilar el Ejecutable `.exe`
 Si modificas los estilos, plantillas HTML, lógica JavaScript o modelos en Python y deseas generar un nuevo `.exe`:
-- Haz doble clic sobre **[`build_exe.bat`](file:///C:/Users/Joaco/antigravity/Notas/build_exe.bat)**.
+- Haz doble clic sobre **[build_exe.bat](build_exe.bat)**.
 - PyInstaller reempaquetará el binario optimizado en `dist\NoteJS.exe`.
+
+## Distribución y mantenimiento
+
+Windows mantiene únicamente `dist/NoteJS.exe` y `dist/Instalador_NoteJS.exe`. `build_exe.bat` y `npm run build:exe` utilizan `NoteJS.spec` como configuración común. Los datos locales en `dist/` no forman parte del instalador y no deben borrarse al limpiar binarios.
+
+Android se mantiene en el repositorio hermano `../Notas`; su APK de desarrollo se genera en `app/build/outputs/apk/debug/app-debug.apk`. Consulta [el registro de limpieza y validación](docs/CLEANUP.md).

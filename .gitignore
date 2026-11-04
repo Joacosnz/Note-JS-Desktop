@@ -68,3 +68,7 @@ desktop.ini
 # ─── Compilados / distribución ────────────────────────────
 dist/
 *.exe
+
+.android-calendar-work/
+
+.android-support-work/

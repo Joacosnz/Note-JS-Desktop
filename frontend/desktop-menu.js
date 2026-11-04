@@ -17,6 +17,15 @@
   };
   window.openCloudSettings = () => { close(); openSettingsModal(); switchSettingsSection('account'); };
   document.addEventListener('click', event => {
+    const projectLink = event.target.closest('a[data-project-link]');
+    if (projectLink && window.pywebview?.api?.open_project_link) {
+      event.preventDefault();
+      window.pywebview.api.open_project_link(projectLink.href).then(result => {
+        document.getElementById('project-link-status').textContent = result?.ok ? '' : 'No se pudo abrir el navegador. Podés copiar la dirección del enlace.';
+      }).catch(() => {
+        document.getElementById('project-link-status').textContent = 'No se pudo abrir el navegador. Podés copiar la dirección del enlace.';
+      });
+    }
     document.querySelectorAll('.page-tools[open]').forEach(details => { if (!details.contains(event.target) || event.target.closest('button')) details.open = false; });
     if (!event.target.closest('#desktop-app-menu, #desktop-menu-trigger')) close();
     const item = event.target.closest('#desktop-app-menu [data-menu-action]');

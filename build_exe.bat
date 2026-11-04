@@ -1,6 +1,7 @@
 @echo off
 chcp 65001 > nul
 setlocal enabledelayedexpansion
+cd /d "%~dp0"
 title Compilador Note JS a .exe (PyWebView + SQLite + Peewee ORM)
 echo ===============================================================
 echo   Note JS - Compilador a .exe para Windows 11
@@ -21,14 +22,6 @@ if exist "%LOCALAPPDATA%\Python\pythoncore-3.15-64\python.exe" (
     set "PYTHON_EXE=python"
 )
 
-:: Detectar PyInstaller
-set "PYINSTALLER_EXE="
-if exist "%LOCALAPPDATA%\Python\pythoncore-3.15-64\Scripts\pyinstaller.exe" (
-    set "PYINSTALLER_EXE=%LOCALAPPDATA%\Python\pythoncore-3.15-64\Scripts\pyinstaller.exe"
-) else (
-    set "PYINSTALLER_EXE=%PYTHON_EXE% -m PyInstaller"
-)
-
 :: Detectar Inno Setup
 set "ISCC_EXE="
 if exist "%LOCALAPPDATA%\Programs\Inno Setup 6\ISCC.exe" (
@@ -41,6 +34,7 @@ if exist "%LOCALAPPDATA%\Programs\Inno Setup 6\ISCC.exe" (
 
 echo [1/3] Verificando dependencias con %PYTHON_EXE%...
 "%PYTHON_EXE%" -m pip install -r requirements.txt
+if errorlevel 1 exit /b 1
 
 echo.
 echo [2/3] Compilando NoteJS.exe autónomo con PyInstaller...
@@ -48,12 +42,16 @@ if exist "node_modules\.bin\esbuild.cmd" (
     call npm run build:firebase
     if errorlevel 1 exit /b 1
 )
-"%PYINSTALLER_EXE%" --noconsole --onefile --icon="public\icon.ico" --add-data "frontend;frontend" --add-data "public;public" --add-data "welcome_notes.json;." --hidden-import peewee --hidden-import models --hidden-import backend --hidden-import webview.platforms.winforms --hidden-import webview.platforms.edgechromium --name "NoteJS" desktop_app.py
+"%PYTHON_EXE%" -m PyInstaller --noconfirm NoteJS.spec
+if errorlevel 1 exit /b 1
 
 echo.
 echo [3/3] Generando instalador para usuarios (Instalador_NoteJS.exe)...
 if defined ISCC_EXE (
-    "%ISCC_EXE%" installer.iss
+    "%ISCC_EXE%" /O"build\installer" installer.iss
+    if errorlevel 1 exit /b 1
+    move /Y "build\installer\Instalador_NoteJS.exe" "dist\Instalador_NoteJS.exe" > nul
+    if errorlevel 1 exit /b 1
 ) else (
     echo [AVISO] Inno Setup no encontrado. Omitiendo generacion de Instalador_NoteJS.exe.
 )

@@ -358,7 +358,7 @@ class TestR6AppIconAndStartupBehavior(unittest.TestCase):
             "icon='public/icon.ico'" in self.spec or
             "icon=['public/icon.ico']" in self.spec
         )
-        self.assertIn('--icon="public\\icon.ico"', self.bat)
+        self.assertIn('-m PyInstaller --noconfirm NoteJS.spec', self.bat)
         self.assertIn('icon=icon_file', self.desktop_app)
 
     def test_startup_behavior_select_in_html(self):

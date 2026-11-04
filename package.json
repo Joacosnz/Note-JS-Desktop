@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "Note JS - Desktop App para PC con PyWebView y SQLite + Peewee ORM",
   "scripts": {
-    "start": "python3 server.py",
-    "dev": "python3 server.py",
-    "desktop": "python3 desktop_app.py",
-    "build:exe": "pyinstaller --noconfirm NoteJS.spec",
-    "build": "npm run build:firebase && python3 -m py_compile models.py backend.py desktop_app.py",
+    "start": "node scripts/python.cjs server.py",
+    "dev": "node scripts/python.cjs server.py",
+    "desktop": "node scripts/python.cjs desktop_app.py",
+    "build:exe": "node scripts/python.cjs -m PyInstaller --noconfirm NoteJS.spec",
+    "build": "npm run build:firebase && node scripts/python.cjs -m py_compile models.py backend.py desktop_app.py server.py app.py main.py",
     "build:firebase": "esbuild frontend/firebase-sdk-entry.mjs --bundle --format=esm --platform=browser --target=chrome110 --minify --legal-comments=eof --outfile=frontend/vendor/firebase-sdk.mjs",
     "test:firebase": "node --test tests/firebase_sync_core.test.mjs tests/note_covers.test.mjs tests/microsoft_auth.test.mjs"
   },

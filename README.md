@@ -1,4 +1,4 @@
-# Note JS — Aplicación de Notas Profesional para PC
+# Note JS — Aplicación de Notas para PC
 
 **Note JS** es una aplicación de notas y productividad para escritorio (PC con Windows, Linux y macOS), inspirada en la elegancia visual de **Apple Notes** y la potencia de bloques de **Notion**.
 
